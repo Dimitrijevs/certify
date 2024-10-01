@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'label_plural' => 'Kvalifikācijas',
+    'label' => 'Kvalifikācija',
+    'form' => [
+        'section_title' => 'Testa vispārējā informācija',
+        'edit' => 'Rediģēt',
+        'view' => 'Skatīt',
+        'create' => 'Izveidot',
+        'create_new_qualification' => 'Izveidot jaunu kvalifikāciju',
+        'cancel' => 'Atcelt',
+        'save_changes' => 'Saglabāt',
+    ],
+    'fields' => [
+        'name' => 'Nosaukums',
+        'active' => 'Aktīvs',
+        'free_navigation' => 'Brīva navigācija',
+        'fault_points' => 'Kļūdu punkti',
+        'score_to_pass' => 'Punkti, lai izietu testu',
+        'time_limit' => 'Laika limits',
+        'minutes' => 'minūtes',
+        'requirement_type' => 'Prasības tips',
+        'description' => 'Apraksts',
+        'thumbnail' => 'Attēls',
+        'certificate_layout' => 'Sertifikāta izkārtojums',
+        'cooldown' => 'Pārtraukums',
+    ],
+    'custom' => [
+        'test_information' => 'Testa informācija',
+        'questions' => 'Jautājumi',
+        'min_score' => 'Punkti',
+        'time_limit' => 'Laika limits',
+        'start_test' => 'Sākt testu',
+        'type_of_requirement' => 'Izvēlieties prasības veidu: Tests vai Sertifikāts',
+        'add_test_details' => 'Pievienot testa detaļas',
+        'are_you_sure_you_want_to_start_the_test' => 'Vai tiešām vēlaties sākt testu',
+        'no' => 'Nē',
+        'yes' => 'Jā',
+        'n_a' => 'Nav',
+    ],
+    'requirements' => [
+        'test' => 'Tests',
+        'certificate' => 'Sertifikāts',
+    ],
+];

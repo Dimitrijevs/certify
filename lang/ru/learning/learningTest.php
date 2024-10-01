@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'label_plural' => 'Квалификации',
+    'label' => 'Квалификация',
+    'form' => [
+        'section_title' => 'Общие данные требования',
+        'edit' => 'Редактировать',
+        'view' => 'Просмотр',
+        'create' => 'Создать',
+        'create_new_qualification' => 'Создать новую квалификацию',
+        'cancel' => 'Отменить',
+        'save_changes' => 'Сохранить',
+    ],
+    'fields' => [
+        'name' => 'Название',
+        'active' => 'Активен',
+        'free_navigation' => 'Свободная навигация',
+        'fault_points' => 'Штрафные баллы',
+        'score_to_pass' => 'Баллы для зачета',
+        'time_limit' => 'Ограничение по времени',
+        'minutes' => 'минуты',
+        'requirement_type' => 'Тип требования',
+        'description' => 'Описание',
+        'thumbnail' => 'Миниатюра',
+        'certificate_layout' => 'Макет сертификата',
+        'cooldown' => 'Перерыв',
+    ],
+    'custom' => [
+        'test_information' => 'Информация о тесте',
+        'questions' => 'Вопросы',
+        'min_score' => 'Пункты',
+        'time_limit' => 'Ограничение по времени',
+        'start_test' => 'Начать тест',
+        'type_of_requirement' => 'Выберите тип требования: Тест или Сертификат',
+        'add_test_details' => 'Добавить детали теста',
+        'are_you_sure_you_want_to_start_the_test' => 'Вы уверены, что хотите начать тест',
+        'no' => 'Нет',
+        'yes' => 'Да',
+        'n_a' => 'Нет',
+    ],
+    'requirements' => [
+        'test' => 'Тест',
+        'certificate' => 'Сертификат',
+    ],
+];

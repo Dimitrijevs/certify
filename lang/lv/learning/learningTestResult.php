@@ -1,0 +1,37 @@
+<?php
+
+return [
+    'label' => 'Testa rezultāti',
+    'label_plural' => 'Testu rezultāti',
+    'form' => [
+        'section_title' => 'Testu rezultāti',
+        'edit' => 'Rediģēt',
+        'view' => 'Skatīt',
+        'create' => 'Izveidot',
+        'completed_tests' => 'Pabeigti testi',
+    ],
+    'custom' => [
+        'test_navigation' => 'Testa navigācija',
+        'question' => 'Jautājums',
+        'question_details' => 'Jautājuma apraksts',
+        'enter_answer' => 'Ievadiet atbildi',
+        'your_answer' => 'Jūsu atbilde',
+        'correct_answer' => 'Pareizā atbilde',
+        'points' => 'Punkti',
+        'select_answer' => 'Izvēlieties atbildi',
+        'created_at' => 'Izveides datums',
+        'finished_at' => 'Pabeigts',
+        'total_time' => 'Kopējais laiks',
+        'total_points' => 'Kopējais punktu skaits',
+        'passed' => 'Izgājis',
+        'next' => 'Nākamais',
+        'finish' => 'Pabeigt',
+        'submit' => 'Iesniegt',
+        'this_is_essential_question' => 'Šis ir būtisks jautājums',
+        'congratulations' => 'Apsveicam!',
+        'did_not_pass' => 'Atvainojiet, Jūs neizturējāt pārbaudījumu.',
+        'you_passed' => 'Jūs izturējāt pārbaudījumu!',
+        'thank_you_for_completing_the_test' => 'Paldies, ka pabeidzāt testu. Jūs varat pārskatīt savus rezultātus zemāk.',
+        'test_results' => 'Testa rezultāti',
+    ],
+];

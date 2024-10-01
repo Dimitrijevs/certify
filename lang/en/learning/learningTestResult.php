@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'label' => 'Test result',
+    'label_plural' => 'Test results',
+    'form' => [
+        'section_title' => 'Test result',
+        'edit' => 'Edit',
+        'view' => 'View',
+        'create' => 'Create',
+        'completed_tests' => 'Completed tests',
+    ],
+    'custom' => [
+        'test_navigation' => 'Test navigation',
+        'question' => 'Question',
+        'question_details' => 'Question details',
+        'enter_answer' => 'Enter an answer',
+        'your_answer' => 'Your answer',
+        'correct_answer' => 'Correct answer',
+        'points' => 'Points',
+        'select_answer' => 'Select an answer',
+        'created_at' => 'Created at',
+        'finished_at' => 'Finished at',
+        'total_time' => 'Total time',
+        'total_points' => 'Total points',
+        'passed' => 'Passed',
+        'next' => 'Next',
+        'finish' => 'Finish',
+        'submit' => 'Submit',
+        'this_is_essential_question' => 'This is an essential question',
+        'certificate_missing' => 'Certificate missing',
+        'congratulations' => 'Congratulations!',
+        'did_not_pass' => 'Sorry, You Did not Pass.',
+        'you_passed' => 'You Passed!',
+        'thank_you_for_completing_the_test' => 'Thank you for completing the test. You can review your results below.',
+        'test_results'=> 'Test Results',
+    ],
+];
