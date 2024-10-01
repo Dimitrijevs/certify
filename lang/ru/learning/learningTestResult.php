@@ -1,0 +1,37 @@
+<?php
+
+return [
+    'label' => 'Результаты теста',
+    'label_plural' => 'Результаты тестов',
+    'form' => [
+        'section_title' => 'Результат теста',
+        'edit' => 'Редактировать',
+        'view' => 'Просмотр',
+        'create' => 'Создать',
+        'completed_tests' => 'Завершенные тесты',
+    ],
+    'custom' => [
+        'test_navigation' => 'Навигация по тесту',
+        'question' => 'Вопрос',
+        'question_details' => 'Детали вопроса',
+        'enter_answer' => 'Введите ответ',
+        'your_answer' => 'Ваш ответ',
+        'correct_answer' => 'Правильный ответ',
+        'points' => 'Пунктов',
+        'select_answer' => 'Выберите ответ',
+        'created_at' => 'Дата создания',
+        'finished_at' => 'Завершен',
+        'total_time' => 'Общее время',
+        'total_points' => 'Общее количество пунктов',
+        'passed' => 'Пройдено',
+        'next' => 'Следующий',
+        'finish' => 'Завершить',
+        'submit' => 'Завершить',
+        'this_is_essential_question' => 'Это необходимый вопрос',
+        'congratulations' => 'Поздравляем!',
+        'did_not_pass' => 'Извините, Вы не прошли тест.',
+        'you_passed' => 'Вы прошли тест!',
+        'thank_you_for_completing_the_test' => 'Спасибо за прохождение теста. Вы можете просмотреть свои результаты ниже.',
+        'test_results' => 'Результаты теста',
+    ],
+];

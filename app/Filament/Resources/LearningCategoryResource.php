@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use App\Models\LearningCategory;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;

@@ -1,0 +1,45 @@
+<?php
+
+return [
+    'label_plural' => 'Qualifications',
+    'label' => 'Qualification',
+    'form' => [
+        'section_title' => 'Qualification general information',
+        'edit' => 'Edit',
+        'view' => 'View',
+        'create' => 'Create',
+        'create_new_qualification' => 'Create a new qualification',
+        'cancel' => 'Cancel',
+        'save_changes' => 'Save',
+    ],
+    'fields' => [
+        'name' => 'Name',
+        'active' => 'Active',
+        'free_navigation' => 'Free navigation',
+        'fault_points' => 'Fault points',
+        'score_to_pass' => 'Score to pass',
+        'time_limit' => 'Time limit',
+        'minutes' => 'minutes',
+        'requirement_type' => 'Requirement type',
+        'description' => 'Description',
+        'thumbnail' => 'Thumbnail',
+        'certificate_layout' => 'Certificate layout',
+        'cooldown' => 'Cooldown',
+    ],
+    'custom' => [
+        'test_information' => 'Test information',
+        'questions' => 'Questions',
+        'min_score' => 'Points',
+        'start_test' => 'Start test',
+        'type_of_requirement' => 'Select the type of requirement: Test or Certificate',
+        'add_test_details' => 'Add test details',
+        'are_you_sure_you_want_to_start_the_test' => 'Are you sure you want to start the test',
+        'no' => 'No',
+        'yes' => 'Yes',
+        'n_a' => 'N/A',
+    ],
+    'requirements' => [
+        'test' => 'Test',
+        'certificate' => 'Certificate',
+    ],
+];
