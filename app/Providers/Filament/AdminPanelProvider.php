@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('app')
             ->login()
             ->registration()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->topNavigation()
             ->colors([
                 'primary' => Color::Sky,
             ])

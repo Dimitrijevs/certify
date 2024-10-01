@@ -31,8 +31,8 @@ use App\Filament\Resources\LearningCategoryResource\Pages;
 class LearningCategoryResource extends Resource
 {
     protected static ?string $model = LearningCategory::class;
+    protected static ?string $navigationGroup = 'Learning';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
