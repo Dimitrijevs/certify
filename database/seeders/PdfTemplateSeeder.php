@@ -15,7 +15,7 @@ class PdfTemplateSeeder extends Seeder
     public function run(): void
     {
         // Certificate layout 1
-        $twigCertificateFilePath = resource_path('views/filament/resources/learning-certificate-resource/pages/pdf-layout.html.twig');
+        $twigCertificateFilePath = resource_path('views/templates/pages/pdf-layout-1.html.twig');
         file_exists($twigCertificateFilePath) ? $sorceCertificate = file_get_contents($twigCertificateFilePath) : $sorceCertificate = 'Default content or error message';
 
         $logos = [];
@@ -37,6 +37,9 @@ class PdfTemplateSeeder extends Seeder
         $pdf->save();
 
         // Certificate layout 2
+        $twigCertificateFilePath = resource_path('views/templates/pages/pdf-layout-2.html.twig');
+        file_exists($twigCertificateFilePath) ? $sorceCertificate = file_get_contents($twigCertificateFilePath) : $sorceCertificate = 'Default content or error message';
+
         $logos = [];
         $logos[] = [
             'name' => 'bg1',
