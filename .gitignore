@@ -19,3 +19,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
+composer.lock
+public/css/bezhansalleh/filament-language-switch/filament-language-switch.css

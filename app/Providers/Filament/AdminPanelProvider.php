@@ -24,10 +24,13 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
+            ->id('app')
             ->path('app')
             ->login()
             ->registration()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->viteTheme('resources/css/filament/app/theme.css')
+            ->topNavigation()
             ->colors([
                 'primary' => Color::Sky,
             ])
