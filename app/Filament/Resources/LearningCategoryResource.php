@@ -7,12 +7,14 @@ use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningCategory;
+use App\Models\LearningResource;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
+use App\Models\LearningUserStudyRecord;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
@@ -28,6 +30,8 @@ use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
 use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
+use App\Filament\Resources\LearningCategoryResource\Pages\EditLearningCategory;
+use App\Filament\Resources\LearningCategoryResource\Pages\ListLearningCategories;
 use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningResourcesRelationManager;
@@ -208,50 +212,50 @@ class LearningCategoryResource extends Resource
             ])
             ->bulkActions([
                 // 
-            ]);
-            // ->recordUrl(
-            //     function (Model $record): ?string {
-            //         $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
+            ])
+            ->recordUrl(
+                function (Model $record): ?string {
+                    $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
 
-            //         $activities = [];
+                    $activities = [];
 
-            //         foreach ($resources as $resource) {
-            //             $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
-            //                 ->where('resource_id', $resource->id)
-            //                 ->exists();
+                    foreach ($resources as $resource) {
+                        $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
+                            ->where('resource_id', $resource->id)
+                            ->exists();
 
-            //             $activity = new \stdClass();
-            //             $activity->id = $resource->id;
-            //             $activity->name = $resource->name;
-            //             $activity->is_seen = $is_seen;
+                        $activity = new \stdClass();
+                        $activity->id = $resource->id;
+                        $activity->name = $resource->name;
+                        $activity->is_seen = $is_seen;
 
-            //             $activities[] = $activity;
-            //         }
+                        $activities[] = $activity;
+                    }
 
-            //         if (count($activities) == 0) {
+                    if (count($activities) == 0) {
 
-            //             if (Auth::user()->role_id !== 3) {
-            //                 return EditLearningCategory::getUrl([
-            //                     'record' => $record->id,
-            //                 ], isAbsolute: false);
-            //             } else {
-            //                 return ListLearningCategories::getUrl(isAbsolute: false);
-            //             }
-            //         } else {
-            //             foreach ($activities as $activity) {
-            //                 if ($activity->is_seen == false) {
-            //                     return ViewCustomLearningResource::getUrl([
-            //                         'record' => $activity->id,
-            //                     ], isAbsolute: false);
-            //                 }
-            //             }
+                        if (Auth::user()->role_id !== 3) {
+                            return EditLearningCategory::getUrl([
+                                'record' => $record->id,
+                            ], isAbsolute: false);
+                        } else {
+                            return ListLearningCategories::getUrl(isAbsolute: false);
+                        }
+                    } else {
+                        foreach ($activities as $activity) {
+                            if ($activity->is_seen == false) {
+                                return ViewCustomLearningResource::getUrl([
+                                    'record' => $activity->id,
+                                ], isAbsolute: false);
+                            }
+                        }
 
-            //             return ViewCustomLearningResource::getUrl([
-            //                 'record' => $activities[0]->id,
-            //             ], isAbsolute: false);
-            //         }
-            //     },
-            // );
+                        return ViewCustomLearningResource::getUrl([
+                            'record' => $activities[0]->id,
+                        ], isAbsolute: false);
+                    }
+                },
+            );
     }
 
     public static function getRelations(): array
