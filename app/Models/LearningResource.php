@@ -25,4 +25,30 @@ class LearningResource extends Model
         'file_upload' => 'array',
         'gallery' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($resource) {
+            if (empty($resource->sort_id)) {
+                $resource->sort_id = LearningResource::max('sort_id') + 1;
+            }
+        });
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(LearningCategory::class, 'category_id');
+    }
+
+    public function getHasFileUploadAttribute(): bool
+    {
+        return !empty($this->file_upload);
+    }
+
+    public function getHasVideoUrlAttribute(): bool
+    {
+        return !empty($this->video_url);
+    }
 }

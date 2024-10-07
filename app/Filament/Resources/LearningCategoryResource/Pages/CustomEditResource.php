@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendemy\Learning\Resources\LearningCategoryResource\Pages;
+namespace App\Filament\Resources\LearningCategoryResource\Pages;
 
 use Filament\Forms\Form;
 use Filament\Actions\Action;

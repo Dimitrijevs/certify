@@ -23,7 +23,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Resources\RelationManagers\RelationManager;
-use Vendemy\Learning\Resources\LearningCategoryResource\Pages\CustomEditResource;
+use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
 use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
 
 class LearningResourcesRelationManager extends RelationManager

@@ -27,6 +27,8 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
+use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
+use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningResourcesRelationManager;
 
@@ -265,6 +267,10 @@ class LearningCategoryResource extends Resource
             'index' => Pages\ListLearningCategories::route('/'),
             'create' => Pages\CreateLearningCategory::route('/create'),
             'edit' => Pages\EditLearningCategory::route('/{record}/edit'),
+
+            // for resource relation mamanger
+            'resource' => ViewCustomLearningResource::route('/resource/{record}'),
+            'editResource' => CustomEditResource::route('/resource/{record}/edit'),
         ];
     }
 }

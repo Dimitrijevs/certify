@@ -7,16 +7,15 @@ use App\Models\LearningCategory;
 use App\Models\LearningResource;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
+use App\Models\LearningUserStudyRecord;
 use Illuminate\Support\Facades\Storage;
 use App\Filament\Resources\LearningCategoryResource;
-use Vendemy\Learning\Models\LearningUserStudyRecord;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
-use Vendemy\Learning\Resources\LearningCategoryResource\Pages\CustomEditResource;
 
 class ViewCustomLearningResource extends Page
 {
     use InteractsWithRecord;
-
+    
     protected static string $resource = LearningCategoryResource::class;
 
     public $resources;
@@ -150,5 +149,5 @@ class ViewCustomLearningResource extends Page
         }
     }
 
-    protected static string $view = 'vendemy-learning::filament.resources.learning-category-resource.pages.view-custom-learning-resource';
+    protected static string $view = 'filament.resources.learning-category-resource.pages.view-custom-learning-resource';
 }
