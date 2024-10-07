@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             LearningCategorySeeder::class,
+            LearningResourceSeeder::class,
+            LearningTestSeeder::class,
+            LearningTestQuestionSeeder::class,
+            LearningTestQuestionAnswerSeeder::class,
+            LearningCertificationRequirementSeeder::class,
         ]);
     }
 }
