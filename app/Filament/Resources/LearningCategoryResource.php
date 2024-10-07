@@ -9,7 +9,6 @@ use Filament\Tables\Table;
 use App\Models\LearningCategory;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -23,10 +22,13 @@ use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\Layout\Stack;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
+use App\Filament\Resources\LearningCategoryResource\RelationManagers\ActivitiesRelationManager;
+use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningResourcesRelationManager;
 
 class LearningCategoryResource extends Resource
 {
@@ -129,25 +131,25 @@ class LearningCategoryResource extends Resource
                             ]),
                     ]),
 
-                // Tabs::make()->columnSpanFull()->tabs([
-                //     Tab::make(__('learning/learningResource.label_plural'))
-                //         ->icon('tabler-notebook')
-                //         ->schema([
-                //             RelationManager::make()
-                //                 ->manager(LearningResourcesRelationManager::class)
-                //                 ->lazy()
-                //                 ->columnSpanFull()
-                //         ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                Tabs::make()->columnSpanFull()->tabs([
+                    Tab::make(__('learning/learningResource.label_plural'))
+                        ->icon('tabler-notebook')
+                        ->schema([
+                            RelationManager::make()
+                                ->manager(LearningResourcesRelationManager::class)
+                                ->lazy()
+                                ->columnSpanFull()
+                        ])->visible(fn(string $operation): bool => $operation !== 'create'),
 
-                //     Tab::make(__('learning/learningResourceActivity.label_plural'))
-                //         ->icon('tabler-user')
-                //         ->schema([
-                //             RelationManager::make()
-                //                 ->manager(ActivitiesRelationManager::class)
-                //                 ->lazy()
-                //                 ->columnSpanFull()
-                //         ]),
-                // ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                    Tab::make(__('learning/learningResourceActivity.label_plural'))
+                        ->icon('tabler-user')
+                        ->schema([
+                            RelationManager::make()
+                                ->manager(ActivitiesRelationManager::class)
+                                ->lazy()
+                                ->columnSpanFull()
+                        ]),
+                ])->visible(fn(string $operation): bool => $operation !== 'create'),
             ]);
     }
 

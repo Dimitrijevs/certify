@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendemy\Learning\Models;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
