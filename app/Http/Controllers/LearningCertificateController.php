@@ -30,8 +30,8 @@ class LearningCertificateController extends Controller
         $testName = $learningResource->name;
         $validTo = $learningResource->valid_to;
 
-        // Render the template with Twig
-        $templateHtml = $this->twig->render('filament/resources/learning-certificate-resource/pages/pdf-template.html.twig', [
+        // Render the template with Twig resources/views/templates/pages/pdf-template.html.twig
+        $templateHtml = $this->twig->render('templates/pages/pdf-template.html.twig', [
             'userName' => $userName,
             'testName' => $testName,
             'validTo' => $validTo,
