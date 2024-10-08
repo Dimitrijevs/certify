@@ -29,7 +29,7 @@ class ViewCustomTest extends Page
 
     protected function getHeaderActions(): array
     {
-        if (auth()->user()->can('update_learning::test')) {
+        if (Auth::user()->role_id != 3) {
             return [
                 Action::make('edit')
                     ->label(__('learning/learningTest.form.edit'))

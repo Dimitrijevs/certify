@@ -50,68 +50,6 @@ class RequirementsRelationManager extends RelationManager
                     ])
                     ->required(),
 
-                // department
-                Select::make('entity_id')
-                    ->live()
-                    ->label(__('learning/learningTestRequirements.fields.entity'))
-                    ->relationship('department', 'name', function (Builder $query, $operation) {
-                        if ($operation === 'create') {
-                            $test_id = $this->getOwnerRecord()->id;
-                            $query->whereNotExists(function ($subQuery) use ($test_id) {
-                                $subQuery->select(DB::raw(1))
-                                    ->from('learning_certification_requirements')
-                                    ->whereColumn('learning_certification_requirements.entity_type', DB::raw("'department'"))
-                                    ->whereColumn('learning_certification_requirements.entity_id', 'departments.id')
-                                    ->where('learning_certification_requirements.test_id', $test_id);
-                            });
-                        } else {
-                            return $query;
-                        }
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->hidden(function ($get) {
-                        return $get('entity_type') !== 'department';
-                    })
-                    ->columnSpan([
-                        'default' => 12,
-                        'sm' => 12,
-                        'md' => 12,
-                        'lg' => 12,
-                    ]),
-
-                // employee team
-                Select::make('entity_id')
-                    ->live()
-                    ->label(__('learning/learningTestRequirements.fields.entity'))
-                    ->relationship('employee_team', 'name', function (Builder $query, $operation) {
-                        if ($operation === 'create') {
-                            $test_id = $this->getOwnerRecord()->id;
-                            $query->whereNotExists(function ($subQuery) use ($test_id) {
-                                $subQuery->select(DB::raw(1))
-                                    ->from('learning_certification_requirements')
-                                    ->whereColumn('learning_certification_requirements.entity_type', DB::raw("'employee_team'"))
-                                    ->whereColumn('learning_certification_requirements.entity_id', 'employee_teams.id')
-                                    ->where('learning_certification_requirements.test_id', $test_id);
-                            });
-                        } else {
-                            return $query;
-                        }
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->hidden(function ($get) {
-                        return $get('entity_type') !== 'employee_team';
-                    })
-                    ->columnSpan([
-                        'default' => 12,
-                        'sm' => 12,
-                        'md' => 12,
-                        'lg' => 12,
-                    ]),
-
                 // employee
                 Select::make('entity_id')
                     ->live()
@@ -170,15 +108,7 @@ class RequirementsRelationManager extends RelationManager
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(function ($record) {
-                        $entity_type = $record->entity_type;
-
-                        if ($entity_type === 'department') {
-                            return $record->department->name;
-                        } else if ($entity_type === 'employee_team') {
-                            return $record->employee_team->name;
-                        } else if ($entity_type === 'employee') {
                             return $record->employee->name;
-                        }
                     }),
             ])
             ->filters([

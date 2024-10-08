@@ -358,17 +358,6 @@ class LearningTestResource extends Resource
             );
     }
 
-    // ->hiddenFilterIndicators()
-
-    public static function infolist(Infolist $infolist): infolist
-    {
-        return $infolist
-            ->columns(12)
-            ->schema([
-                // ...
-            ]);
-    }
-
     public static function getRelations(): array
     {
         return [
