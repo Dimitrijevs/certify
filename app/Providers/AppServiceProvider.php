@@ -29,12 +29,6 @@ class AppServiceProvider extends ServiceProvider
                 ->locales(['en','lv','ru']);
         });
 
-        Filament::registerNavigationGroups([
-            'Learning' => NavigationGroup::make()
-                ->label(__('learning/learningCategory.group_label'))
-                ->icon('tabler-book'),
-        ]);
-
         Field::macro("tooltip", function (string $tooltip) {
             return $this->hint(
                 Action::make('help')
