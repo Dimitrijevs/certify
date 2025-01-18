@@ -7,13 +7,19 @@ use App\Models\School;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\SchoolResource\Pages;
+use Njxqlus\Filament\Components\Forms\RelationManager;
+use App\Filament\Resources\SchoolResource\Pages\CustomGroupPage;
+use App\Filament\Resources\SchoolResource\RelationManagers\GroupsRelationManager;
+use App\Filament\Resources\SchoolResource\RelationManagers\StudentsRelationManager;
 
 class SchoolResource extends Resource
 {
@@ -131,7 +137,7 @@ class SchoolResource extends Resource
                             ]),
                     ]),
                 Group::make([
-                    Section::make('School Avatar')
+                    Section::make('School Photo')
                         ->columns([
                             'default' => 12,
                             'sm' => 12,
@@ -157,7 +163,7 @@ class SchoolResource extends Resource
                                         $lastSchool = School::latest('id')->first();
                                         return "schools/" . ($lastSchool ? $lastSchool->id + 1 : 1);
                                     }
-        
+
                                     return "schools/$record->id";
                                 })
                                 ->image()
@@ -177,7 +183,26 @@ class SchoolResource extends Resource
                         'sm' => 12,
                         'md' => 4,
                         'lg' => 4,
-                    ])
+                    ]),
+
+                Tabs::make()->columnSpanFull()->tabs([
+                    Tab::make('Groups')
+                        ->icon('tabler-notebook')
+                        ->schema([
+                            RelationManager::make()
+                                ->manager(GroupsRelationManager::class)
+                                ->lazy()
+                                ->columnSpanFull()
+                        ]),
+                    Tab::make('Students')
+                        ->icon('tabler-notebook')
+                        ->schema([
+                            RelationManager::make()
+                                ->manager(StudentsRelationManager::class)
+                                ->lazy()
+                                ->columnSpanFull()
+                        ]),
+                ])->visible(fn(string $operation): bool => $operation !== 'create'),
             ]);
     }
 
@@ -271,6 +296,8 @@ class SchoolResource extends Resource
             'index' => Pages\ListSchools::route('/'),
             'create' => Pages\CreateSchool::route('/create'),
             'edit' => Pages\EditSchool::route('/{record}/edit'),
+
+            'edit-group' => CustomGroupPage::route('/{record}/edit-group'),
         ];
     }
 }

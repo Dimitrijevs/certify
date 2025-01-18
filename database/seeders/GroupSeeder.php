@@ -23,7 +23,7 @@ class GroupSeeder extends Seeder
         
         $groups = [];
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 60; $i++) {
             $grade = $faker->randomElement($grades);
             $section = $faker->randomElement($sections);
             $groupName = $grade . $section;

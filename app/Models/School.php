@@ -31,8 +31,13 @@ class School extends Model
         return $this->hasMany(User::class);
     }
 
-    public function groups ()
+    public function groups()
     {
         return $this->hasMany(Group::class);
+    }
+
+    public function students()
+    {
+        return $this->hasMany(User::class)->where('role_id', 4);
     }
 }

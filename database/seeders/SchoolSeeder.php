@@ -15,7 +15,7 @@ class SchoolSeeder extends Seeder
     {
         $faker = Faker::create('lv_LV');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             School::create([
                 'name' => $faker->company . ' School',
                 'address' => $faker->streetAddress,
