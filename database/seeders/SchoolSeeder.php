@@ -24,6 +24,7 @@ class SchoolSeeder extends Seeder
                 'postal_code' => $faker->postcode,
                 'phone' => $faker->phoneNumber,
                 'email' => $faker->email,
+                'website' => $faker->url,
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ]);

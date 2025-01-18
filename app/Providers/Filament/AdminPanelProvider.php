@@ -65,8 +65,8 @@ class AdminPanelProvider extends PanelProvider
     {
         Filament::serving(function () {
             Filament::registerNavigationGroups([
-                'Users' => NavigationGroup::make()
-                    ->label('Users')
+                'People' => NavigationGroup::make()
+                    ->label('People')
                     ->icon('tabler-users-group'),
                 'Learning' => NavigationGroup::make()
                     ->label('Learning')

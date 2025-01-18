@@ -17,6 +17,8 @@ class School extends Model
         'postal_code',
         'phone',
         'email',
+        'avatar',
+        'website',
     ];
 
     protected $hidden = [
@@ -27,5 +29,10 @@ class School extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function groups ()
+    {
+        return $this->hasMany(Group::class);
     }
 }

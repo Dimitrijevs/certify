@@ -1,39 +1,52 @@
 @if ($getLink())
     <a href="{{ $getLink() }}" class="group">
 @endif
-<div class="flex items-center {{ $getMarginStart() }} gap-3 pe-3">
+<div class="flex items-center gap-3 pe-3 my-2 ms-3">
     @if ($getAvatarType() == 'image')
         @if (is_null($getAvatar()))
-            <div
-                class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-80 border border-gray-200 dark:border-gray-700">
-                @svg('tabler-user', 'text-gray-400 dark:text-gray-500 h-6 w-6')
-            </div>
-        @elseif (strlen($getAvatar()) < 3)
-            <div
-                class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-80 border">
-                <p class='text-black dark:text-white text-base'>{{ $getAvatar() }}</p>
-            </div>
+            <span class="relative inline-block">
+                <div
+                    class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-70 border border-gray-300">
+                    @svg('tabler-photo-off', 'text-gray-600 dark:text-gray-500 {{ $getAvatarSize() }}')
+                </div>
+            </span>
         @else
-            <div
-                class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-80">
-                <img src="{{ asset($getAvatar()) }}" class="w-full h-full object-cover">
-            </div>
+            <span class="relative inline-block">
+                <div
+                    class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-70">
+                    <img src="{{ asset($getAvatar()) }}" class="w-full h-full object-cover">
+
+                </div>
+            </span>
         @endif
     @elseif ($getAvatarType() == 'name_xs')
-        <div class="rounded-full {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-80"
-            style="background-color: {{ $getBgColor() }};">
-            <p class='text-white text-base font-bold'>{{ $getNameXs() }}</p>
-        </div>
+        <span class="relative inline-block">
+            <div class="rounded-full overflow-hidden {{ $getBgSize() }} flex items-center justify-center group-hover:opacity-70 border border-gray-300"
+                style="background-color: {{ $getBgColor() ? $getBgColor() : '#377DFF' }};">
+                <p class='{{ $getAvatarColor() ? $getAvatarColor() : 'text-white' }} {{ $getAvatarSize() }} font-bold'>{{ $getNameXs() }}</p>
+            </div>
+        </span>
     @elseif ($getAvatarType() == 'icon')
-        <div class="flex items-center justify-center group-hover:opacity-80 {{ $getBgSize() }}">
-            @svg($getIcon(), 'text-gray-700 dark:text-gray-400 h-full w-full')
-        </div>
+        <span class="relative inline-block">
+            <div
+                class="rounded-full overflow-hidden {{ $getBgSize() }} {{ $getAvatarColor() ? $getAvatarColor() : 'text-gray-600' }} flex items-center justify-center group-hover:opacity-70 border border-gray-300">
+                @svg($getIcon(), $getAvatarSize())
+            </div>
+        </span>
     @endif
     <div class="flex flex-col justify-center mb-1">
-        <p class="text-sm text-gray-900 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400">
-            {{ $getTitle() }}</p>
-        <p class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500">
-            {{ $getDescription() }}</p>
+        <p class="text-sm text-gray-900 group-hover:text-gray-500">
+            {{ Str::limit($getTitle(), $getTitleLimit()) }}</p>
+        <div class="flex flex-row items-center">
+            @if ($getDescriptionIcon())
+                <div
+                    style="height: 18px; width: 19px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                    @svg($getDescriptionIcon(), 'text-gray-500 pe-1 group-hover:text-gray-400')
+                </div>
+            @endif
+            <p class="text-xs text-gray-600 group-hover:text-gray-400 ">
+                {{ Str::limit($getDescription(), $getDescriptionLimit()) }}</p>
+        </div>
     </div>
 </div>
 @if ($getLink())

@@ -155,7 +155,6 @@ class LearningTestResultResource extends Resource
                         return $record?->user->name;
                     })
                     ->avatarType('image')
-                    ->marginStart()
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('test.name')
@@ -170,7 +169,6 @@ class LearningTestResultResource extends Resource
                     ->link(function (Model $record) {
                         return "/learning-tests/$record->test_id/view";
                     })
-                    ->marginStart()
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('finished_at')

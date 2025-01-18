@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Seeder;
+use App\Models\Group;
+use App\Models\School;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -14,6 +16,8 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('lv_LV');
+        $groups = Group::all()->pluck('id')->toArray();
+        $schools = School::all()->pluck('id')->toArray();
 
         $users = [
             [
@@ -70,11 +74,21 @@ class UserSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
                 'role_id' => $isStrudent,
                 'password' => bcrypt('demopass'),
+                'group_id' => $faker->randomElement($groups),
+                'school_id' => $faker->randomElement($schools),
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ];
         }
 
         User::insert($users);
+
+        $groups = Group::all();
+        $users = User::where('role_id', 3)->pluck('id')->toArray();
+
+        foreach ($groups as $group) {
+            $group->teacher_id = $faker->randomElement($users);
+            $group->save();
+        }
     }
 }

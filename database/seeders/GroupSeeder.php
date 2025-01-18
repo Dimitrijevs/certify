@@ -17,16 +17,21 @@ class GroupSeeder extends Seeder
     {
         $faker = Faker::create('lv_LV');
         $schools = School::all()->pluck('id')->toArray();
-        $users = User::where('role_id', 3)->pluck('id')->toArray();
 
+        $grades = range(1, 12);
+        $sections = range('A', 'D');
+        
         $groups = [];
 
         for ($i = 0; $i < 200; $i++) {
+            $grade = $faker->randomElement($grades);
+            $section = $faker->randomElement($sections);
+            $groupName = $grade . $section;
+
             $groups[] = [
-                'name' => $faker->company . ' Group',
+                'name' => $groupName,
                 'description' => $faker->sentence(12),
                 'school_id' => $faker->randomElement($schools),
-                'teacher_id' => $faker->randomElement($users),
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ];

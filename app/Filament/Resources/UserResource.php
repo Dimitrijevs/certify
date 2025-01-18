@@ -16,15 +16,18 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
+use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\UserResource\Pages;
+use App\Models\Role;
 use Filament\Forms\Components\Group as FilaGroup;
+use Filament\Tables\Filters\SelectFilter;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'People';
 
     public static function form(Form $form): Form
     {
@@ -96,7 +99,6 @@ class UserResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
-
                     ])
                     ->columns([
                         'default' => 12,
@@ -268,10 +270,96 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                AvatarWithDetails::make('name')
+                    ->label('Name')
+                    ->title(function ($record) {
+                        return $record->name;
+                    })
+                    ->description(function ($record) {
+                        return $record->email;
+                    })
+                    ->avatar(function ($record) {
+                        return $record->avatar;
+                    })
+                    ->avatarType('image')
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->searchable()
+                    ->sortable(),
+                AvatarWithDetails::make('school_id')
+                    ->label('School')
+                    ->title(function ($record) {
+                        if ($record->school) {
+                            return $record->school->name;
+                        } else {
+                            return 'No School';
+                        }
+                    })
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->description(function ($record) {
+                        return $record->school?->address;
+                    })
+                    ->avatar(function ($record) {
+                        return $record->school?->avatar;
+                    })
+                    ->avatarType('image')
+                    ->searchable()
+                    ->sortable(),
+                AvatarWithDetails::make('group_id')
+                    ->label('Group')
+                    ->title(function ($record) {
+                        if ($record->group) {
+                            return $record->group->name;
+                        } else {
+                            return 'No Group';
+                        }
+                    })
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->description(function ($record) {
+                        return $record->group?->description;
+                    })
+                    ->icon('tabler-users')
+                    ->avatarType('icon')
+                    ->searchable()
+                    ->sortable(),
+                AvatarWithDetails::make('role_id')
+                    ->label('Role')
+                    ->title(function ($record) {
+                        if ($record->role) {
+                            if ($record->role->name == 'super_admin' || $record->role->name == 'admin') {
+                                return 'Admin';
+                            } else if ($record->role->name == 'student') {
+                                return 'Student';
+                            } else if ($record->role->name == 'teacher') {
+                                return 'Teacher';
+                            } else {
+                                return $record->role->name;
+                            }
+                        } else {
+                            return 'No Role';
+                        }
+                    })
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->icon('tabler-shield')
+                    ->avatarType('icon')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('school_id')
+                    ->label('School')
+                    ->options(School::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('group_id')
+                    ->label('Group')
+                    ->options(Group::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('role_id')
+                    ->label('Role')
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
