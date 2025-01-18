@@ -13,74 +13,74 @@ class LearningCertificationRequirementSeeder extends Seeder
      */
     public function run(): void
     {
-        if (Schema::hasTable('learning_certification_requirements')) {
-            $LearningCertificationRequirements = [
-                [
-                    'entity_type' => 'department',
-                    'entity_id' => 1,
-                    'test_id' => 1,
-                ],
-                [
-                    'entity_type' => 'department',
-                    'entity_id' => 2,
-                    'test_id' => 1,
-                ],
-                [
-                    'entity_type' => 'department',
-                    'entity_id' => 3,
-                    'test_id' => 2,
-                ],
-                [
-                    'entity_type' => 'department',
-                    'entity_id' => 4,
-                    'test_id' => 3,
-                ],
-                [
-                    'entity_type' => 'employee_team',
-                    'entity_id' => 1,
-                    'test_id' => 1,
-                ],
-                [
-                    'entity_type' => 'employee_team',
-                    'entity_id' => 1,
-                    'test_id' => 3,
-                ],
-                [
-                    'entity_type' => 'employee_team',
-                    'entity_id' => 2,
-                    'test_id' => 2,
-                ],
-                [
-                    'entity_type' => 'employee',
-                    'entity_id' => 2,
-                    'test_id' => 4,
-                ],
-                [
-                    'entity_type' => 'employee',
-                    'entity_id' => 1,
-                    'test_id' => 1,
-                ],
-                [
-                    'entity_type' => 'employee',
-                    'entity_id' => 1,
-                    'test_id' => 3,
-                ],
-                [
-                    'entity_type' => 'employee',
-                    'entity_id' => 2,
-                    'test_id' => 2,
-                ],
-                [
-                    'entity_type' => 'employee',
-                    'entity_id' => 2,
-                    'test_id' => 3,
-                ],
-            ];
+        // if (Schema::hasTable('learning_certification_requirements')) {
+        //     $LearningCertificationRequirements = [
+        //         [
+        //             'entity_type' => 'department',
+        //             'entity_id' => 1,
+        //             'test_id' => 1,
+        //         ],
+        //         [
+        //             'entity_type' => 'department',
+        //             'entity_id' => 2,
+        //             'test_id' => 1,
+        //         ],
+        //         [
+        //             'entity_type' => 'department',
+        //             'entity_id' => 3,
+        //             'test_id' => 2,
+        //         ],
+        //         [
+        //             'entity_type' => 'department',
+        //             'entity_id' => 4,
+        //             'test_id' => 3,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee_team',
+        //             'entity_id' => 1,
+        //             'test_id' => 1,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee_team',
+        //             'entity_id' => 1,
+        //             'test_id' => 3,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee_team',
+        //             'entity_id' => 2,
+        //             'test_id' => 2,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee',
+        //             'entity_id' => 2,
+        //             'test_id' => 4,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee',
+        //             'entity_id' => 1,
+        //             'test_id' => 1,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee',
+        //             'entity_id' => 1,
+        //             'test_id' => 3,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee',
+        //             'entity_id' => 2,
+        //             'test_id' => 2,
+        //         ],
+        //         [
+        //             'entity_type' => 'employee',
+        //             'entity_id' => 2,
+        //             'test_id' => 3,
+        //         ],
+        //     ];
 
-            DB::table('learning_certification_requirements')->insert($LearningCertificationRequirements);
-        } else {
-            // Handle the case where the table does not exist
-            $this->command->info('Table "learning_certification_requirements" does not exist.');
-        }
+        //     DB::table('learning_certification_requirements')->insert($LearningCertificationRequirements);
+        // } else {
+        //     // Handle the case where the table does not exist
+        //     $this->command->info('Table "learning_certification_requirements" does not exist.');
+        // }
     }
 }

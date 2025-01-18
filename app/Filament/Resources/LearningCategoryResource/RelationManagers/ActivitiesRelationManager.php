@@ -54,7 +54,6 @@ class ActivitiesRelationManager extends RelationManager
                         return $record->user?->avatar;
                     })
                     ->avatarType('image')
-                    ->marginStart()
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),

@@ -32,28 +32,23 @@ class LearningTestSeeder extends Seeder
                     'image_path' => null,
                 ],
                 [
-                    'directory_id' => '4',
+                    'directory_id' => '3',
                     'image_name' => '01J3Z7553QR8XXC0GRT82SFRRR.jpg',
                     'image_path' => null,
                 ],
                 [
-                    'directory_id' => '5',
+                    'directory_id' => '4',
                     'image_name' => '01J3Z7645G51G12EP58D0YAR2Q.jpg',
                     'image_path' => null,
                 ],
                 [
-                    'directory_id' => '6',
+                    'directory_id' => '5',
                     'image_name' => '01J4VAB11AN0E3XK807AEQBVNB.jpg',
                     'image_path' => null,
                 ],
                 [
-                    'directory_id' => '7',
+                    'directory_id' => '6',
                     'image_name' => '01J5ZGMGTGX6VR9XJMVRF4Q3SR.jpg',
-                    'image_path' => null,
-                ],
-                [
-                    'directory_id' => '8',
-                    'image_name' => '01J7B6BAEH219VYHGKWRDX3XP9.jpg',
                     'image_path' => null,
                 ],
             ];
@@ -106,20 +101,6 @@ class LearningTestSeeder extends Seeder
                     'is_active' => 1,
                     'thumbnail' => null,
                     'description' => 'Šis tests ir izstrādāts, lai pārbaudītu jūsu zināšanas par dārza dizaina plānošanu, āra apgaismojuma izvietošanu un ūdens elementu ierīkošanu dārzā. Atbildiet uz jautājumiem, lai novērtētu savu izpratni par labiekārtošanu.',
-                    'min_score' => rand(3, 10),
-                    'time_limit' => rand(20, 60),
-                    'layout_id' => $defaultTemplate,
-                    'requirement_type' => 'test', // test, certificate
-                    'cooldown' => null,
-                    'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
-                ],
-                [
-                    'name' => 'Bruģēšanas zināšanu pārbaude',
-                    'sort_id' => ++$sort_id,
-                    'category_id' => json_encode(["3", "2"]),
-                    'is_active' => 1,
-                    'thumbnail' => null,
-                    'description' => 'Šis tests ir izstrādāts, lai pārbaudītu jūsu zināšanas par bruģa veidiem, bruģēšanas procesu un bruģa kopšanu. Atbildiet uz jautājumiem, lai novērtētu savu izpratni par bruģēšanu.',
                     'min_score' => rand(3, 10),
                     'time_limit' => rand(20, 60),
                     'layout_id' => $defaultTemplate,
@@ -181,20 +162,6 @@ class LearningTestSeeder extends Seeder
                     'layout_id' => null,
                     'requirement_type' => 'certificate', // test, certificate
                     'cooldown' => null,
-                    'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
-                ],
-                [
-                    'name' => 'Filament 3 zināšanu pārbaude',
-                    'sort_id' => ++$sort_id,
-                    'category_id' => null,
-                    'is_active' => 1,
-                    'thumbnail' => $images[5]['image_path'],
-                    'description' => 'Šis eksāmens ir paredzēts, lai pārbaudītu zināšanas par Filament 3 izmantošanu Laravel projektos. Tas ietver jautājumus par Filament 3 komponentēm, formu veidošanu, validāciju, navigāciju un tulkošanas iespējām. Pēc veiksmīgas eksāmena nokārtošanas jūs būsiet pierādījis savas prasmes darbā ar Filament.',
-                    'min_score' => 0, // fault points
-                    'time_limit' => 20,
-                    'layout_id' => null,
-                    'requirement_type' => 'test',
-                    'cooldown' => 120,
                     'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 ],
             ];
