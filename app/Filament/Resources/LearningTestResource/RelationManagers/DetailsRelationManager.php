@@ -311,10 +311,12 @@ class DetailsRelationManager extends RelationManager
                 ToggleColumn::make('is_active')
                     ->label(__('learning/learningTestDetails.fields.active'))
                     ->sortable()
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('created_at')
                     ->label(__('learning/learningTestDetails.fields.created_at'))
                     ->sortable()
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([

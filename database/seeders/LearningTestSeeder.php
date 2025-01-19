@@ -44,12 +44,7 @@ class LearningTestSeeder extends Seeder
                 'directory_id' => '5',
                 'image_name' => '01J4VAB11AN0E3XK807AEQBVNB.jpg',
                 'image_path' => null,
-            ],
-            [
-                'directory_id' => '6',
-                'image_name' => '01J5ZGMGTGX6VR9XJMVRF4Q3SR.jpg',
-                'image_path' => null,
-            ],
+            ]
         ];
 
         for ($i = 0; $i < count($images); $i++) {
@@ -89,7 +84,6 @@ class LearningTestSeeder extends Seeder
                 'time_limit' => rand(20, 60),
                 'layout_id' => null,
                 'cooldown' => 60,
-                'requirement_type' => 'test', // test, certificate
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -101,7 +95,6 @@ class LearningTestSeeder extends Seeder
                 'min_score' => rand(3, 10),
                 'time_limit' => rand(20, 60),
                 'layout_id' => $defaultTemplate,
-                'requirement_type' => 'test', // test, certificate
                 'cooldown' => null,
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
@@ -114,7 +107,6 @@ class LearningTestSeeder extends Seeder
                 'min_score' => rand(3, 10),
                 'time_limit' => rand(20, 60),
                 'layout_id' => null,
-                'requirement_type' => 'test', // test, certificate
                 'cooldown' => null,
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
@@ -127,7 +119,6 @@ class LearningTestSeeder extends Seeder
                 'min_score' => rand(3, 10),
                 'time_limit' => rand(20, 60),
                 'layout_id' => $defaultTemplate,
-                'requirement_type' => 'test', // test, certificate
                 'cooldown' => null,
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
@@ -140,20 +131,6 @@ class LearningTestSeeder extends Seeder
                 'min_score' => rand(3, 10),
                 'time_limit' => rand(20, 60),
                 'layout_id' => $defaultTemplate,
-                'requirement_type' => 'test', // test, certificate
-                'cooldown' => null,
-                'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
-            ],
-            [
-                'name' => 'D kategorijas transportlīdzekļa vadītāja tiesību iegūšana',
-                'category_id' => json_encode(["6", "2"]),
-                'is_active' => 1,
-                'thumbnail' => $images[4]['image_path'],
-                'description' => 'Šis eksāmens ir paredzēts, lai iegūtu D kategorijas transportlīdzekļa vadītāja tiesības. Tas ietver teorētiskās un praktiskās apmācības, kas nepieciešamas profesionālas autobusa vadīšanas iemaņu apgūšanai. Pēc veiksmīgas eksāmena nokārtošanas jūs saņemsiet nepieciešamo sertifikātu un licenci.',
-                'min_score' => null,
-                'time_limit' => null,
-                'layout_id' => null,
-                'requirement_type' => 'certificate', // test, certificate
                 'cooldown' => null,
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],

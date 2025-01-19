@@ -11,9 +11,8 @@ export default {
         "./resources/views/filament/widgets/*.blade.php",
         "./resources/views/infolists/components/*.blade.php",
         "./resources/views/livewire/*.blade.php",
+        "./resources/views/filament/resources/learning-test-resource/pages/*.blade.php",
         "./resources/views/filament/resources/**/pages/*.blade.php",
-        "./vendor/vendemy/learning/resources/views/**/*.blade.php",
-        "./vendor/vendemy/learning/resources/views/**/**/*.blade.php",
     ],
     plugins: [require("@tailwindcss/forms")],
 };

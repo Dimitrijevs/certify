@@ -23,7 +23,6 @@ return new class extends Migration
             $table->integer('time_limit')->nullable();
             $table->integer('layout_id')->nullable();
             $table->integer('cooldown')->nullable();
-            $table->string('requirement_type');
             $table->timestamps();
         });
     }

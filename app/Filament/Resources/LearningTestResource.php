@@ -101,27 +101,6 @@ class LearningTestResource extends Resource
                                 'md' => 12,
                                 'lg' => 6,
                             ]),
-                        Select::make('requirement_type')
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($set, $state) {
-                                if ($state == 'certificate') {
-                                    $set('min_score', 0);
-                                    $set('time_limit', null);
-                                }
-                            })
-                            ->tooltip(__('learning/learningTest.custom.type_of_requirement'))
-                            ->label(__('learning/learningTest.fields.requirement_type'))
-                            ->options([
-                                'test' => __('learning/learningTest.requirements.test'),
-                                'certificate' => __('learning/learningTest.requirements.certificate'),
-                            ])
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 3,
-                            ]),
                         Toggle::make('is_active')
                             ->label(__('learning/learningTest.fields.active'))
                             ->columnSpan([
@@ -130,6 +109,8 @@ class LearningTestResource extends Resource
                                 'md' => 3,
                                 'lg' => 1,
                             ])
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->inline(false),
                         Toggle::make('is_question_transition_enabled')
                             ->label(__('learning/learningTest.fields.free_navigation'))
@@ -139,10 +120,9 @@ class LearningTestResource extends Resource
                                 'md' => 3,
                                 'lg' => 2,
                             ])
-                            ->inline(false)
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
                         TextInput::make('min_score')
                             ->label(__('learning/learningTest.fields.fault_points'))
                             ->live()
@@ -187,12 +167,9 @@ class LearningTestResource extends Resource
                             })
                             ->default(0)
                             ->required()
-                            ->suffixIcon('tabler-award')
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->suffixIcon('tabler-award'),
                         TextInput::make('time_limit')
-                            ->label(__('learning/learningTest.fields.time_limit'))
+                            ->label('Time limit (minutes)')
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -200,10 +177,7 @@ class LearningTestResource extends Resource
                                 'lg' => 6,
                             ])
                             ->placeholder('30')
-                            ->rules('integer')
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->rules('integer'),
                         Group::make()
                             ->columnSpan([
                                 'default' => 12,
@@ -251,10 +225,8 @@ class LearningTestResource extends Resource
                                         'md' => 12,
                                         'lg' => 12,
                                     ])
-                                    ->rules(['integer', 'min:0'])
-                                    ->hidden(function ($get) {
-                                        return $get('requirement_type') === 'certificate';
-                                    }),
+                                    ->tooltip('Cooldown in minutes between attempts')
+                                    ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningTest.fields.thumbnail'))
@@ -277,6 +249,8 @@ class LearningTestResource extends Resource
                             ->columnSpan(12)
                             ->disableToolbarButtons([
                                 'attachFiles',
+                                'h2',
+                                'h3',
                                 'codeBlock',
                             ]),
                     ]),
@@ -299,7 +273,8 @@ class LearningTestResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 

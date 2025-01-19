@@ -19,7 +19,6 @@ class LearningTest extends Model
         'min_score',
         'time_limit',
         'is_question_transition_enabled',
-        'certificate_type_id',
     ];
 
     protected $casts = [
