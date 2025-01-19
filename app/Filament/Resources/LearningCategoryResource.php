@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Tables;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -23,6 +22,7 @@ use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -39,8 +39,8 @@ use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningRes
 class LearningCategoryResource extends Resource
 {
     protected static ?string $model = LearningCategory::class;
-    protected static ?string $navigationGroup = 'Learning';
 
+    protected static ?string $navigationGroup = 'Learning';
 
     public static function form(Form $form): Form
     {
@@ -73,26 +73,17 @@ class LearningCategoryResource extends Resource
                         TextInput::make('name')
                             ->label(__('learning/learningCategory.fields.name'))
                             ->required()
-                            ->columnSpan(12),
-                        FileUpload::make('thumbnail')
-                            ->label(__('learning/learningCategory.fields.thumbnail'))
-                            ->disk('public')
-                            ->directory('learning_category/' . $id)
-                            ->image()
-                            ->imageResizeTargetWidth('711')
-                            ->imageResizeTargetHeight('400')
-                            ->imageResizeMode('cover')
-                            ->imageCropAspectRatio('16:9')
-                            ->columnSpan(12),
-                        Textarea::make('description')
-                            ->label(__('learning/learningCategory.fields.description'))
-                            ->nullable()
-                            ->rows(4)
-                            ->columnSpan(12),
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                         DatePicker::make('active_from')
+                            ->prefixIcon('tabler-calendar')
                             ->label(__('learning/learningCategory.fields.active_from'))
                             ->nullable()
-                            ->disabled(function ($get, Set $set) {
+                            ->disabled(function ($get, $set) {
                                 if ($get('is_active') == 0) {
                                     $set('active_from', null);
                                 }
@@ -103,13 +94,14 @@ class LearningCategoryResource extends Resource
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
-                                'md' => 5,
-                                'lg' => 5,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                         DatePicker::make('active_till')
                             ->label(__('learning/learningCategory.fields.active_to'))
                             ->nullable()
-                            ->disabled(function ($get, Set $set) {
+                            ->prefixIcon('tabler-calendar')
+                            ->disabled(function ($get, $set) {
                                 if ($get('is_active') == 0) {
                                     $set('active_till', null);
                                 }
@@ -120,20 +112,52 @@ class LearningCategoryResource extends Resource
                             })
                             ->dehydrated()
                             ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 5,
-                                'lg' => 5,
+                                'default' => 9,
+                                'sm' => 3,
+                                'md' => 4,
+                                'lg' => 4,
                             ]),
                         Toggle::make('is_active')
                             ->label(__('learning/learningCategory.fields.active'))
                             ->live()
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->inline(False)
+                            ->columnSpan([
+                                'default' => 3,
+                                'sm' => 3,
+                                'md' => 2,
+                                'lg' => 2,
+                            ]),
+                        FileUpload::make('thumbnail')
+                            ->label(__('learning/learningCategory.fields.thumbnail'))
+                            ->disk('public')
+                            ->directory('learning_category/' . $id)
+                            ->image()
+                            ->imageResizeTargetWidth('711')
+                            ->imageResizeTargetHeight('400')
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('16:9')
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
-                                'md' => 2,
-                                'lg' => 2,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
+                        RichEditor::make('description')
+                            ->label(__('learning/learningCategory.fields.description'))
+                            ->nullable()
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                                'h2',
+                                'h3',
+                                'codeBlock',
+                            ])
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
                             ]),
                     ]),
 
@@ -155,7 +179,8 @@ class LearningCategoryResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 
@@ -206,9 +231,7 @@ class LearningCategoryResource extends Resource
                     }),
             ])
             ->actions([
-                // ViewAction::make(),
-                // EditAction::make(),
-                // DeleteAction::make(),
+                //
             ])
             ->bulkActions([
                 // 

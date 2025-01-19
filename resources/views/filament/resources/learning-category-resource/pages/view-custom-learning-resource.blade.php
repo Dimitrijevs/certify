@@ -148,7 +148,7 @@
                     <div class="m-0 p-0 flex justify-between items-center">
                         {{ $this->getParent()->name }}
 
-                        @if (auth()->user()->can('update_learning::category'))
+                        @if (auth()->user()->role_id < 4)
                             <a
                                 href="{{ route('filament.app.resources.learning-categories.edit', ['record' => $this->getParent()->id]) }}">
                                 <div
@@ -235,7 +235,7 @@
                     <div class="m-0 p-0 flex justify-between items-center">
                         {{ $record->name }}
 
-                        @if (auth()->user()->can('update_learning::category'))
+                        @if (auth()->user()->role_id < 4)
                             <a
                                 href="{{ route('filament.app.resources.learning-categories.editResource', ['record' => $record->id]) }}">
                                 <div title="{{ __('learning/learningCategory.form.edit') }} {{ $record->name }}">

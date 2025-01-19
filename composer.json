@@ -5,10 +5,10 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "8.2.27",
         "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-language-switch": "^3.1",
-        "filament/filament": "^3.2",
+        "filament/filament": "^3",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "njxqlus/filament-relation-manager-component": "^1.0",
@@ -16,6 +16,7 @@
         "twig/twig": "^3.14"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",

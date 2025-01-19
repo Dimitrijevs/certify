@@ -11,7 +11,6 @@ class LearningTest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sort_id',
         'category_id',
         'is_active',
         'thumbnail',
@@ -26,18 +25,6 @@ class LearningTest extends Model
     protected $casts = [
         'category_id' => 'array',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($test) {
-            if (empty($test->sort_id)) {
-                $test->sort_id = LearningTest::max('sort_id') + 1;
-            }
-        });
-    }
-
 
     public function category()
     {

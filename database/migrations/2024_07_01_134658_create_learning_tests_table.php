@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('learning_tests', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('sort_id');
             $table->json('category_id')->nullable()->onDelete('set null');
             $table->boolean('is_active');
             $table->string('thumbnail')->nullable();

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('thumbnail')->nullable();
             $table->text('description')->nullable();
-            $table->smallInteger('sort_id');
             $table->boolean('is_active');
             $table->date('active_from')->nullable();
             $table->date('active_till')->nullable();

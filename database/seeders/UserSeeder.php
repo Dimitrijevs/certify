@@ -62,7 +62,7 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        for($i = 0; $i < 200; $i++) {
+        for($i = 0; $i < 20; $i++) {
             if ($faker->boolean(90)) {
                 $isStrudent = 4;
             } else {

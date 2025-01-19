@@ -8,6 +8,7 @@ use Livewire\Attributes\On;
 use App\Models\LearningResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LearningUserStudyRecord;
+use Illuminate\Container\Attributes\Log;
 
 class UserActivityForm extends Component
 {
@@ -108,16 +109,16 @@ class UserActivityForm extends Component
         // $totalHours = $interval->days * 24 + $interval->h;
         // $formattedInterval = sprintf('%02d:%02d:%02d', $totalHours, $interval->i, $interval->s);
 
-        LearningUserStudyRecord::create([
-            'user_id' => Auth::user()->id,
-            'category_id' => $this->record->category->id,
-            'resource_id' => $resource_id,
-            'started_at' => $start_time,
-            'finished_at' => $finish_time,
-            'time_spent' => $totalSeconds,
-            'video_watched' => round($this->video_watched) ?? null,
-            'video_progress' => round($this->video_progress) ?? null,
-            'video_duration' => round($this->video_duration) ?? null,
-        ]);
+        $trackRecord = new LearningUserStudyRecord();
+        $trackRecord->user_id = Auth::user()->id;
+        $trackRecord->category_id = $this->record->category->id;
+        $trackRecord->resource_id = $resource_id;
+        $trackRecord->started_at = $start_time;
+        $trackRecord->finished_at = $finish_time;
+        $trackRecord->time_spent = $totalSeconds;
+        $trackRecord->video_watched = round($this->video_watched) ?? null;
+        $trackRecord->video_progress = round($this->video_progress) ?? null;
+        $trackRecord->video_duration = round($this->video_duration) ?? null;
+        $trackRecord->save();
     }
 }

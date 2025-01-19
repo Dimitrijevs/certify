@@ -202,7 +202,8 @@ class SchoolResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 
