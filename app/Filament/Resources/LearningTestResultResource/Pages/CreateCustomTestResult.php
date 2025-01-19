@@ -82,8 +82,7 @@ class CreateCustomTestResult extends Page
 
         // Fetch the test record
         if ($this->view_test) {
-            $this->result = LearningTestResult::where('user_id', Auth::id())
-                ->where('id', $record)
+            $this->result = LearningTestResult::where('id', $record)
                 ->whereNotNull('finished_at')
                 ->with('details')
                 ->first();
@@ -94,25 +93,22 @@ class CreateCustomTestResult extends Page
             $this->result = $this->getOrCreateTestResult();
         }
 
-        // **Add this check to prevent out-of-bounds access**
-        $totalQuestions = $this->record->details->count();
+        // Add this check to prevent out-of-bounds access
+        $totalQuestions = $this->record->details->where('is_active', true)->count();
 
         if ($this->position >= $totalQuestions) {
             // Redirect to the first question
             return redirect()->route('filament.app.resources.learning-test-results.do-test', [
-                'record' => $this->record->id,
+                'record' => $this->view_test ? $this->result->id : $this->record->id,
                 'question' => 1,
                 'viewTest' => $this->view_test ? 1 : 0,
             ]);
         }
 
-        // Continue with the rest of your code
         if ($this->record->is_question_transition_enabled || $this->view_test) {
             $this->transition_enabled = true;
 
-            $questionId = $this->record->details->get($this->position)?->id;
-
-            $this->user_answer = $this->getUserAnswer($questionId)?->user_answer;
+            $this->user_answer = $this->getUserAnswer($this->position)?->user_answer;
         }
 
         if (!$this->view_test) {
@@ -124,44 +120,92 @@ class CreateCustomTestResult extends Page
         // current question
         $this->current_question = $this->getQuestion();
 
-        $this->checkFirstUnansweredQuestion();
+        if (!$this->view_test) {
+            $this->checkFirstUnansweredQuestion();
+        }
     }
 
     protected function checkTestCooldown()
     {
         if (is_null($this->record->cooldown) || $this->record->cooldown == 0) {
             return true;
-        } else {
-            $lastAttempt = LearningTestResult::where('user_id', Auth::user()->id)
-                ->where('test_id', $this->record->id)
-                ->whereNotNull('finished_at')
-                ->orderBy('created_at', 'desc')
-                ->first();
-
-            if (is_null($lastAttempt)) {
-                return true;
-            } else {
-                // Delete the current result
-                $this->result->delete();
-
-                $cooldown = $this->record->cooldown;
-
-                $lastAttemptTime = $lastAttempt->created_at;
-                $cooldownTime = $lastAttemptTime->addMinutes($cooldown);
-                return now() > $cooldownTime;
-            }
         }
+
+        $lastAttempt = LearningTestResult::where('user_id', Auth::user()->id)
+            ->where('test_id', $this->record->id)
+            ->whereNotNull('finished_at')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (is_null($lastAttempt)) {
+            return true;
+        }
+
+        $cooldown = $this->record->cooldown;
+        $lastAttemptTime = $lastAttempt->created_at;
+        $cooldownTime = $lastAttemptTime->addMinutes($cooldown);
+
+        if (now() > $cooldownTime) {
+            return true;
+        }
+
+        // Delete the current result
+        $this->result->delete();
+        return false;
+    }
+
+    public function getQuestions()
+    {
+        if ($this->view_test) {
+            $answers = $this->result->details;
+
+            $questionsArray = [];
+            foreach ($answers as $answer) {
+                $questionsArray[] = $answer->question;
+            }
+
+            return collect($questionsArray)->sortBy('id')->values();
+        } else {
+            return $this->record->details->where('is_active', true)->values();
+        }
+    }
+
+    public function getSumOfQuestionPoints(): int
+    {
+        $answers = $this->result->details;
+        $points = 0;
+
+        foreach ($answers as $answer) {
+            $points += $answer->question->points;
+        }
+
+        return $points;
     }
 
     protected function checkFirstUnansweredQuestion()
     {
-        // Check if it is the first unanswered question
-        $details = $this->result->details;
-        $questions = $this->record->details->where('is_active', true);
+        // Check if shuffled question IDs are stored in the session
+        if (session()->has('shuffled_question_ids')) {
+            $shuffledQuestionIds = session('shuffled_question_ids');
+        } else {
+            // Get active details and shuffle them
+            $details = $this->record->details->where('is_active', true)->values();
+            $shuffledDetails = $details->shuffle(); // Shuffle the collection
 
-        foreach ($questions as $index => $question) {
-            if (!$this->transition_enabled || ($this->position > $this->record->details->where('is_active', true)->count() - 1)) {
-                if ($details->doesntContain('test_question_id', $question->id)) {
+            // Store shuffled question IDs in the session
+            $shuffledQuestionIds = $shuffledDetails->pluck('id')->toArray();
+            session(['shuffled_question_ids' => $shuffledQuestionIds]);
+        }
+
+        // Retrieve the user's answers
+        $details = $this->result->details;
+
+        // Loop through the shuffled question IDs
+        foreach ($shuffledQuestionIds as $index => $questionId) {
+            $question = $this->record->details->where('id', $questionId)->first();
+
+            if (!$this->transition_enabled || ($this->position > count($shuffledQuestionIds) - 1)) {
+                if ($details->doesntContain('test_question_id', $questionId)) {
                     if ($index == $this->position) {
                         $this->current_question = $question;
                         break;
@@ -199,29 +243,89 @@ class CreateCustomTestResult extends Page
 
     public function getQuestion()
     {
-        $details = $this->record->details->where('is_active', true)->values();
+        if ($this->view_test) {
+            $details = $this->record->details->where('is_active', true)->values();
 
-        if ($details->has($this->position)) {
-            return $details->get($this->position)->load('answers');
-        }
+            if ($details->has($this->position)) {
+                return $details->get($this->position)->load('answers');
+            }
 
-        return null;
-    }
+            return null;
+        } else {
+            // Clear the session question order if starting a new test
+            if ($this->position === 0) {
+                session()->forget('shuffled_question_ids');
+            }
 
-    public function getUserAnswer($index)
-    {
-        if (is_null($index)) {
+            if (session()->has('shuffled_question_ids')) {
+                $shuffledQuestionIds = session('shuffled_question_ids');
+            } else {
+                // Get active details and shuffle them
+                $details = $this->record->details->where('is_active', true)->values();
+                $shuffledDetails = $details->shuffle(); // Shuffle the collection
+
+                // Store shuffled question IDs in the session
+                $shuffledQuestionIds = $shuffledDetails->pluck('id')->toArray();
+                session(['shuffled_question_ids' => $shuffledQuestionIds]);
+            }
+
+            // Check if the position exists in the shuffled IDs
+            if (array_key_exists($this->position, $shuffledQuestionIds)) {
+                $questionId = $shuffledQuestionIds[$this->position];
+                return $this->record->details()->where('id', $questionId)->with('answers')->first();
+            }
+
             return null;
         }
-
-        return $this->result->details
-            ->where('test_question_id', $index)
-            ->first();
     }
 
-    public function getCorrectAnswer($index)
+    public function getAnswers()
     {
-        $question = $this->record->details->where('id', $index)->first();
+        // Convert the collection to an array
+        $answersArray = $this->current_question->answers;
+
+        if ($this->view_test) {
+            return $answersArray;
+        } else {
+            $answers = $answersArray->shuffle();
+
+            return $answers;
+        }
+    }
+
+    public function getUserAnswer($position)
+    {
+        if ($this->view_test) {
+            $userAnswer = $this->result->details->sortBy('test_question_id')->values()->get($position);
+
+            return $userAnswer;
+        } else {
+            if (is_null($position)) {
+                return null;
+            }
+
+            // Retrieve shuffled question IDs from the session
+            if (session()->has('shuffled_question_ids')) {
+                $shuffledQuestionIds = session('shuffled_question_ids');
+
+                // Check if the position exists in the shuffled IDs
+                if (array_key_exists($position, $shuffledQuestionIds)) {
+                    $questionId = $shuffledQuestionIds[$position];
+
+                    // Find the user's answer for the question based on the question ID
+                    return $this->result->details
+                        ->where('test_question_id', $questionId)
+                        ->first();
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public function getCorrectAnswer($question_id)
+    {
+        $question = $this->record->details->where('id', $question_id)->first();
 
         if ($question) {
             $question->load('answers');
@@ -269,6 +373,29 @@ class CreateCustomTestResult extends Page
         $this->result->points = $earnedPoints;
         $this->result->is_passed = $is_passed;
         $this->result->save();
+
+        $userAnswersCount = $this->result->details->count();
+        $questionsCount = $this->record->details->count();
+        if ($userAnswersCount < $questionsCount) {
+            $answers = $this->result->details;
+            $questions = $this->getQuestions();
+
+            // Find unanswered questions
+            $unansweredQuestions = $questions->filter(function ($question) use ($answers) {
+                return !$answers->contains('test_question_id', $question->id);
+            });
+
+            // Create LearningTestAnswer records for unanswered questions
+            foreach ($unansweredQuestions as $question) {
+                LearningTestAnswer::create([
+                    'result_id' => $this->result->id,
+                    'test_question_id' => $question->id,
+                    'user_answer' => null,
+                    'points' => 0,
+                    'question_time' => 0,
+                ]);
+            }
+        }
 
         return redirect()->route('filament.app.resources.learning-test-results.finish-page', ['record' => $this->result->id]);
     }

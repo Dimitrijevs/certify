@@ -35,9 +35,8 @@ class RequirementsRelationManager extends RelationManager
                     ->label(__('learning/learningTestRequirements.fields.entity_type'))
                     ->live()
                     ->options([
-                        'department' => __('learning/learningTestRequirements.options.department'),
-                        'employee_team' => __('learning/learningTestRequirements.options.employee_team'),
-                        'employee' => __('learning/learningTestRequirements.options.employee'),
+                        'class' => __('learning/learningTestRequirements.options.department'),
+                        'student' => __('learning/learningTestRequirements.options.employee_team'),
                     ])
                     ->afterStateUpdated(function ($set) {
                         $set('entity_id', null);
@@ -50,10 +49,10 @@ class RequirementsRelationManager extends RelationManager
                     ])
                     ->required(),
 
-                // employee
+                // class
                 Select::make('entity_id')
                     ->live()
-                    ->label(__('learning/learningTestRequirements.fields.entity'))
+                    ->label('Class')
                     ->relationship('employee', 'name', function (Builder $query, $operation) {
                         if ($operation === 'create') {
                             $test_id = $this->getOwnerRecord()->id;

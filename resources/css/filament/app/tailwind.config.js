@@ -13,5 +13,6 @@ export default {
         "./resources/views/filament/resources/**/pages/*.blade.php",
         "./resources/views/infolists/components/*.blade.php",
         "./resources/views/filament/resources/learning-test-resource/pages/*.blade.php",
+        "./resources/views/filament/resources/learning-test-result-resource/pages/*.blade.php",
     ],
 };

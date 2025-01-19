@@ -15,6 +15,7 @@ class LearningTest extends Model
         'is_active',
         'thumbnail',
         'name',
+        'cooldown',
         'description',
         'min_score',
         'time_limit',

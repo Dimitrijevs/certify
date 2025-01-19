@@ -53,12 +53,12 @@ class LearningTestResource extends Resource
 
     public static function getLabel(): string
     {
-        return __('learning/learningTest.label');
+        return 'Test';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('learning/learningTest.label_plural');
+        return 'Tests';
     }
 
     public static function form(Form $form): Form
