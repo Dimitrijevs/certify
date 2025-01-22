@@ -203,15 +203,11 @@ class LearningCategoryResource extends Resource
                 ]),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (!is_null(Auth::user()->role_id)) {
-                    if (Auth::user()->role_id === 3) {
-                        return $query->where('is_active', true);
-                    }
-
-                    return $query;
+                if (Auth::user()->role_id > 2) {
+                    return $query->where('is_active', true);
                 }
 
-                return $query->where('is_active', true);
+                return $query;
             })
             ->contentGrid([
                 'default' => 1,
@@ -230,6 +226,7 @@ class LearningCategoryResource extends Resource
                         return true;
                     }),
             ])
+            ->defaultSort('id', 'desc')
             ->actions([
                 //
             ])

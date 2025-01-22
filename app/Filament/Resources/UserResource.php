@@ -46,9 +46,9 @@ class UserResource extends Resource
                             ->label('Full Name')
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->required(),
                         TextInput::make('email')
@@ -68,6 +68,25 @@ class UserResource extends Resource
                             })
                             ->columnSpan([
                                 'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ]),
+                        Select::make('role_id')
+                            ->label('Role')
+                            ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->visible(function ($record = null, $operation) {
+                                if ($operation == 'edit' && $record->role_id == 1) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            })
+                            ->columnSpan([
+                                'default' => 12,
                                 'sm' => 12,
                                 'md' => 12,
                                 'lg' => 12,
@@ -80,9 +99,9 @@ class UserResource extends Resource
                             ->preload()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                         Select::make('group_id')
                             ->label('Group')
@@ -95,9 +114,9 @@ class UserResource extends Resource
                             ->preload()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                     ])
                     ->columns([
@@ -113,6 +132,28 @@ class UserResource extends Resource
                         'lg' => 8,
                     ]),
                 FilaGroup::make([
+                    Section::make('Avatar Upload')
+                        ->schema([
+                            FileUpload::make('avatar')
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
+                                ])
+                                ->directory(function ($record, $operation) {
+                                    if ($operation === 'create') {
+                                        $lastUser = User::latest('id')->first();
+                                        return "avatars/" . ($lastUser ? $lastUser->id + 1 : 1);
+                                    }
+
+                                    return "avatars/$record->id";
+                                })
+                                ->image()
+                                ->imageEditor()
+                                ->label('')
+                                ->nullable(),
+                        ]),
                     Section::make('Password Change')
                         ->schema([
                             TextInput::make('password_old')
@@ -228,28 +269,6 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                         ]),
-                    Section::make('Avatar Upload')
-                        ->schema([
-                            FileUpload::make('avatar')
-                                ->columnSpan([
-                                    'default' => 12,
-                                    'sm' => 12,
-                                    'md' => 12,
-                                    'lg' => 12,
-                                ])
-                                ->directory(function ($record, $operation) {
-                                    if ($operation === 'create') {
-                                        $lastUser = User::latest('id')->first();
-                                        return "avatars/" . ($lastUser ? $lastUser->id + 1 : 1);
-                                    }
-
-                                    return "avatars/$record->id";
-                                })
-                                ->image()
-                                ->imageEditor()
-                                ->label('')
-                                ->nullable(),
-                        ])
                 ])
                     ->columns([
                         'default' => 12,
@@ -352,7 +371,11 @@ class UserResource extends Resource
                     ->preload(),
                 SelectFilter::make('group_id')
                     ->label('Group')
-                    ->options(Group::all()->pluck('name', 'id'))
+                    ->options(
+                        Group::all()->mapWithKeys(function ($group) {
+                            return [$group->id => $group->year . ' ' . $group->group];
+                        })
+                    )
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('role_id')

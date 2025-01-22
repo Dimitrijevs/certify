@@ -40,4 +40,10 @@ class School extends Model
     {
         return $this->hasMany(User::class)->where('role_id', 4);
     }
+
+    public function certification_requirement()
+    {
+        return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')
+            ->where('entity_type', 'school');
+    }
 }

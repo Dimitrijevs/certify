@@ -62,4 +62,15 @@ class User extends Authenticatable
     {
         return $this->belongsTo(School::class);
     }
+
+    public function certification_requirement()
+    {
+        return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')
+            ->where('entity_type', 'student');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(LearningCertificate::class);
+    }
 }

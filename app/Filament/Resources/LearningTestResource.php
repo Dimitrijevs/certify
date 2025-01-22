@@ -294,16 +294,13 @@ class LearningTestResource extends Resource
                         ->markdown()
                 ]),
             ])
+            ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                if (!is_null(Auth::user()->role_id)) {
-                    if (Auth::user()->role_id === 3) {
-                        return $query->where('is_active', true);
-                    }
-
-                    return $query;
+                if (Auth::user()->role_id > 2) {
+                    return $query->where('is_active', true);
                 }
 
-                return $query->where('is_active', true);
+                return $query;
             })
             ->contentGrid([
                 'default' => 1,

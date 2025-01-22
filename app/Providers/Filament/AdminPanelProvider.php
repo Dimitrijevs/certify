@@ -7,11 +7,14 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Facades\Filament;
+use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Auth;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use App\Filament\Widgets\CertificateRequirements;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -33,6 +36,9 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
+            ->userMenuItems([
+                'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit')
+            ])
             ->colors([
                 'primary' => Color::Sky,
             ])
@@ -43,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //
+                CertificateRequirements::class,
             ])
             ->middleware([
                 EncryptCookies::class,
