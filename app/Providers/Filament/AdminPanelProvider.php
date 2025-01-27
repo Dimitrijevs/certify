@@ -9,6 +9,7 @@ use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Pages\Auth\Register;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
@@ -31,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
-            ->registration()
+            ->registration(Register::class) 
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
