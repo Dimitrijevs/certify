@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('user_id')->onDelete('set null');
             $table->integer('completed_test_id')->nullable()->onDelete('set null');
             $table->integer('test_id')->nullable()->onDelete('set null');
-            $table->integer('email_template_id')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('valid_to')->nullable();

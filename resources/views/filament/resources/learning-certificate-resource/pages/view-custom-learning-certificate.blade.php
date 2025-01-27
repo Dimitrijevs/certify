@@ -31,32 +31,33 @@
                 </x-slot>
 
                 <dl class="flex flex-col">
-                    <a
-                        href="{{ route('filament.app.resources.learning-tests.viewTest', ['record' => $this->record->test->id]) }}">
+                    <a href="{{ route('filament.app.resources.learning-tests.viewTest', ['record' => $this->record->test->id]) }}"
+                        class="group">
                         <div class="flex-auto mb-3">
                             @if ($this->record->test->thumbnail)
-                                <img src="{{ asset($this->record->test->thumbnail) }}" class="rounded-lg" alt=""
+                                <img src="{{ asset($this->record->test->thumbnail) }}"
+                                    class="rounded-lg group-hover:opacity-90" alt=""
                                     style="height: 200px; width: 100%; object-fit: cover;">
                             @else
-                                <div class="rounded-lg bg-gray-200 dark:bg-gray-700 flex justify-center items-center"
+                                <div class="rounded-lg bg-gray-200 group-hover:opacity-90 flex justify-center items-center"
                                     style="height: 200px; width: 100%;">
                                     <span class="text-lg text-gray-600 dark:text-gray-300"><x-tabler-photo-off
                                             class="w-12 h-12" /></span>
                                 </div>
                             @endif
-                            <dd class="mt-3 text-base font-semibold text-gray-950 dark:text-gray-100">
+                            <dd
+                                class="mt-3 text-base font-semibold text-gray-950 dark:text-gray-100 group-hover:opacity-60">
                                 {{ $this->record->test->name }}</dd>
 
-                            <dd class="text-sm text-gray-950 dark:text-gray-100">
+                            <dd class="text-sm text-gray-950 dark:text-gray-100 group-hover:opacity-60">
                                 <div class="mt-1">{!! Str::limit($this->record->test->description, 120) !!}</div>
                             </dd>
                         </div>
                     </a>
                     @if ($this->record->completedTest)
-                        <a
-                            href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $this->record->completedTest->id, 'question' => 1, 'viewTest' => 1]) }}">
-                            <div
-                                class="mb-3 pt-3 flex w-full flex-none gap-x-4 border-t border-gray-900/5 dark:border-gray-700">
+                        <a href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $this->record->completedTest->id, 'question' => 1, 'viewTest' => 1]) }}"
+                            class="group hover:opacity-60">
+                            <div class="mb-3 pt-3 flex w-full flex-none gap-x-4 border-t border-gray-900/5">
                                 <dt class="flex-none">
                                     <x-tabler-award class="text-gray-900 dark:text-gray-100" />
                                 </dt>
@@ -85,7 +86,8 @@
                                     {{ \Carbon\Carbon::parse($this->record->completedTest->total_time)->format('H:i:s') }}
                                 </dd>
                             </div>
-                            <div class="pt-3 flex w-full flex-none gap-x-4">
+                            <div
+                                class="{{ $this->record->description ? 'pb-2' : 'pb-3' }} flex w-full flex-none gap-x-4">
                                 <dt class="flex-none">
                                     @if ($this->isValid())
                                         @if (is_null($this->record->valid_to))
@@ -108,8 +110,9 @@
                             </div>
                         </a>
                     @else
-                        <div class="flex-auto">
-                            <div class="pb-3 flex w-full flex-none gap-x-4">
+                        <div class="flex-auto border-t border-gray-900/5 pt-3">
+                            <div
+                                class="{{ $this->record->description ? 'pb-2' : 'pb-3' }} flex w-full flex-none gap-x-4">
                                 <dt class="flex-none">
                                     @if ($this->isValid())
                                         <x-tabler-certificate class="text-green-600 dark:text-green-400" />
@@ -134,34 +137,46 @@
                         </div>
                     @endif
 
-                    <div class="">
-                        <h3 class="text-base font-semibold">{{ __('learning/learningCertificate.custom.created_by') }}</h3>
-                        @if (Auth::user()->can('update_user'))
+                    @if ($this->record->description)
+                        <div class="pb-3">
+                            <h3 class="text-md font-semibold">
+                                {{ __('learning/learningCertificate.fields.description') }}
+                            </h3>
+                            <p class="text-sm">{!! Str::limit($this->record->description, 120) !!}</p>
+                        </div>
+                    @endif
+
+                    <div class="border-t border-gray-900/5 pt-3">
+                        <h3 class="text-base font-semibold mb-1">
+                            {{ __('learning/learningCertificate.custom.created_by') }}
+                        </h3>
+                        @if (Auth::user()->role_id < 4)
                             <a class="group"
-                                href="{{ route('filament.app.resources.employees.edit', ['record' => $this->record->admin_id]) }}">
+                                href="{{ route('filament.app.resources.users.edit', ['record' => $this->record->admin_id]) }}">
                         @endif
                         <div class="flex items-center gap-2 pe-3">
-                                @if (is_null($this->record->admin->avatar))
-                                    <div
-                                        class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80 border border-gray-200 dark:border-gray-700">
-                                        @svg('tabler-user', 'text-gray-400 dark:text-gray-500 h-6 w-6')
-                                    </div>
-                                @else
-                                    <div
-                                        class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80">
-                                        <img src="{{ asset($this->record->admin->avatar) }}" class="w-full h-full object-cover">
-                                    </div>
-                                @endif
+                            @if (is_null($this->record->admin->avatar))
+                                <div
+                                    class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80 border border-gray-200 dark:border-gray-700">
+                                    @svg('tabler-user', 'text-gray-400 dark:text-gray-500 h-6 w-6')
+                                </div>
+                            @else
+                                <div
+                                    class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80">
+                                    <img src="{{ asset($this->record->admin->avatar) }}"
+                                        class="w-full h-full object-cover">
+                                </div>
+                            @endif
                             <div class="flex flex-col justify-center mb-1">
                                 <p
                                     class="text-sm text-gray-900 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400">
-                                    {{ $this->record->admin->name }}</p>
+                                    {{ Str::limit($this->record->admin->name, 26) }}</p>
                                 <p
                                     class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500">
-                                    {{ $this->record->admin->job_title }}</p>
+                                    {{ Str::limit($this->record->admin->job_title, 36) }}</p>
                             </div>
                         </div>
-                        @if (Auth::user()->can('update_user'))
+                        @if (Auth::user()->role_id < 4)
                             </a>
                         @endif
                     </div>

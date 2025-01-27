@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             LearningTestQuestionSeeder::class,
             LearningTestQuestionAnswerSeeder::class,
             LearningCertificationRequirementSeeder::class,
+            CertificateSeeder::class,
         ]);
     }
 }

@@ -194,6 +194,8 @@ class LearningCertificateResource extends Resource
                             ])
                             ->disableToolbarButtons([
                                 'attachFiles',
+                                'h2',
+                                'h3',
                                 'codeBlock',
                             ]),
                         Hidden::make('admin_id')

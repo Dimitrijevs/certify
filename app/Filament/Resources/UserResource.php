@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Role;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Group;
@@ -18,10 +19,10 @@ use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\Role;
-use Filament\Forms\Components\Group as FilaGroup;
 use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Resources\UserResource\Pages;
+use Filament\Forms\Components\Group as FilaGroup;
+use App\Forms\Components\CertificateRequirementForm;
 
 class UserResource extends Resource
 {
@@ -39,86 +40,120 @@ class UserResource extends Resource
                 'lg' => 12,
             ])
             ->schema([
-                Section::make('Personal Information')
-                    ->schema([
-                        TextInput::make('name')
-                            ->maxLength(50)
-                            ->label('Full Name')
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ])
-                            ->required(),
-                        TextInput::make('email')
-                            ->label('Email Address')
-                            ->prefixIcon('tabler-mail')
-                            ->required()
-                            ->email()
-                            ->unique(ignoreRecord: true)
-                            ->afterStateUpdated(function ($record, $operation) {
-                                if ($operation != 'create') {
-                                    if ($record->id == Auth::id()) {
-                                        Session::flush();
+                FilaGroup::make([
+                    Section::make('Personal Information')
+                        ->schema([
+                            TextInput::make('name')
+                                ->maxLength(50)
+                                ->label('Full Name')
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ])
+                                ->required(),
+                            TextInput::make('email')
+                                ->label('Email Address')
+                                ->prefixIcon('tabler-mail')
+                                ->required()
+                                ->email()
+                                ->unique(ignoreRecord: true)
+                                ->afterStateUpdated(function ($record, $operation) {
+                                    if ($operation != 'create') {
+                                        if ($record->id == Auth::id()) {
+                                            Session::flush();
 
-                                        return redirect('/app/login');
+                                            return redirect('/app/login');
+                                        }
                                     }
-                                }
-                            })
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ]),
-                        Select::make('role_id')
-                            ->label('Role')
-                            ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
-                            ->required()
-                            ->preload()
-                            ->searchable()
-                            ->visible(function ($record = null, $operation) {
-                                if ($operation == 'edit' && $record->role_id == 1) {
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            })
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
-                            ]),
-                        Select::make('school_id')
-                            ->label('School')
-                            ->live()
-                            ->options(School::all()->pluck('name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ]),
-                        Select::make('group_id')
-                            ->label('Group')
-                            ->options(function ($get) {
-                                if ($get('school_id')) {
-                                    return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
-                                }
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ]),
-                    ])
+                                })
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                            Select::make('role_id')
+                                ->label('Role')
+                                ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
+                                ->required()
+                                ->preload()
+                                ->searchable()
+                                ->visible(function ($record = null, $operation) {
+                                    if ($operation == 'edit' && $record->role_id == 1) {
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                })
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
+                                ]),
+                            Select::make('school_id')
+                                ->label('School')
+                                ->live()
+                                ->options(School::all()->pluck('name', 'id'))
+                                ->searchable()
+                                ->preload()
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                            Select::make('group_id')
+                                ->label('Group')
+                                ->options(function ($get) {
+                                    if ($get('school_id')) {
+                                        return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
+                                    }
+                                })
+                                ->searchable()
+                                ->preload()
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                        ])
+                        ->columns([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ])
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ]),
+
+                    Section::make('Certification Requirements')
+                        ->schema([
+                            CertificateRequirementForm::make('info')
+                                ->nullable()
+                                ->dehydrated(false)
+                                ->columnSpanFull()
+                        ])
+                        ->columns([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ])
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ]),
+                ])
                     ->columns([
                         'default' => 12,
                         'sm' => 12,
@@ -131,6 +166,7 @@ class UserResource extends Resource
                         'md' => 8,
                         'lg' => 8,
                     ]),
+
                 FilaGroup::make([
                     Section::make('Avatar Upload')
                         ->schema([
