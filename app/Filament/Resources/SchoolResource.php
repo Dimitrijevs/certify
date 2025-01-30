@@ -331,6 +331,7 @@ class SchoolResource extends Resource
             'edit' => Pages\EditSchool::route('/{record}/edit'),
 
             'edit-group' => CustomGroupPage::route('/{record}/edit-group'),
+            'view-insitution' => Pages\InstitutionCustomView::route('/{record}/view'),
         ];
     }
 }
