@@ -21,8 +21,6 @@ yarn-error.log
 /.zed
 composer.lock
 public/css/bezhansalleh/filament-language-switch/filament-language-switch.css
-package-lock.json
-package.json
 public/js/filament/widgets/components/chart.js
 public/js/filament/support/support.js
 public/js/filament/notifications/notifications.js
