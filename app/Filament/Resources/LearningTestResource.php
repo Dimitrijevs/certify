@@ -46,11 +46,6 @@ class LearningTestResource extends Resource
     //     return __('learning/learningCategory.group_label');
     // }
 
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id !== 3;
-    }
-
     public static function getLabel(): string
     {
         return 'Test';
@@ -59,6 +54,26 @@ class LearningTestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return 'Tests';
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form

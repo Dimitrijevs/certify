@@ -42,6 +42,36 @@ class LearningCategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Learning';
 
+    public static function getLabel(): string
+    {
+        return 'Category';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Categories';
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
     public static function form(Form $form): Form
     {
         $id = is_null($form->getRecord())

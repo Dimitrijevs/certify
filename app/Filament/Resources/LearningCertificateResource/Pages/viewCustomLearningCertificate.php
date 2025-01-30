@@ -33,7 +33,7 @@ class viewCustomLearningCertificate extends Page
                 ->url(fn(Model $record) => route('learning-resources.pdf', ['learningResource' => $record->id, 'isDownload' => 1]));
         }
 
-        if (Auth::user()->role_id != 3) {
+        if (Auth::user()->role_id < 4) {
             $actions[] = Action::make('edit')
                 ->label(__('learning/learningCertificate.form.edit'))
                 ->color('gray')

@@ -39,13 +39,6 @@ class LearningCertificateResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    // public static function getNavigationGroup(): ?string
-    // {
-    //     return __('learning/learningCategory.group_label');
-    // }
-
     public static function getLabel(): string
     {
         return __('learning/learningCertificate.label');
@@ -58,7 +51,17 @@ class LearningCertificateResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id != 3;
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form

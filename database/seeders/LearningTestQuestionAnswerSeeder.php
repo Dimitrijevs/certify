@@ -548,6 +548,266 @@ class LearningTestQuestionAnswerSeeder extends Seeder
                 'answer' => 'Noklikšķināt uz saitēm',
                 'is_correct' => 1
             ],
+            
+            // Question 38
+            [
+                'question_id' => 32,
+                'order_id' => 1,
+                'answer' => '18',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 32,
+                'order_id' => 2,
+                'answer' => '19',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 32,
+                'order_id' => 3,
+                'answer' => '20',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 32,
+                'order_id' => 4,
+                'answer' => '21',
+                'is_correct' => 0
+            ],
+
+            // Question 39
+            [
+                'question_id' => 33, // Jautājuma ID
+                'order_id' => 1,
+                'answer' => '54',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 33, // Jautājuma ID
+                'order_id' => 2,
+                'answer' => '56',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 33, // Jautājuma ID
+                'order_id' => 3,
+                'answer' => '58',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 33, // Jautājuma ID
+                'order_id' => 4,
+                'answer' => '60',
+                'is_correct' => 0
+            ],
+
+            // Question 40
+            [
+                'question_id' => 34, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '10',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 34, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '12',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 34, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '14',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 34, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '16',
+                'is_correct' => 0
+            ],
+
+            // Question 41
+            [
+                'question_id' => 35, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '68',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 35, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '70',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 35, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '65',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 35, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '72',
+                'is_correct' => 0
+            ],
+
+            // Question 42
+            [
+                'question_id' => 36, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '20',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 36, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '25',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 36, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '30',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 36, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '35',
+                'is_correct' => 0
+            ],
+
+            // Question 43
+            [
+                'question_id' => 37, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '64',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 37, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '81',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 37, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '72',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 37, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '90',
+                'is_correct' => 0
+            ],
+
+            // Question 44
+            [
+                'question_id' => 38, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '25',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 38, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '30',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 38, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '35',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 38, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '40',
+                'is_correct' => 0
+            ],
+
+            // Question 45
+            [
+                'question_id' => 39, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '63',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 39, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '59',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 39, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '52',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 39, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '32',
+                'is_correct' => 0
+            ],
+
+            // Question 46
+            [
+                'question_id' => 40, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '100',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 40, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '120',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 40, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '140',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 40, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '160',
+                'is_correct' => 0
+            ],
+
+            // Question 47
+            [
+                'question_id' => 41, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 1,
+                'answer' => '-15',
+                'is_correct' => 1
+            ],
+            [
+                'question_id' => 41, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 2,
+                'answer' => '-17',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 41, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 3,
+                'answer' => '-19',
+                'is_correct' => 0
+            ],
+            [
+                'question_id' => 41, // Aizstāt ar atbilstošo jautājuma ID
+                'order_id' => 4,
+                'answer' => '-21',
+                'is_correct' => 0
+            ]
         ];
 
         DB::table('learning_test_question_answers')->insert($answers);

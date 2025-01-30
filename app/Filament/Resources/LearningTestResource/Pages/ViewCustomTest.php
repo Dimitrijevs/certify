@@ -35,6 +35,7 @@ class ViewCustomTest extends Page
                     ->label(__('learning/learningTest.form.edit'))
                     ->color('gray')
                     ->icon('tabler-eye-edit')
+                    ->visible(fn () => Auth::user()->role_id < 4)
                     ->url(LearningTestResource::getUrl('edit', ['record' => $this->record->id])),
             ];
         }

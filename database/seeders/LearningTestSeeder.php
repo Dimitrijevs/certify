@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class LearningTestSeeder extends Seeder
@@ -44,6 +43,11 @@ class LearningTestSeeder extends Seeder
                 'directory_id' => '5',
                 'image_name' => '01J4VAB11AN0E3XK807AEQBVNB.jpg',
                 'image_path' => null,
+            ],
+            [
+                'directory_id' => '6',
+                'image_name' => 'math.jpg',
+                'image_path' => null,
             ]
         ];
 
@@ -75,7 +79,7 @@ class LearningTestSeeder extends Seeder
 
         $tests = [
             [
-                'name' => 'Apzaļumošanas zināšanu pārbaude',
+                'name' => 'Dabas zinības zināšanu pārbaude',
                 'category_id' => json_encode(["1", "2"]),
                 'is_active' => 1,
                 'thumbnail' => $images[0]['image_path'],
@@ -99,7 +103,7 @@ class LearningTestSeeder extends Seeder
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
-                'name' => 'Projekta vadības zināšanu pārbaude',
+                'name' => 'Projektu vadības zināšanu pārbaude',
                 'category_id' => json_encode(["4", "5"]),
                 'is_active' => 1,
                 'thumbnail' => $images[1]['image_path'],
@@ -111,7 +115,7 @@ class LearningTestSeeder extends Seeder
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
-                'name' => 'Darba drošības un tehnikas zināšanu pārbaude',
+                'name' => 'Darba drošības zināšanu pārbaude',
                 'category_id' => json_encode(["5"]),
                 'is_active' => 1,
                 'thumbnail' => $images[2]['image_path'],
@@ -134,6 +138,18 @@ class LearningTestSeeder extends Seeder
                 'cooldown' => null,
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
+            [
+                'name' => "Matemātikas zināšanu pārbaude",
+                'category_id' => null,
+                'is_active' => 1,
+                'thumbnail' => $images[4]['image_path'],
+                'description' => 'Šis tests ir izstrādāts, lai pārbaudītu jūsu zināšanas par aritmētikas pamatprincipiem. Testā iekļauti jautājumi par skaitļu darbībām, proporcijām, procentiem un citiem matemātikas jautājumiem. Tā mērķis ir palīdzēt lietotājiem uzlabot savas matemātikas prasmes un sagatavoties citiem testiem, kuros nepieciešama matemātikas izpratne.',
+                'min_score' => 6,
+                'time_limit' => rand(20, 60),
+                'layout_id' => null,
+                'cooldown' => 60,
+                'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
+            ]
         ];
 
         DB::table('learning_tests')->insert($tests);
