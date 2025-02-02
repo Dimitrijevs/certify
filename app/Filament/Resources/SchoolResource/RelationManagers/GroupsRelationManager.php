@@ -97,6 +97,8 @@ class GroupsRelationManager extends RelationManager
                     ->label('Students Count')
                     ->sortable()
                     ->searchable()
+                    ->icon('tabler-users-group')
+                    ->default(0)
                     ->formatStateUsing(function ($record) {
                         return $record->students->count();
                     }),

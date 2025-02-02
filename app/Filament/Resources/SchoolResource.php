@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\SchoolResource\Pages;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\SchoolResource\Pages\CustomGroupPage;
@@ -79,7 +80,7 @@ class SchoolResource extends Resource
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
-                        'md' => 8,
+                        'md' => 12,
                         'lg' => 8,
                     ])
                     ->schema([
@@ -149,7 +150,6 @@ class SchoolResource extends Resource
                             ->label('Phone Number')
                             ->prefixIcon('tabler-phone')
                             ->required()
-                            ->email()
                             ->unique(ignoreRecord: true)
                             ->columnSpan([
                                 'default' => 12,
@@ -161,6 +161,21 @@ class SchoolResource extends Resource
                             ->label('Website')
                             ->prefixIcon('tabler-globe')
                             ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
+                        RichEditor::make('description')
+                            ->label(__('learning/learningCategory.fields.description'))
+                            ->nullable()
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                                'h2',
+                                'h3',
+                                'codeBlock',
+                            ])
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
@@ -190,6 +205,7 @@ class SchoolResource extends Resource
                                     'md' => 12,
                                     'lg' => 12,
                                 ])
+                                ->imageEditor()
                                 ->directory(function ($record, $operation) {
                                     if ($operation === 'create') {
                                         $lastSchool = School::latest('id')->first();
@@ -213,7 +229,7 @@ class SchoolResource extends Resource
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
-                        'md' => 4,
+                        'md' => 12,
                         'lg' => 4,
                     ]),
 
@@ -254,6 +270,9 @@ class SchoolResource extends Resource
                     ->avatar(function ($record) {
                         return $record->avatar;
                     })
+                    ->tooltip(function ($record) {
+                        return $record->name;
+                    })
                     ->avatarType('image')
                     ->searchable()
                     ->sortable(),
@@ -283,7 +302,7 @@ class SchoolResource extends Resource
                     ->label('Email Address')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->limit(20)
+                    ->limit(16)
                     ->tooltip(function ($record) {
                         return $record->email;
                     })
@@ -308,6 +327,10 @@ class SchoolResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->url(function ($record) {
+                        return 'schools/' . $record->id . '/view';
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

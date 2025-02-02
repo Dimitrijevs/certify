@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\SchoolResource\Pages;
 
-use App\Filament\Resources\SchoolResource;
-use Filament\Actions;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\SchoolResource;
 
 class EditSchool extends EditRecord
 {
@@ -13,7 +14,9 @@ class EditSchool extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
+            ViewAction::make()
+                ->url('view'),
         ];
     }
 }

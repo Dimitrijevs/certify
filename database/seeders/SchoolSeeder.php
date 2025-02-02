@@ -22,9 +22,10 @@ class SchoolSeeder extends Seeder
                 'city' => $faker->city,
                 'country' => 'Latvija',
                 'postal_code' => $faker->postcode,
-                'phone' => $faker->phoneNumber,
+                'phone' => rand(20000000, 29999999),
                 'email' => $faker->email,
                 'website' => $faker->url,
+                'description' => $faker->paragraphs(4, true),
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ]);
