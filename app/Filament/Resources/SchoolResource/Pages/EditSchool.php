@@ -6,6 +6,7 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\SchoolResource;
+use Illuminate\Contracts\Support\Htmlable;
 
 class EditSchool extends EditRecord
 {
@@ -18,5 +19,10 @@ class EditSchool extends EditRecord
             ViewAction::make()
                 ->url('view'),
         ];
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return __('other.edit_record');
     }
 }

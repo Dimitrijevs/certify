@@ -189,7 +189,10 @@ class UserResource extends Resource
                             'sm' => 12,
                             'md' => 12,
                             'lg' => 12,
-                        ]),
+                        ])
+                        ->visible(function ($operation) {
+                            return $operation !== 'create';
+                        }),
                 ])
                     ->columns([
                         'default' => 12,

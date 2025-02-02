@@ -16,48 +16,48 @@ class StatsOverview extends BaseWidget
     {
         if (Auth::user()->role_id < 3) {
             $stat1 = User::count();
-            $stat1Label = 'Users';
-            $stat1Description = 'Total number of users in the system';
+            $stat1Label = __('other.users');
+            $stat1Description = __('other.total_number_of_users_in_the_system');
 
             $stat2 = School::count();
-            $stat2Label = 'Institutions';
-            $stat2Description = 'Total number of institutions in the system';
+            $stat2Label = __('other.institutions');
+            $stat2Description = __('other.total_number_of_institutions_in_the_system');
 
             $stat3 = LearningTest::count();
-            $stat3Label = 'Tests';
-            $stat3Description = 'Total number of tests in the system';
+            $stat3Label = __('other.tests');
+            $stat3Description = __('other.total_number_of_tests_in_the_system');
         } else if (Auth::user()->role_id == 3) {
             $stat1 = User::where('school_id', Auth::user()->school_id)->count();
-            $stat1Label = 'Users';
-            $stat1Description = 'Total number of users in the institution';
+            $stat1Label = __('other.users');
+            $stat1Description = __('other.total_number_of_users_in_the_institution');
 
             $stat2 = User::where('group_id', Auth::user()->group_id)->count();
-            $stat2Label = 'Group Users';
-            $stat2Description = 'Total number of users in the group';
+            $stat2Label = __('other.group_users');
+            $stat2Description = __('other.total_number_of_users_in_the_group');
 
             $stat3 = LearningCertificate::whereIn('user_id', function ($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('school_id', Auth::user()->school_id);
             })->count();
-            $stat3Label = 'Certificates';
-            $stat3Description = 'Total number of assigned certificates in the institution';
+            $stat3Label = __('other.Certificates');
+            $stat3Description = __('other.total_number_of_assigned_certificates_in_the_institution');
         } else {
             $stat1 = User::where('school_id', Auth::user()->school_id)->count();
-            $stat1Label = 'Users';
-            $stat1Description = 'Total number of users in the institution';
+            $stat1Label = __('other.institution_users');
+            $stat1Description = __('other.total_number_of_users_in_the_institution');
 
             $stat2 = User::where('group_id', Auth::user()->group_id)->count();
-            $stat2Label = 'Group Users';
-            $stat2Description = 'Total number of users in the group';
+            $stat2Label = __('other.group_users');
+            $stat2Description = __('other.total_number_of_users_in_the_group');
 
             $stat3 = LearningCertificate::whereIn('user_id', function ($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('group_id', Auth::user()->group_id);
             })->count();
-            $stat3Label = 'Certificates';
-            $stat3Description = 'Total number of assigned certificates in the group';
+            $stat3Label = __('other.certificates');
+            $stat3Description = __('other.total_number_of_assigned_certificates_in_the_group');
         }
 
         return [

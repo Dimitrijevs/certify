@@ -81,10 +81,10 @@ class AdminPanelProvider extends PanelProvider
         Filament::serving(function () {
             Filament::registerNavigationGroups([
                 'People' => NavigationGroup::make()
-                    ->label('People')
+                    ->label(__('other.people'))
                     ->icon('tabler-users-group'),
                 'Learning' => NavigationGroup::make()
-                    ->label('Learning')
+                    ->label(__('learning/learningCategory.group_label'))
                     ->icon('tabler-book'),
             ]);
         });
