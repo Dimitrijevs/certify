@@ -127,7 +127,7 @@
                     <x-filament::modal id="start-test">
                         <x-slot name="trigger">
                             <x-filament::button size="xl">
-                                <div class="flex">
+                                <div class="flex items-center">
                                     <x-tabler-player-play class="me-1" />
                                     {{ __('learning/learningTest.custom.start_test') }}
                                 </div>

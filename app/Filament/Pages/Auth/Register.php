@@ -51,6 +51,7 @@ class Register extends BaseRegister
                     return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
                 }
             })
+            ->required()
             ->native(false)
             ->preload();
     }
@@ -60,6 +61,7 @@ class Register extends BaseRegister
         return Select::make('school_id')
             ->live()
             ->label('School')
+            ->required()
             ->options(School::pluck('name', 'id')->toArray())
             ->native(false)
             ->preload();
