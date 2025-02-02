@@ -71,10 +71,9 @@ class LearningCategorySeeder extends Seeder
             }
         }
 
-        $sort_id = 0;
         $categories = [
             [
-                'name' => 'Apzaļumošana',
+                'name' => 'Dabas zinības',
                 'thumbnail' => $images[0]['image_path'],
                 'description' => 'Apzaļumošanas darbu veikšana nodrošina skaistu un dzīvīgu vidi. No augu izvēles līdz stādīšanai un kopšanai, uzzini labākās prakses, lai veidotu ilgtspējīgus apstādījumus.',
                 'is_active' => 1,
@@ -90,7 +89,7 @@ class LearningCategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Bruģēšana',
+                'name' => 'Urbanistika',
                 'thumbnail' => $images[2]['image_path'],
                 'description' => 'Bruģēšanas darbi ietver dažādu bruģakmens veidu izvēli un uzstādīšanu. Iepazīsties ar bruģēšanas procesu un uzzini, kā uzturēt bruģētās virsmas labā stāvoklī.',
                 'is_active' => 1,
@@ -106,7 +105,7 @@ class LearningCategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Darba drošība un tehnika',
+                'name' => 'Darba drošība',
                 'thumbnail' => $images[3]['image_path'],
                 'description' => 'Darba drošība un pareiza tehnikas izmantošana ir kritiski svarīga būvniecības darbos. Uzzini par drošības prasībām, piemērotu instrumentu izvēli un tehnikas apkopi.',
                 'is_active' => 1,
@@ -117,6 +116,14 @@ class LearningCategorySeeder extends Seeder
                 'name' => 'Drošība internetā',
                 'thumbnail' => $images[4]['image_path'],
                 'description' => '<p>Drošība internetā ir būtiska, lai pasargātu sevi un savus datus no dažādiem draudiem tiešsaistē. Tā ietver gan tehniskus, gan uzvedības aspektus, kas palīdz izvairīties no kaitējuma un saglabāt privātumu.</p><h3>1. Paroles un autentifikācija</h3><ol><li>Kā izveidot drošas paroles.</li><li>Divpakāpju autentifikācijas izmantošana.</li></ol><h3>2. Privātums</h3><ol><li>Kā aizsargāt savus datus sociālajos tīklos.</li><li>Ko darīt, lai pasargātu savu personisko informāciju tiešsaistē.</li></ol><h3>3. Kiberdrošības draudi</h3><ol><li>Ļaunatūra (malware) un kā no tās izvairīties.</li><li>Pikšķerēšana (phishing) un kā to atpazīt.</li></ol><p><br>Šie ir tikai daži no svarīgākajiem tematiem, kas palīdzēs labāk saprast, kā pasargāt sevi un citus, lietojot internetu.</p>',
+                'is_active' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Matemātika',
+                'thumbnail' => null,
+                'description' => 'Matemātika ir zinātne, kas pēta skaitļus, to attiecības un īpašības. Tā ir būtiska daudzās dzīves jomās, piemēram, dabaszinātnēs, inženierijā, ekonomikā un informātikā.',
                 'is_active' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),

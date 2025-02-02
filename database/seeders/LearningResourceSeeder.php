@@ -52,6 +52,15 @@ class LearningResourceSeeder extends Seeder
                     "01J4SBJ6M889TB7TMRPCFXSP7W.jpg",
                 ],
                 'image_path' => null,
+            ],
+            [
+                'directory_id' => '22',
+                'gallery' => [
+                    "3.jpg",
+                    "11.png",
+                    "22.png",
+                ],
+                'image_path' => null,
             ]
         ];
 
@@ -296,6 +305,15 @@ class LearningResourceSeeder extends Seeder
                 'category_id' => 6,
                 'gallery' => json_encode(null),
             ],
+            [
+                'name' => 'Algebra un matemātika',
+                'description' => '<h3><strong>Algebra un tās pamatjēdzieni</strong></h3><p>Algebra ir matemātikas nozare, kas nodarbojas ar mainīgajiem, simboliem un to attiecībām. Lai labāk izprastu algebras pamatus, ievērojiet šādus padomus:</p><p><br></p><ul><li><strong>Apgūstiet pamatoperācijas</strong>: Saskaitīšana, atņemšana, reizināšana un dalīšana ir algebras pamats. Pārliecinieties, ka esat pārliecināts par šīm operācijām.</li><li><strong>Izprotiet mainīgos</strong>: Mainīgie ir simboli, kas apzīmē nezināmus lielumus. Tie ir algebras pamatā, un to izmantošana ir būtiska.</li><li><strong>Mācieties vienādojumus</strong>: Vienādojumi ir algebras sirds. Mācieties tos risināt, izmantojot dažādas metodes, piemēram, vienkāršošanu un faktorizēšanu.</li><li><strong>Praktizējiet regulāri</strong>: Algebra prasa praksi. Risiniet daudz uzdevumu, lai nostiprinātu savas prasmes.</li></ul><p><br></p><p><br></p><h3><strong>Kā risināt lineārus vienādojumus</strong></h3><p>Lineāri vienādojumi ir vienkāršākie algebras vienādojumi, un to risināšana ir būtiska. Lai tos risinātu, ievērojiet šādus ieteikumus:</p><p><br></p><ul><li><strong>Izolējiet mainīgo</strong>: Pārliecinieties, ka mainīgais ir vienādojuma vienā pusē, bet konstantes otrā pusē.</li><li><strong>Izmantojiet apgrieztās operācijas</strong>: Lai atrisinātu vienādojumu, izmantojiet apgrieztās operācijas, piemēram, ja vienādojumā ir saskaitīšana, atņemiet.</li><li><strong>Pārbaudiet savu risinājumu</strong>: Pēc vienādojuma atrisināšanas vienmēr pārbaudiet, vai iegūtā vērtība apmierina sākotnējo vienādojumu.</li><li><strong>Praktizējiet dažādus piemērus</strong>: Risiniet dažādus lineārus vienādojumus, lai pilnveidotu savas prasmes.</li></ul>',
+                'video_url' => 'https://www.youtube.com/watch?v=NybHckSEQBI&ab_channel=mathantics',
+                'video_type' => 'video/youtube',
+                'is_active' => 1,
+                'category_id' => 7,
+                'gallery' => json_encode($images[4]['image_path']),
+            ]
         ];
 
         DB::table('learning_resources')->insert($resources);
