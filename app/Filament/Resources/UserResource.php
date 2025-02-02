@@ -130,6 +130,9 @@ class UserResource extends Resource
                                 ->options(School::all()->pluck('name', 'id'))
                                 ->searchable()
                                 ->preload()
+                                ->required(function () {
+                                    return Auth::user()->role_id > 2;
+                                })
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -142,6 +145,9 @@ class UserResource extends Resource
                                     if ($get('school_id')) {
                                         return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
                                     }
+                                })
+                                ->required(function () {
+                                    return Auth::user()->role_id > 2;
                                 })
                                 ->searchable()
                                 ->preload()
