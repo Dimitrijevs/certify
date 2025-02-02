@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_question_transition_enabled')->default(false);
             $table->integer('min_score')->nullable();
+            $table->boolean('is_public')->default(false);
             $table->integer('time_limit')->nullable();
             $table->integer('layout_id')->nullable();
             $table->integer('cooldown')->nullable();

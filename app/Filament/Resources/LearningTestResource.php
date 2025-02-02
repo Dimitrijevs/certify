@@ -111,7 +111,7 @@ class LearningTestResource extends Resource
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 12,
+                                'default' => 8,
                                 'sm' => 12,
                                 'md' => 12,
                                 'lg' => 6,
@@ -119,10 +119,10 @@ class LearningTestResource extends Resource
                         Toggle::make('is_active')
                             ->label(__('learning/learningTest.fields.active'))
                             ->columnSpan([
-                                'default' => 6,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 1,
+                                'default' => 4,
+                                'sm' => 4,
+                                'md' => 4,
+                                'lg' => 2,
                             ])
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
@@ -130,9 +130,20 @@ class LearningTestResource extends Resource
                         Toggle::make('is_question_transition_enabled')
                             ->label(__('learning/learningTest.fields.free_navigation'))
                             ->columnSpan([
-                                'default' => 6,
-                                'sm' => 3,
-                                'md' => 3,
+                                'default' => 5,
+                                'sm' => 4,
+                                'md' => 4,
+                                'lg' => 2,
+                            ])
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        Toggle::make('is_public')
+                            ->label('Available for everyone')
+                            ->columnSpan([
+                                'default' => 7,
+                                'sm' => 4,
+                                'md' => 4,
                                 'lg' => 2,
                             ])
                             ->onIcon('tabler-check')
@@ -191,8 +202,10 @@ class LearningTestResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ])
+                            ->suffixIcon('tabler-clock')
                             ->placeholder('30')
-                            ->rules('integer'),
+                            ->minValue(5)
+                            ->numeric(),
                         Group::make()
                             ->columnSpan([
                                 'default' => 12,
@@ -240,6 +253,7 @@ class LearningTestResource extends Resource
                                         'md' => 12,
                                         'lg' => 12,
                                     ])
+                                    ->suffixIcon('tabler-clock')
                                     ->tooltip('Cooldown in minutes between attempts')
                                     ->rules(['integer', 'min:0']),
                             ]),
@@ -247,6 +261,7 @@ class LearningTestResource extends Resource
                             ->label(__('learning/learningTest.fields.thumbnail'))
                             ->image()
                             ->rules('image')
+                            ->imageEditor()
                             ->imageResizeTargetWidth('711')
                             ->imageResizeTargetHeight('400')
                             ->imageResizeMode('cover')
