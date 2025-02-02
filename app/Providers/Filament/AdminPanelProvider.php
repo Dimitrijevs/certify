@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
+use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use App\Filament\Widgets\CertificateRequirements;
@@ -38,6 +39,13 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit')
+            ])
+            ->plugins([
+                BreezyCore::make()
+                    ->myProfile()
+                    ->enableTwoFactorAuthentication(
+                        force: false,
+                    ),
             ])
             ->colors([
                 'primary' => Color::Sky,
