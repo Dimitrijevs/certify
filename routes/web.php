@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LearningCertificateController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.landingpage');
 });
 
 Route::get('/user-logout', function () {
