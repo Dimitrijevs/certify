@@ -10,6 +10,7 @@ use Twig\Loader\ChainLoader;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Twig\Loader\FilesystemLoader;
 use App\Models\LearningCertificate;
+use Illuminate\Support\Facades\App;
 
 class LearningCertificateController extends Controller
 {
@@ -30,11 +31,19 @@ class LearningCertificateController extends Controller
         $testName = $learningResource->name;
         $validTo = $learningResource->valid_to;
 
+        App::setLocale(session('locale', config('app.locale')));
+
         // Render the template with Twig resources/views/templates/pages/pdf-template.html.twig
         $templateHtml = $this->twig->render('templates/pages/pdf-template.html.twig', [
             'userName' => $userName,
             'testName' => $testName,
             'validTo' => $validTo,
+
+            'firstLine' => __('twig.certificate'),
+            'secondLine' => __('twig.for_successfully_completing_the_test'),
+            'thirdLine' => __('twig.this_certificate_Iis_granted_to'),
+            'fourthLine' => __('twig.has_completed_the_test'),
+            'fifthLine' => __('twig.valid_until'),
         ]);
 
         if ($learningResource->test->layout) {

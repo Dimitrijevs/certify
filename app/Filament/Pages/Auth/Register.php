@@ -34,8 +34,8 @@ class Register extends BaseRegister
         return Select::make('role_id')
             ->label('Role')
             ->options([
-                '3' => 'Teacher',
-                '4' => 'Student',
+                '3' => __('participants.instructor'),
+                '4' => __('participants.student'),
             ])
             ->required()
             ->native(false)

@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use Filament\Actions;
 use App\CertificateRequirementsLogic;
 use App\Filament\Resources\UserResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 
 class EditUser extends EditRecord
 {
@@ -20,5 +21,10 @@ class EditUser extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('other.edit_record');
     }
 }

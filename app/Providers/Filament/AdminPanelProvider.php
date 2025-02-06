@@ -86,6 +86,9 @@ class AdminPanelProvider extends PanelProvider
                 'Learning' => NavigationGroup::make()
                     ->label(__('learning/learningCategory.group_label'))
                     ->icon('tabler-book'),
+                'Additional' => NavigationGroup::make()
+                    ->label(__('other.additional'))
+                    ->icon('tabler-adjustments-plus'),
             ]);
         });
     }

@@ -4,27 +4,27 @@
             <div class="mb-2 flex items-center">
                 <ul class="w-full text-2xl space-y-3">
                     <li class="flex flex-col sm:flex-row justify-between">
-                        <p class="text-gray-600 dark:text-gray-300">Institute name:</p>
+                        <p class="text-gray-600 dark:text-gray-300">{{ __('institution.name') }}:</p>
                         <p class="text-gray-950 font-bold dark:text-gray-100">{{ Str::limit($record->name, 16) }}</>
                     </li>
                     <li class="flex flex-col sm:flex-row justify-between">
-                        <p class="text-gray-600 dark:text-gray-300">Country:</p>
+                        <p class="text-gray-600 dark:text-gray-300">{{ __('institution.country') }}:</p>
                         <p class="text-gray-950 font-bold dark:text-gray-100">{{ Str::limit($record->country, 16) }}</p>
                     </li>
                     <li class="flex flex-col sm:flex-row justify-between">
-                        <p class="text-gray-600 dark:text-gray-300">City:</p>
+                        <p class="text-gray-600 dark:text-gray-300">{{ __('institution.city') }}:</p>
                         <p class="text-gray-950 font-bold dark:text-gray-100">{{ Str::limit($record->city, 16) }}</>
                     </li>
                     <li class="flex flex-col sm:flex-row justify-between">
-                        <p class="text-gray-600 dark:text-gray-300">Address:</p>
+                        <p class="text-gray-600 dark:text-gray-300">{{ __('institution.address') }}:</p>
                         <p class="text-gray-950 font-bold dark:text-gray-100">{{ Str::limit($record->address, 16) }}</>
                     </li>
                 </ul>
             </div>
 
-            <a href="{{ $record->website }}" class="mx-auto md:mx-0 hover:bg-blue-500 duration-300 w-40 items-center flex justify-center rounded-lg shadow-sm bg-blue-600 text-white px-4 py-2 hover:scale-105" target="_blank">
+            <a href="{{ $record->website }}" class="mx-auto md:mx-0 hover:bg-blue-500 duration-300 items-center flex justify-center rounded-lg shadow-sm bg-blue-600 text-white px-4 py-2 hover:scale-105" target="_blank">
                 <x-tabler-globe class="me-2"/>
-                <span>Website</span>
+                <span>{{ __('institution.website') }}</span>
             </a>
         </div>
 
@@ -43,17 +43,17 @@
         <div class="mx-auto max-w-7xl px-6 md:px-8">
             <dl class="grid grid-cols-1 gap-x-8 gap-y-16 text-center md:grid-cols-3">
                 <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                    <dt class="text-xl text-gray-600 dark:text-gray-300">Users</dt>
+                    <dt class="text-xl text-gray-600 dark:text-gray-300">{{ __('institution.users') }}</dt>
                     <dd class="order-first font-semibold tracking-tight text-blue-600 text-5xl">
                         {{ $record->users->count() }}</dd>
                 </div>
                 <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                    <dt class="text-xl text-gray-600 dark:text-gray-300">Groups</dt>
+                    <dt class="text-xl text-gray-600 dark:text-gray-300">{{ __('institution.groups') }}</dt>
                     <dd class="order-first font-semibold tracking-tight text-blue-600 text-5xl">
                         {{ $record->groups->count() }}</dd>
                 </div>
                 <div class="mx-auto flex max-w-xs flex-col gap-y-4">
-                    <dt class="text-xl text-gray-600 dark:text-gray-300">Assigned certificates</dt>
+                    <dt class="text-xl text-gray-600 dark:text-gray-300">{{ __('institution.assigned_certificates') }}</dt>
                     <dd class="order-first font-semibold tracking-tight text-blue-600 text-5xl">
                         {{ $record->certificates->count() }}</dd>
                 </div>

@@ -95,7 +95,7 @@ class LearningCertificateResource extends Resource
                     ])
                     ->schema([
                         Select::make('user_id')
-                            ->label(__('employee.label'))
+                            ->label(__('participants.user'))
                             ->live()
                             ->relationship('user', 'name')
                             ->afterStateUpdated(function ($set) {
@@ -237,12 +237,6 @@ class LearningCertificateResource extends Resource
                 SelectFilter::make('user_id')
                     ->label(__('user.label'))
                     ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->multiple(),
-                SelectFilter::make('type_id')
-                    ->label('Type')
-                    ->relationship('type', 'name')
                     ->searchable()
                     ->preload()
                     ->multiple(),

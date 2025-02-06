@@ -11,6 +11,7 @@ return [
     'postal_code' => 'Почтовый индекс',
     'email_address' => 'Адрес электронной почты',
     'phone_number' => 'Номер телефона',
+    'address' => 'Адрес',
     'website' => 'Веб-сайт',
     'users' => 'Пользователи',
     'groups' => 'Группы',

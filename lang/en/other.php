@@ -18,4 +18,5 @@ return [
     'settings' => 'Settings',
     'create_new_record' => 'Create new record',
     'edit_record' => 'Edit record',
+    'additional' => 'Additional',
 ];

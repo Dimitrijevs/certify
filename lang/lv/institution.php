@@ -11,6 +11,7 @@ return [
     'postal_code' => 'Pasta indekss',
     'email_address' => 'E-pasta adrese',
     'phone_number' => 'Tālruņa numurs',
+    'address' => 'Adrese',
     'website' => 'Tīmekļa vietne',
     'users' => 'Lietotāji',
     'groups' => 'Grupas',

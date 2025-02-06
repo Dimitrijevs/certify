@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Rules\MatchOldPassword;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
@@ -33,12 +34,12 @@ class UserResource extends Resource
 
     public static function getLabel(): string
     {
-        return 'Participant';
+        return __('participants.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Participants';
+        return __('participants.label_plural');
     }
 
     public static function canView(Model $record): bool
@@ -72,11 +73,11 @@ class UserResource extends Resource
             ])
             ->schema([
                 FilaGroup::make([
-                    Section::make('Personal Information')
+                    Section::make(__('participants.participant_general_information'))
                         ->schema([
                             TextInput::make('name')
                                 ->maxLength(50)
-                                ->label('Full Name')
+                                ->label(__('participants.full_name'))
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -85,7 +86,7 @@ class UserResource extends Resource
                                 ])
                                 ->required(),
                             TextInput::make('email')
-                                ->label('Email Address')
+                                ->label(__('institution.email_address'))
                                 ->prefixIcon('tabler-mail')
                                 ->required()
                                 ->email()
@@ -106,7 +107,7 @@ class UserResource extends Resource
                                     'lg' => 6,
                                 ]),
                             Select::make('role_id')
-                                ->label('Role')
+                                ->label(__('participants.role'))
                                 ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
                                 ->required()
                                 ->preload()
@@ -125,7 +126,7 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                             Select::make('school_id')
-                                ->label('School')
+                                ->label(__('institution.label'))
                                 ->live()
                                 ->options(School::all()->pluck('name', 'id'))
                                 ->searchable()
@@ -140,7 +141,7 @@ class UserResource extends Resource
                                     'lg' => 6,
                                 ]),
                             Select::make('group_id')
-                                ->label('Group')
+                                ->label(__('participants.group'))
                                 ->options(function ($get) {
                                     if ($get('school_id')) {
                                         return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
@@ -171,7 +172,7 @@ class UserResource extends Resource
                             'lg' => 12,
                         ]),
 
-                    Section::make('Certification Requirements')
+                    Section::make(__('participants.certification_requirements'))
                         ->schema([
                             CertificateRequirementForm::make('info')
                                 ->nullable()
@@ -208,7 +209,7 @@ class UserResource extends Resource
                     ]),
 
                 FilaGroup::make([
-                    Section::make('Avatar Upload')
+                    Section::make(__('participants.avatar'))
                         ->schema([
                             FileUpload::make('avatar')
                                 ->columnSpan([
@@ -230,10 +231,10 @@ class UserResource extends Resource
                                 ->label('')
                                 ->nullable(),
                         ]),
-                    Section::make('Password Change')
+                    Section::make(__('participants.password_change'))
                         ->schema([
                             TextInput::make('password_old')
-                                ->label('Old Password')
+                                ->label(__('participants.password'))
                                 ->password()
                                 ->revealable()
                                 ->prefixIcon('tabler-lock')
@@ -268,7 +269,7 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                             TextInput::make('password')
-                                ->label('New Password')
+                                ->label(__('participants.new_password'))
                                 ->password()
                                 ->revealable()
                                 ->prefixIcon('tabler-lock-plus')
@@ -307,7 +308,7 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                             TextInput::make('password_confirmation')
-                                ->label('Confirm New Password')
+                                ->label(__('participants.confirm_password'))
                                 ->password()
                                 ->required(function ($context): bool {
                                     return $context === 'create';
@@ -366,7 +367,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Name')
+                    ->label(__('participants.name'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -381,12 +382,12 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('school_id')
-                    ->label('School')
+                    ->label(__('institution.label'))
                     ->title(function ($record) {
                         if ($record->school) {
                             return $record->school->name;
                         } else {
-                            return 'No School';
+                            return __('participants.no_institution');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -400,12 +401,12 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('group_id')
-                    ->label('Group')
+                    ->label(__('participants.group'))
                     ->title(function ($record) {
                         if ($record->group) {
                             return $record->group->name;
                         } else {
-                            return 'No Group';
+                            return __('participants.no_group');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -417,20 +418,14 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('role_id')
-                    ->label('Role')
+                    ->label(__('participants.role'))
                     ->title(function ($record) {
-                        if ($record->role) {
-                            if ($record->role->name == 'super_admin' || $record->role->name == 'admin') {
-                                return 'Admin';
-                            } else if ($record->role->name == 'student') {
-                                return 'Student';
-                            } else if ($record->role->name == 'teacher') {
-                                return 'Teacher';
-                            } else {
-                                return $record->role->name;
-                            }
-                        } else {
-                            return 'No Role';
+                        if ($record->role->name == 'Super Admin' || $record->role->name == 'Admin') {
+                            return __('participants.admin');
+                        } else if ($record->role->name == 'Student') {
+                            return __('participants.student');
+                        } else if ($record->role->name == 'Teacher') {
+                            return __('participants.instructor');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -441,12 +436,12 @@ class UserResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('school_id')
-                    ->label('School')
+                    ->label(__('institution.label'))
                     ->options(School::all()->pluck('name', 'id'))
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('group_id')
-                    ->label('Group')
+                    ->label(__('participants.group'))
                     ->options(
                         Group::all()->mapWithKeys(function ($group) {
                             return [$group->id => $group->year . ' ' . $group->group];
@@ -455,7 +450,7 @@ class UserResource extends Resource
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('role_id')
-                    ->label('Role')
+                    ->label(__('participants.role'))
                     ->options(Role::all()->pluck('name', 'id'))
                     ->searchable()
                     ->preload(),

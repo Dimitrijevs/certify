@@ -18,4 +18,5 @@ return [
     'settings' => 'Настройки',
     'create_new_record' => 'Создать новую запись',
     'edit_record' => 'Редактировать запись',
+    'additional' => 'Дополнительно',
 ];

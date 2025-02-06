@@ -19,6 +19,8 @@ return [
         'description' => 'Apraksts',
     ],
     'custom' => [
+        'edit_certificate' => 'Rediģēt sertifikātu',
+        'requirement' => 'Prasība',
         'details_section' => 'Sertifikāta detaļas',
         'points' => 'Punkti',
         'completed_at' => 'Pabeigts',

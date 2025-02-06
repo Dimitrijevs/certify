@@ -11,6 +11,7 @@ return [
     'postal_code' => 'Postal Code',
     'email_address' => 'Email Address',
     'phone_number' => 'Phone Number',
+    'address' => 'Address',
     'website' => 'Website',
     'users' => 'Users',
     'students' => 'Students',

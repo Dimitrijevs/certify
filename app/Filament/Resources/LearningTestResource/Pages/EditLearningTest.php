@@ -14,7 +14,7 @@ class EditLearningTest extends EditRecord
 
     public function getTitle(): string | Htmlable
     {
-        return __('learning/learningTest.custom.edit_qualification');
+        return __('learning/learningTest.custom.edit_test');
     }
 
     protected function getHeaderActions(): array

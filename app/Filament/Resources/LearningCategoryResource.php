@@ -44,12 +44,12 @@ class LearningCategoryResource extends Resource
 
     public static function getLabel(): string
     {
-        return 'Category';
+        return __('learning/learningCategory.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Categories';
+        return __('learning/learningCategory.label_plural');
     }
 
     public static function canView(Model $record): bool

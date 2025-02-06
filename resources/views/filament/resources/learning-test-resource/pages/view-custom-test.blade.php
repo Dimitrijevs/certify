@@ -33,7 +33,7 @@
                                 <x-tabler-note-off class="text-gray-600 dark:text-gray-400" />
                                 <span
                                     class="ml-4 text-md font-medium text-gray-500 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
-                                    No selected courses
+                                    {{ __('learning/learningTest.form.no_selected_courses') }}
                                 </span>
                             </span>
                         </li>

@@ -32,3 +32,10 @@ public/js/filament/filament/echo.js
 public/css/filament/forms/forms.css
 public/css/filament/filament/app.css
 public/js/filament/filament/app.js
+public/vendor/log-viewer/app.css
+public/vendor/log-viewer/app.js
+public/vendor/log-viewer/app.js.LICENSE.txt
+public/vendor/log-viewer/mix-manifest.json
+public/vendor/log-viewer/img/log-viewer-32.png
+public/vendor/log-viewer/img/log-viewer-64.png
+public/vendor/log-viewer/img/log-viewer-128.png

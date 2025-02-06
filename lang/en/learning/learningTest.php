@@ -11,6 +11,7 @@ return [
         'create_new_qualification' => 'Create a new qualification',
         'cancel' => 'Cancel',
         'save_changes' => 'Save',
+        'no_selected_courses' => 'No selected courses',
     ],
     'fields' => [
         'name' => 'Name',
@@ -29,6 +30,7 @@ return [
     'custom' => [
         'test_information' => 'Test information',
         'questions' => 'Questions',
+        'edit_test' => 'Edit test',
         'min_score' => 'Points',
         'start_test' => 'Start test',
         'type_of_requirement' => 'Select the type of requirement: Test or Certificate',
