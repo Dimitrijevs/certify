@@ -16,5 +16,5 @@ return [
     'failed' => 'Šie autorizācijas dati nav pareizi.',
     'password' => 'Norādītā parole ir nepareiza.',
     'throttle' => 'Pārāk daudz pieteikšanās mēģinājumu. Lūdzu, mēģiniet vēlreiz pēc :seconds sekundēm.',
-
+    'logout' => 'Izrakstīties',
 ];

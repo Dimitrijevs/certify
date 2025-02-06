@@ -10,6 +10,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
+use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
@@ -33,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
-            ->registration(Register::class) 
+            ->registration(Register::class)
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
@@ -89,6 +90,14 @@ class AdminPanelProvider extends PanelProvider
                 'Additional' => NavigationGroup::make()
                     ->label(__('other.additional'))
                     ->icon('tabler-adjustments-plus'),
+            ]);
+
+            Filament::registerNavigationItems([
+                NavigationItem::make('log_out')
+                    ->label(__('auth.logout'))
+                    ->sort(999)
+                    ->url(fn(): string => route('user-logout'))
+                    ->group('Additional'),
             ]);
         });
     }
