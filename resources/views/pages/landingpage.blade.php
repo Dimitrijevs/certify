@@ -1,7 +1,7 @@
 @extends('layout.guest-layout')
 
 @section('content')
-    <div class="flex flex-col space-y-40">
+    <div class="flex flex-col space-y-40 max-w-5xl mx-4 sm:mx-auto">
         {{-- about us --}}
         @include('homepage.top-section')
 

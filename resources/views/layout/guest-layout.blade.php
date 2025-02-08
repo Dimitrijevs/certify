@@ -15,17 +15,15 @@
     <title>certifyNow</title>
 </head>
 
-<body style="background-color: #CEFAFE;" class="max-w-5xl mx-4 sm:mx-auto">
+<body style="background-color: #CEFAFE;">
     @livewire('notifications')
 
-    <!-- Header Section -->
-    {{-- @include('partials.landing-page-header') --}}
+    @include('components.header')
 
     <!-- Main Content -->
     @yield('content')
 
-    <!-- Footer Section -->
-    {{-- @include('partials.landing-page-footer') --}}
+    @include('components.footer')
 
     @livewire('notifications')
 
