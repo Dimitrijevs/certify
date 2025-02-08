@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.heading {
+    @apply text-gray-800 tracking-wide;
+}
+
+.paragraph {
+    @apply text-gray-600 tracking-wider leading-6;
+}
+
+.image {
+    @apply rounded-xl shadow-md;
+}
