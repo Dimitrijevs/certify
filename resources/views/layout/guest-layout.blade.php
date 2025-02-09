@@ -31,7 +31,9 @@
 
     @vite('resources/js/app.js')
 
+    <script src="{{ asset('js/alpine/alpine.min.js') }}"></script>
     <script src="{{ asset('js/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('js/swiper/slider.js') }}"></script>
 </body>
 
 </html>

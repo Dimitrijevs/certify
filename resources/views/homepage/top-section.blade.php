@@ -1,4 +1,4 @@
-<div class="">
+<div class="" id="top-section">
     <div class="text-5xl my-60 w-[760px] heading">
         <h1>Empower Learning with <strong>certifyNow</strong> – Create, Test, Certify!</h1>
     </div>

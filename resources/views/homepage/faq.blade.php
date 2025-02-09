@@ -1,4 +1,4 @@
-<div>
+<div id="faq">
     <div class="mx-auto max-w-5xl px-6 py-24 sm:pt-32 lg:px-8 lg:py-40">
         <div class="lg:grid lg:grid-cols-12 lg:gap-8">
             <div class="lg:col-span-5">

@@ -1,4 +1,4 @@
-<div class="">
+<div class="" id="getting-started">
     <div class="mb-8 text-center">
         <h2 class="heading text-4xl mb-4">Why Choose Us?</h2>
         <p class="paragraph">Easy course creation tools, Interactive test and quiz builders, 
@@ -26,5 +26,3 @@
         <div class="swiper-scrollbar"></div>
     </div>
 </div>
-
-<script src="{{ asset('js/swiper/slider.js') }}"></script>
