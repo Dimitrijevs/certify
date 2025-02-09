@@ -5,8 +5,8 @@
                 <h2 class="text-3xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-4xl">Frequently asked
                     questions</h2>
                 <p class="mt-4 text-base/7 text-pretty text-gray-600">Can’t find the answer you’re looking for? Reach out
-                    to our <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">customer
-                        support</a> team.</p>
+                    to our <button class="font-semibold text-blue-600 hover:text-blue-400 duration-300 cursor-pointer">customer
+                        support</button> team.</p>
             </div>
             <div class="mt-10 lg:col-span-7 lg:mt-0">
                 <dl class="space-y-10">

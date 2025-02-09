@@ -4,8 +4,8 @@
         <p class="paragraph">Easy course creation tools, Interactive test and quiz builders, 
             Activity tracking and analytics</p>
     </div>
-    <div class="swiper">
-        <div class="swiper-wrapper">
+    <div class="swiper w-5/6">
+        <div class="swiper-wrapper w-full">
             <div class="swiper-slide">
                 <img class="rounded-lg w-full h-[500px] object-cover"
                     src="{{ asset('landingpage-images/getting-started-1.png') }}" alt="">

@@ -1,9 +1,11 @@
 <nav class="fixed w-full backdrop-blur-sm left-0 right-0 z-50 py-6" x-data="{ open: false }">
-    <div class="max-w-5xl mx-4 sm:mx-auto">
+    <div class="max-w-5xl mx-6 md:mx-auto">
         <div class="flex justify-between items-center">
-            <h1 class="text-4xl heading hover:text-gray-600 duration-200 cursor-pointer">
-                certifyNow
-            </h1>
+            <a href="#top-section">
+                <h1 class="text-4xl heading hover:text-gray-600 duration-200 cursor-pointer">
+                    certifyNow
+                </h1>
+            </a>
 
             <div>
                 <x-tabler-menu @click="open = !open"

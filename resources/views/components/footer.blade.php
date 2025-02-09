@@ -1,5 +1,5 @@
 <footer class="">
-    <div class="mx-auto max-w-5xl overflow-hidden px-6 pb-20 sm:pb-12 lg:px-8">
+    <div class="mx-auto max-w-5xl overflow-hidden px-6 pb-10 sm:pb-12 lg:px-8">
         <nav class="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-lg" aria-label="Footer">
             <a href="#top-section" class="text-gray-800 hover:text-gray-600">Getting Started!</a>
             <a href="#online-learning" class="text-gray-800 hover:text-gray-600">Advantages of Online Learning</a>
