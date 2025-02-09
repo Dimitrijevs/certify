@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
+            ->font('Playfair Display')
             ->registration(Register::class)
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
