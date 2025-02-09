@@ -6,7 +6,7 @@ use App\Http\Controllers\LearningCertificateController;
 
 Route::get('/', function () {
     return view('pages.landingpage');
-});
+})->name('landingpage');
 
 Route::get('/user-logout', function () {
     Auth::logout();

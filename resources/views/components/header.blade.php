@@ -18,6 +18,15 @@
             localStorage.removeItem('dark');
         }
     },
+    editSidebar() {
+        this.open = !this.open;
+
+        if (this.open) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
 }" x-init="() => {
     if (localStorage.getItem('dark')) {
         document.documentElement.classList.add('dark');
@@ -28,7 +37,7 @@
         isDark = false;
     }
 }">
-    <div class="max-w-5xl mx-6 md:mx-auto">
+    <div class="max-w-5xl mx-6 lg:mx-auto">
         <div class="flex justify-between items-center">
             <a href="#top-section">
                 <h1 class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer">
@@ -48,15 +57,22 @@
                 </div>
 
                 <div class="">
-                    <x-tabler-menu @click="open = !open"
+                    <x-tabler-menu @click="editSidebar()"
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
+                </div>
+
+                <div class="">
+                    <a href="/app/login">
+                        <x-tabler-user class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200"/>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Overlay -->
-    <div x-show="open" class="fixed inset-0 h-screen bg-black bg-opacity-80 z-40"
+    <div x-show="open" 
+        class="fixed inset-0 h-screen bg-black bg-opacity-80 z-40"
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
@@ -71,7 +87,7 @@
         <div class="flex w-full justify-between items-center mb-8">
             <h2 class="heading text-xl">Navigation</h2>
             <div>
-                <x-tabler-x @click="open = false" class="paragraph cursor-pointer hover:text-gray-600 duration-200" />
+                <x-tabler-x @click="editSidebar()" class="paragraph cursor-pointer hover:text-gray-600 duration-200" />
             </div>
         </div>
 

@@ -16,15 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
         effect: "cards",
     });
 
-    document
-        .querySelector(".swiper-nav-left")
-        .addEventListener("click", function () {
+    const navLeft = document.querySelector(".swiper-nav-left");
+    const navRight = document.querySelector(".swiper-nav-right");
+
+    if (navLeft) {
+        navLeft.addEventListener("click", function () {
             swiper.slidePrev();
         });
+    }
 
-    document
-        .querySelector(".swiper-nav-right")
-        .addEventListener("click", function () {
+    if (navRight) {
+        navRight.addEventListener("click", function () {
             swiper.slideNext();
         });
+    }
 });

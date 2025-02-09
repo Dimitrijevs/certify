@@ -7,7 +7,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
-use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
 use Filament\Navigation\NavigationItem;

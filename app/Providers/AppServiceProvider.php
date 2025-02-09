@@ -5,8 +5,9 @@ namespace App\Providers;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\ServiceProvider;
-use Filament\Navigation\NavigationGroup;
+use App\Http\Responses\CustomLogoutResponse;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Http\Responses\Auth\LogoutResponse;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind the custom LogoutResponse implementation
+        $this->app->singleton(LogoutResponse::class, CustomLogoutResponse::class);
     }
 
     /**
