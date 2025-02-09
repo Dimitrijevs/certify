@@ -8,7 +8,7 @@
             <p>Whether you're training your team or sharing knowledge with the world, certifyNow makes it easy to create engaging courses, design interactive tests, and award professional certificates. Streamline your training process or grow your audience with our user-friendly tools. Start building your course today and empower learners to succeed!</p>
         </div>
 
-        <div class="col-span-1 md:col-span-1">
+        <div class="col-span-1 md:col-span-2">
             <img class="image" src="{{ asset('landingpage-images/top-section.jpg') }}" alt="">
         </div>
     </div>

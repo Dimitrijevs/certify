@@ -7,7 +7,7 @@
 }
 
 body {
-    overflow-x: hidden; /* Hide horizontal scrollbar */
+    overflow-x: hidden;
 }
 
 @font-face {
@@ -31,11 +31,11 @@ body {
 }
 
 .heading {
-    @apply text-gray-800 tracking-wide;
+    @apply text-gray-800 dark:text-cyan-200 tracking-wide;
 }
 
 .paragraph {
-    @apply text-gray-600 tracking-wider leading-6;
+    @apply text-gray-600 dark:text-cyan-100 tracking-wider leading-6;
 }
 
 .image {

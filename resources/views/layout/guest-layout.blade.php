@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
     <title>certifyNow</title>
 </head>
 
-<body style="background-color: #CEFAFE;">
+<body>
     @livewire('notifications')
 
     @include('components.header')
