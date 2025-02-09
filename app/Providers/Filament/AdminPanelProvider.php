@@ -96,7 +96,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('log_out')
                     ->label(__('auth.logout'))
                     ->sort(999)
-                    ->url(fn(): string => route('user-logout'))
+                    ->url(fn(): string => route('landingpage'))
                     ->group('Additional'),
             ]);
         });
