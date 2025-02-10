@@ -11,6 +11,7 @@
     @vite('resources/css/app.css')
 
     <link rel="stylesheet" href="{{ asset('css/swiper/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom/animate.css') }}">
 
     <title>certifyNow</title>
 </head>
@@ -34,6 +35,7 @@
     <script src="{{ asset('js/alpine/alpine.min.js') }}"></script>
     <script src="{{ asset('js/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('js/swiper/slider.js') }}"></script>
+    <script src="{{ asset('js/custom/animate.js') }}"></script>
 </body>
 
 </html>

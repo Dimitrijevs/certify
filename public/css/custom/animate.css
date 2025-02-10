@@ -1,0 +1,45 @@
+/* animate-hidden */
+
+.animate-hidden-left {
+    opacity: 0;
+    filter: blur(6px);
+    transition: all 1s;
+    transform: translateX(-100%);
+}
+
+.animate-hidden-right {
+    opacity: 0;
+    filter: blur(6px);
+    transition: all 1s;
+    transform: translateX(100%);
+}
+
+.animate-hidden-bottom {
+    opacity: 0;
+    filter: blur(6px);
+    transition: all 1s;
+    transform: translateY(100%);
+}
+
+.animate-hidden-right-navbar {
+    opacity: 0;
+    filter: blur(6px);
+    transition: all 1s;
+    transform: translateX(200%);
+}
+
+
+.animate-hidden-right-navbar:nth-child(2) {
+    transition-delay: 0.3s;
+}
+
+.animate-hidden-right-navbar:nth-child(3) {
+    transition-delay: 0.6s;
+}
+
+
+.animate-visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}

@@ -4,30 +4,18 @@ document.addEventListener("DOMContentLoaded", function () {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
         },
-
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        loop: true,
         scrollbar: {
             el: ".swiper-scrollbar",
+            draggable: true,
         },
-
         autoplay: {
-            delay: 4000,
+            delay: 6000,
         },
-
-        effect: "cards",
+        effect: "slide",
     });
-
-    const navLeft = document.querySelector(".swiper-nav-left");
-    const navRight = document.querySelector(".swiper-nav-right");
-
-    if (navLeft) {
-        navLeft.addEventListener("click", function () {
-            swiper.slidePrev();
-        });
-    }
-
-    if (navRight) {
-        navRight.addEventListener("click", function () {
-            swiper.slideNext();
-        });
-    }
 });

@@ -5,8 +5,8 @@
     </div>
     
     <div class="grid grid-cols-1 gap-4">
-        <img class="image w-4/5 sm:w-[520px]" src="{{ asset('landingpage-images/gallery-horizontal-1.jpg') }}" alt="">
-        <img class="image w-4/5 sm:w-[400px] justify-self-end sm:-mt-20" src="{{ asset('landingpage-images/gallery-vertical-2.jpg') }}" alt="">
-        <img class="image w-4/5 sm:w-[400px] sm:ms-16 sm:-mt-48 filter brightness-90" src="{{ asset('landingpage-images/gallery-vertical-3.jpg') }}" alt="">
+        <img class="image w-4/5 sm:w-[520px] animate-hidden animate-hidden-left" src="{{ asset('landingpage-images/gallery-horizontal-1.jpg') }}" alt="">
+        <img class="image w-4/5 sm:w-[400px] animate-hidden animate-hidden-right justify-self-end sm:-mt-20" src="{{ asset('landingpage-images/gallery-vertical-2.jpg') }}" alt="">
+        <img class="image w-4/5 sm:w-[400px] animate-hidden animate-hidden-left sm:ms-16 sm:-mt-48 filter brightness-90" src="{{ asset('landingpage-images/gallery-vertical-3.jpg') }}" alt="">
     </div>
 </div>

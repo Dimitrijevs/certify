@@ -1,7 +1,6 @@
 <!-- Link Swiper's CSS -->
-<link rel="stylesheet" href="{{ asset('css/slider/swiper-bundle.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/swiper/swiper-bundle.min.css') }}">
 
-<!-- Demo styles -->
 <style>
     .swiper {
         width: 100%;
@@ -99,9 +98,7 @@
 </style>
 
 <div class="overflow-hidden w-full max-w-full">
-    <div class="swiper mySwiper max-w-full overflow-hidden">
-        <div class="swiper-nav-left"></div>
-        <div class="swiper-nav-right"></div>
+    <div class="swiper max-w-full overflow-hidden">
         <div class="swiper-wrapper rounded-lg">
             @foreach ($gallery as $image)
                 <div class="swiper-slide">
@@ -122,5 +119,5 @@
 </div>
 
 <!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="/js/slider/slider.js"></script>
+<script src="{{ asset('js/swiper/slider.js') }}"></script>
+<script src="{{ asset('js/swiper/swiper-bundle.min.js') }}"></script>

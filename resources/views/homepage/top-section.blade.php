@@ -1,5 +1,5 @@
 <div class="" id="top-section">
-    <div class="text-2xl sm:text-4xl lg:text-5xl my-60 w-4/5 heading">
+    <div class="text-2xl sm:text-4xl lg:text-5xl my-60 w-4/5 heading animate-hidden animate-hidden-left">
         <h1>Empower Learning with <strong>certifyNow</strong> – Create, Test, Certify!</h1>
     </div>
 

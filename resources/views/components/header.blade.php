@@ -40,30 +40,30 @@
     <div class="max-w-5xl mx-6 lg:mx-auto">
         <div class="flex justify-between items-center">
             <a href="#top-section">
-                <h1 class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer">
+                <h1
+                    class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer animate-hidden animate-hidden-left">
                     certifyNow
                 </h1>
             </a>
 
             <div class="flex space-x-4">
-                <div class="" x-show="isDark">
-                    <x-tabler-moon @click="changeTheme()"
+                <div class="animate-hidden animate-hidden-right-navbar">
+                    <x-tabler-sun @click="changeTheme()" x-show="!isDark"
+                        class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
+
+                    <x-tabler-moon @click="changeTheme()" x-show="isDark"
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
                 </div>
 
-                <div class="" x-show="!isDark">
-                    <x-tabler-sun @click="changeTheme()"
-                        class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
-                </div>
-
-                <div class="">
+                <div class="animate-hidden animate-hidden-right-navbar">
                     <x-tabler-menu @click="editSidebar()"
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
                 </div>
 
-                <div class="">
+                <div class="animate-hidden animate-hidden-right-navbar">
                     <a href="/app/login">
-                        <x-tabler-user class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200"/>
+                        <x-tabler-user
+                            class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
                     </a>
                 </div>
             </div>
@@ -71,8 +71,7 @@
     </div>
 
     <!-- Overlay -->
-    <div x-show="open" 
-        class="fixed inset-0 h-screen bg-black bg-opacity-80 z-40"
+    <div x-show="open" class="fixed inset-0 h-screen bg-black bg-opacity-80 z-40"
         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
