@@ -8,6 +8,8 @@
 
 body {
     overflow-x: hidden;
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
 @font-face {
@@ -28,6 +30,7 @@ body {
 
 * {
     font-family: "Playfair Display", serif;
+    box-sizing: border-box;
 }
 
 .heading {

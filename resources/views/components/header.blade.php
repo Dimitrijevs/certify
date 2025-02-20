@@ -37,17 +37,17 @@
         isDark = false;
     }
 }">
-    <div class="max-w-5xl mx-6 lg:mx-auto">
+    <div class="sm:max-w-5xl mx-6 lg:mx-auto ">
         <div class="flex justify-between items-center">
             <a href="#top-section">
                 <h1
-                    class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer animate-hidden animate-hidden-left">
+                    class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer">
                     certifyNow
                 </h1>
             </a>
 
-            <div class="flex space-x-4">
-                <div class="animate-hidden animate-hidden-right-navbar">
+            <div class="flex space-x-4 items-center">
+                <div class="">
                     <x-tabler-sun @click="changeTheme()" x-show="!isDark"
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
 
@@ -55,12 +55,12 @@
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
                 </div>
 
-                <div class="animate-hidden animate-hidden-right-navbar">
+                <div class="">
                     <x-tabler-menu @click="editSidebar()"
                         class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
                 </div>
 
-                <div class="animate-hidden animate-hidden-right-navbar">
+                <div class="">
                     <a href="/app/login">
                         <x-tabler-user
                             class="text-gray-800 dark:text-cyan-200 cursor-pointer hover:text-gray-600 dark:hover:text-cyan-100 duration-200" />
