@@ -46,4 +46,38 @@ class LearningTest extends Model
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'test_id');
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($test) {
+            if (is_null($test->price)) {
+                $test->price = 0;
+            }
+
+            if ($test->price = 0 && $test->discount > 0) {
+                $test->discount = 0;
+            }
+
+            $test->saveQuietly();
+        });
+
+        static::updated(function ($test) {
+            if (is_null($test->price)) {
+                $test->price = 0;
+            }
+
+            if ($test->price = 0 && $test->discount > 0) {
+                $test->discount = 0;
+            }
+            
+            $test->saveQuietly();
+        });
+    }
 }

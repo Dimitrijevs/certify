@@ -205,15 +205,15 @@ class SchoolResource extends Resource
                                     'md' => 12,
                                     'lg' => 12,
                                 ])
-                                ->imageEditor()
                                 ->directory(function ($record, $operation) {
-                                    if ($operation === 'create') {
+                                    if ($operation == 'create') {
                                         $lastSchool = School::latest('id')->first();
                                         return "schools/" . ($lastSchool ? $lastSchool->id + 1 : 1);
                                     }
 
                                     return "schools/$record->id";
                                 })
+                                ->disk('public')
                                 ->image()
                                 ->imageEditor()
                                 ->label('')
@@ -333,9 +333,9 @@ class SchoolResource extends Resource
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_active');
-            $table->date('active_from')->nullable();
-            $table->date('active_till')->nullable();
+            $table->boolean('is_public');
+            $table->decimal('price', 8, 2)->nullable()->default(0);
+            $table->decimal('discount', 8, 2)->nullable();
+            $table->string('currency')->nullable()->default('EUR');
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

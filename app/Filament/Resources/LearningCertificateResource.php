@@ -238,6 +238,9 @@ class LearningCertificateResource extends Resource
                     ->label(__('user.label'))
                     ->relationship('user', 'name')
                     ->searchable()
+                    ->visible(function () {
+                        return Auth::user()->role_id < 4;
+                    })
                     ->preload()
                     ->multiple(),
                 SelectFilter::make('test_id')

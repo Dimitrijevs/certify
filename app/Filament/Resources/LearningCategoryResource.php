@@ -109,56 +109,6 @@ class LearningCategoryResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
-                        DatePicker::make('active_from')
-                            ->prefixIcon('tabler-calendar')
-                            ->label(__('learning/learningCategory.fields.active_from'))
-                            ->nullable()
-                            ->disabled(function ($get, $set) {
-                                if ($get('is_active') == 0) {
-                                    $set('active_from', null);
-                                }
-                                return !$get('is_active');
-                            })
-                            ->rules(['after_or_equal:today'])
-                            ->dehydrated()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 6,
-                                'lg' => 6,
-                            ]),
-                        DatePicker::make('active_till')
-                            ->label(__('learning/learningCategory.fields.active_to'))
-                            ->nullable()
-                            ->prefixIcon('tabler-calendar')
-                            ->disabled(function ($get, $set) {
-                                if ($get('is_active') == 0) {
-                                    $set('active_till', null);
-                                }
-                                return !$get('is_active');
-                            })
-                            ->afterOrEqual(function ($get) {
-                                return $get('active_from');
-                            })
-                            ->dehydrated()
-                            ->columnSpan([
-                                'default' => 9,
-                                'sm' => 3,
-                                'md' => 4,
-                                'lg' => 4,
-                            ]),
-                        Toggle::make('is_active')
-                            ->label(__('learning/learningCategory.fields.active'))
-                            ->live()
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(False)
-                            ->columnSpan([
-                                'default' => 3,
-                                'sm' => 3,
-                                'md' => 2,
-                                'lg' => 2,
-                            ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')
@@ -174,6 +124,41 @@ class LearningCategoryResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
+                        TextInput::make('price')
+                            ->label('Price')
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->columnSpan([
+                                'default' => 8,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 4,
+                            ])
+                            ->numeric()
+                            ->suffixIcon('tabler-percentage')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Toggle::make('is_public')
+                            ->label('Public')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-circle-percentage')
+                            ->offIcon('tabler-circle-dashed-percentage')
+                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningCategory.fields.description'))
                             ->nullable()
@@ -229,7 +214,30 @@ class LearningCategoryResource extends Resource
                         ->size(TextColumnSize::Large),
                     TextColumn::make('description')
                         ->words(15)
-                        ->markdown()
+                        ->markdown(),
+                    TextColumn::make('price')
+                        ->label('Price')
+                        ->searchable()
+                        ->formatStateUsing(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return $record->price . ' €';
+                            } else {
+                                return 'Free';
+                            }
+                        })
+                        ->color(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return 'danger';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return 'primary';
+                            } else {
+                                return 'success';
+                            }
+                        })
+                        ->weight(FontWeight::Bold)
+                        ->size(TextColumnSize::Large),
                 ]),
             ])
             ->modifyQueryUsing(function (Builder $query) {

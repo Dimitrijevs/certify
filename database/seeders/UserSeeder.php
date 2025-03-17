@@ -64,11 +64,11 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        for($i = 0; $i < 20; $i++) {
+        for($i = 0; $i < 10; $i++) {
             if ($faker->boolean(90)) {
-                $isStrudent = 4;
+                $role = 4;
             } else {
-                $isStrudent = 3;
+                $role = 3;
             }
 
             $school = School::find($faker->randomElement($schools));
@@ -77,7 +77,7 @@ class UserSeeder extends Seeder
             $users[] = [
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
-                'role_id' => $isStrudent,
+                'role_id' => $role,
                 'password' => bcrypt('demopass'),
                 'school_id' => $school->id,
                 'group_id' => $group->id,

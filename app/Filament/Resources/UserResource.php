@@ -42,9 +42,9 @@ class UserResource extends Resource
         return __('participants.label_plural');
     }
 
-    public static function canView(Model $record): bool
+    public static function canViewAny(): bool
     {
-        return true;
+        return Auth::user()->role_id < 4;
     }
 
     public static function canCreate(): bool
@@ -54,7 +54,7 @@ class UserResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id <= 4 && Auth::id() == $record->id || Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -112,11 +112,11 @@ class UserResource extends Resource
                                 ->required()
                                 ->preload()
                                 ->searchable()
-                                ->visible(function ($record = null, $operation) {
-                                    if ($operation == 'edit' && $record->role_id == 1) {
-                                        return false;
-                                    } else {
+                                ->visible(function ($operation) {
+                                    if ($operation == 'edit' && Auth::user()->role_id == 1) {
                                         return true;
+                                    } else {
+                                        return false;
                                     }
                                 })
                                 ->columnSpan([
@@ -134,6 +134,9 @@ class UserResource extends Resource
                                 ->required(function () {
                                     return Auth::user()->role_id > 2;
                                 })
+                                ->visible(function () {
+                                    return Auth::user()->role_id < 3;
+                                })
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -146,6 +149,9 @@ class UserResource extends Resource
                                     if ($get('school_id')) {
                                         return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
                                     }
+                                })
+                                ->visible(function () {
+                                    return Auth::user()->role_id < 3;
                                 })
                                 ->required(function () {
                                     return Auth::user()->role_id > 2;
@@ -459,9 +465,9 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

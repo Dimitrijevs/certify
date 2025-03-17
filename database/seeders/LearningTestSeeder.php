@@ -51,6 +51,8 @@ class LearningTestSeeder extends Seeder
             ]
         ];
 
+        $users = DB::table('users')->get();
+
         for ($i = 0; $i < count($images); $i++) {
             if (!Storage::disk('public')->exists("learning_qualifications/{$images[$i]['directory_id']}")) {
                 Storage::disk('public')->makeDirectory("learning_qualifications/{$images[$i]['directory_id']}");
@@ -89,6 +91,11 @@ class LearningTestSeeder extends Seeder
                 'layout_id' => null,
                 'is_public' => 1,
                 'cooldown' => 60,
+                'price' => 0,
+                'discount' => null,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -102,6 +109,11 @@ class LearningTestSeeder extends Seeder
                 'layout_id' => $defaultTemplate,
                 'is_public' => rand(0, 1),
                 'cooldown' => null,
+                'price' => 2.50,
+                'discount' => 20, // 20%
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -115,6 +127,11 @@ class LearningTestSeeder extends Seeder
                 'layout_id' => null,
                 'is_public' => rand(0, 1),
                 'cooldown' => null,
+                'price' => 5.00,
+                'discount' => null,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -126,8 +143,13 @@ class LearningTestSeeder extends Seeder
                 'min_score' => rand(3, 10),
                 'time_limit' => rand(20, 60),
                 'layout_id' => $defaultTemplate,
-                'is_public' => 1,
+                'is_public' => 0,
                 'cooldown' => null,
+                'price' => 0,
+                'discount' => null,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -141,6 +163,11 @@ class LearningTestSeeder extends Seeder
                 'layout_id' => $defaultTemplate,
                 'is_public' => 1,
                 'cooldown' => null,
+                'price' => 3.00,
+                'discount' => 10, // 10%
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
             [
@@ -154,6 +181,11 @@ class LearningTestSeeder extends Seeder
                 'layout_id' => null,
                 'is_public' => 1,
                 'cooldown' => 60,
+                'price' => 0,
+                'discount' => null,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
+                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]
         ];

@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -107,6 +108,9 @@ class LearningTestResource extends Resource
                         'lg' => 12,
                     ])
                     ->schema([
+                        Hidden::make('created_by')
+                            ->default(Auth::id()),
+                            
                         TextInput::make('name')
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
@@ -274,6 +278,41 @@ class LearningTestResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ]),
+                        TextInput::make('price')
+                            ->label('Price')
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->columnSpan([
+                                'default' => 8,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 4,
+                            ])
+                            ->numeric()
+                            ->suffixIcon('tabler-percentage')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Toggle::make('is_public')
+                            ->label('Public')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-circle-percentage')
+                            ->offIcon('tabler-circle-dashed-percentage')
+                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
                             ->columnSpan(12)
@@ -321,7 +360,30 @@ class LearningTestResource extends Resource
                         ->size(TextColumnSize::Large),
                     TextColumn::make('description')
                         ->words(13)
-                        ->markdown()
+                        ->markdown(),
+                    TextColumn::make('price')
+                        ->label('Price')
+                        ->searchable()
+                        ->formatStateUsing(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return $record->price . ' €';
+                            } else {
+                                return 'Free';
+                            }
+                        })
+                        ->color(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return 'danger';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return 'primary';
+                            } else {
+                                return 'success';
+                            }
+                        })
+                        ->weight(FontWeight::Bold)
+                        ->size(TextColumnSize::Large),
                 ]),
             ])
             ->defaultSort('id', 'desc')
@@ -352,9 +414,33 @@ class LearningTestResource extends Resource
             ->actions([
                 //
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->role_id == 1) {
+                    return $query; // Admin sees all tests
+                } elseif (Auth::user()->role_id >= 2) {
+                    // Start with active tests requirement
+                    $query->where('is_active', true);
+                    
+                    // Create a nested where condition for public OR same school
+                    $query->where(function ($subquery) {
+                        // Public tests
+                        $subquery->where('is_public', true);
+                        
+                        // OR tests created by users from the same school
+                        if (Auth::user()->school_id) {
+                            $subquery->orWhereHas('createdBy', function ($userQuery) {
+                                $userQuery->where('school_id', Auth::user()->school_id);
+                            });
+                        }
+                    });
+                }
+                
+                return $query;
+            })
             ->bulkActions([
                 //
-            ])->recordUrl(
+            ])
+            ->recordUrl(
                 fn(Model $record) => ViewCustomTest::getUrl(['record' => $record->id], isAbsolute: false)
             );
     }

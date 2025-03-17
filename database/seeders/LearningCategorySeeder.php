@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +17,8 @@ class LearningCategorySeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
+        
         $images = [
             [
                 'directory_id' => '1',
@@ -42,6 +46,8 @@ class LearningCategorySeeder extends Seeder
                 'image_path' => null,
             ],
         ];
+
+        $users = User::all();
 
         $sourceImagesPath = database_path('seeders/data/learning_categories');
 
@@ -77,6 +83,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => $images[0]['image_path'],
                 'description' => 'Apzaļumošanas darbu veikšana nodrošina skaistu un dzīvīgu vidi. No augu izvēles līdz stādīšanai un kopšanai, uzzini labākās prakses, lai veidotu ilgtspējīgus apstādījumus.',
                 'is_active' => 1,
+                'is_public' => 0,
+                'price' => 0,
+                'discount' => 0,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -85,6 +96,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => $images[1]['image_path'],
                 'description' => 'Labiekārtošanas projekti padara teritorijas funkcionālas un estētiski pievilcīgas. Apgūsti dārza dizaina pamatus, apgaismojuma izvietošanu un ūdens elementu integrāciju.',
                 'is_active' => 1,
+                'is_public' => 1,
+                'price' => 5,
+                'discount' => 21,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -93,6 +109,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => $images[2]['image_path'],
                 'description' => 'Bruģēšanas darbi ietver dažādu bruģakmens veidu izvēli un uzstādīšanu. Iepazīsties ar bruģēšanas procesu un uzzini, kā uzturēt bruģētās virsmas labā stāvoklī.',
                 'is_active' => 1,
+                'is_public' => 0,
+                'price' => 10,
+                'discount' => 0,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -101,6 +122,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => null,
                 'description' => 'Efektīva projektu vadība ir būtiska veiksmīgai apzaļumošanas un labiekārtošanas darbu realizācijai. Uzzini par plānošanu, komunikāciju un ilgtspējīgiem risinājumiem ainavu būvniecībā.',
                 'is_active' => 1,
+                'is_public' => 1,
+                'price' => 4,
+                'discount' => 50,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -109,6 +135,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => $images[3]['image_path'],
                 'description' => 'Darba drošība un pareiza tehnikas izmantošana ir kritiski svarīga būvniecības darbos. Uzzini par drošības prasībām, piemērotu instrumentu izvēli un tehnikas apkopi.',
                 'is_active' => 1,
+                'is_public' => rand(0, 1),
+                'price' => 0,
+                'discount' => 0,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -117,6 +148,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => $images[4]['image_path'],
                 'description' => '<p>Drošība internetā ir būtiska, lai pasargātu sevi un savus datus no dažādiem draudiem tiešsaistē. Tā ietver gan tehniskus, gan uzvedības aspektus, kas palīdz izvairīties no kaitējuma un saglabāt privātumu.</p><h3>1. Paroles un autentifikācija</h3><ol><li>Kā izveidot drošas paroles.</li><li>Divpakāpju autentifikācijas izmantošana.</li></ol><h3>2. Privātums</h3><ol><li>Kā aizsargāt savus datus sociālajos tīklos.</li><li>Ko darīt, lai pasargātu savu personisko informāciju tiešsaistē.</li></ol><h3>3. Kiberdrošības draudi</h3><ol><li>Ļaunatūra (malware) un kā no tās izvairīties.</li><li>Pikšķerēšana (phishing) un kā to atpazīt.</li></ol><p><br>Šie ir tikai daži no svarīgākajiem tematiem, kas palīdzēs labāk saprast, kā pasargāt sevi un citus, lietojot internetu.</p>',
                 'is_active' => 1,
+                'is_public' => 1,
+                'price' => 3,
+                'discount' => 0,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -125,6 +161,11 @@ class LearningCategorySeeder extends Seeder
                 'thumbnail' => null,
                 'description' => 'Matemātika ir zinātne, kas pēta skaitļus, to attiecības un īpašības. Tā ir būtiska daudzās dzīves jomās, piemēram, dabaszinātnēs, inženierijā, ekonomikā un informātikā.',
                 'is_active' => 1,
+                'is_public' => 1,
+                'price' => 0,
+                'discount' => 0,
+                'currency' => 'EUR',
+                'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

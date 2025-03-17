@@ -14,16 +14,20 @@ return new class extends Migration
         Schema::create('learning_tests', function (Blueprint $table) {
             $table->id();
             $table->json('category_id')->nullable()->onDelete('set null');
-            $table->boolean('is_active');
             $table->string('thumbnail')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('is_question_transition_enabled')->default(false);
             $table->integer('min_score')->nullable();
-            $table->boolean('is_public')->default(false);
             $table->integer('time_limit')->nullable();
             $table->integer('layout_id')->nullable();
             $table->integer('cooldown')->nullable();
+            $table->boolean('is_active');
+            $table->boolean('is_public');
+            $table->decimal('price', 8, 2)->nullable()->default(0);
+            $table->decimal('discount', 8, 2)->nullable();
+            $table->string('currency')->nullable()->default('EUR');
+            $table->integer('created_by');
             $table->timestamps();
         });
     }
