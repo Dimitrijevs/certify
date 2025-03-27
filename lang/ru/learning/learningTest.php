@@ -10,6 +10,7 @@ return [
         'create' => 'Создать',
         'create_new_qualification' => 'Создать новую квалификацию',
         'cancel' => 'Отменить',
+        'no_selected_courses' => 'Не выбраны курсы',
         'save_changes' => 'Сохранить',
     ],
     'fields' => [
@@ -29,6 +30,7 @@ return [
     'custom' => [
         'test_information' => 'Информация о тесте',
         'questions' => 'Вопросы',
+        'edit_test' => 'Редактировать тест',
         'min_score' => 'Пункты',
         'time_limit' => 'Ограничение по времени',
         'start_test' => 'Начать тест',

@@ -19,6 +19,8 @@ class School extends Model
         'email',
         'avatar',
         'website',
+        'description',
+        'created_by',
     ];
 
     protected $hidden = [
@@ -39,5 +41,26 @@ class School extends Model
     public function students()
     {
         return $this->hasMany(User::class)->where('role_id', 4);
+    }
+
+    public function teachers()
+    {
+        return $this->hasMany(User::class)->where('role_id', 3);
+    }
+
+    public function certificates()
+    {
+        return $this->hasManyThrough(LearningCertificate::class, User::class, 'school_id', 'user_id', 'id', 'id');
+    }
+
+    public function certification_requirement()
+    {
+        return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')
+            ->where('entity_type', 'school');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

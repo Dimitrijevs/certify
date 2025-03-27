@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'participant_general_information' => 'Dalībnieka Vispārīgā Informācija',
+    'certification_requirements' => 'Sertifikācijas Prasības',
+    'label' => 'Dalībnieks',
+    'label_plural' => 'Dalībnieki',
+    'name' => 'Vārds',
+    'group' => 'Grupa',
+    'role' => 'Loma',
+    'full_name' => 'Pilns Vārds',
+    'email_address' => 'E-pasta Adrese',
+    'avatar' => 'Avatars',
+    'password_change' => 'Paroles Maiņa',
+    'new_password' => 'Jaunā Parole',
+    'confirm_password' => 'Apstiprināt Paroli',
+    'password' => 'Parole',
+    'admin' => 'Administrators',
+    'instructor' => 'Instruktors',
+    'student' => 'Students',
+    'no_role' => 'Bez Lomas',
+    'no_group' => 'Bez Grupas',
+    'no_institution' => 'Bez Iestādes',
+    'user' => 'Lietotājs',
+];

@@ -19,6 +19,8 @@ return [
         'description' => 'Описание',
     ],
     'custom' => [
+        'edit_certificate'=> 'Редактировать сертификат',
+        'requirement' => 'Требование',
         'details_section' => 'Детали сертификата',
         'points' => 'Пункты',
         'completed_at' => 'Завершен',

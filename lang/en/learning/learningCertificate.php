@@ -19,6 +19,8 @@ return [
         'description' => 'Description',
     ],
     'custom' => [
+        'edit_certificate'=> 'Edit certificate',
+        'requirement' => 'Requirement',
         'details_section' => 'Certificate details',
         'points' => 'Points',
         'completed_at' => 'Completed at',

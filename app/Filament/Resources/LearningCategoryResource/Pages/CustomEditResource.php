@@ -23,7 +23,7 @@ class CustomEditResource extends EditRecord
 
     protected static string $resource = LearningCategoryResource::class;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = LearningResource::findOrFail($record);
         $this->fillForm();
@@ -42,15 +42,15 @@ class CustomEditResource extends EditRecord
                 ->color('gray')
                 ->icon('tabler-eye')
                 ->url(LearningCategoryResource::getUrl('resource', ['record' => $this->record->id])),
+            Action::make('save')
+                ->label(__('learning/learningTest.form.save_changes'))
+                ->action('save')
+                ->icon('tabler-checkbox'),
             DeleteAction::make()
                 ->after(function () {
                     return redirect(ListLearningCategories::getUrl());
                 })
                 ->icon('tabler-trash'),
-            Action::make('save')
-                ->label(__('learning/learningTest.form.save_changes'))
-                ->action('save')
-                ->icon('tabler-checkbox'),
         ];
     }
 

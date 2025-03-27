@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -46,19 +47,34 @@ class LearningTestResource extends Resource
     //     return __('learning/learningCategory.group_label');
     // }
 
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id !== 3;
-    }
-
     public static function getLabel(): string
     {
-        return __('learning/learningTest.label');
+        return 'Test';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('learning/learningTest.label_plural');
+        return 'Tests';
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form
@@ -92,57 +108,51 @@ class LearningTestResource extends Resource
                         'lg' => 12,
                     ])
                     ->schema([
+                        Hidden::make('created_by')
+                            ->default(Auth::id()),
+                            
                         TextInput::make('name')
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 12,
+                                'default' => 8,
                                 'sm' => 12,
                                 'md' => 12,
                                 'lg' => 6,
                             ]),
-                        Select::make('requirement_type')
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function ($set, $state) {
-                                if ($state == 'certificate') {
-                                    $set('min_score', 0);
-                                    $set('time_limit', null);
-                                }
-                            })
-                            ->tooltip(__('learning/learningTest.custom.type_of_requirement'))
-                            ->label(__('learning/learningTest.fields.requirement_type'))
-                            ->options([
-                                'test' => __('learning/learningTest.requirements.test'),
-                                'certificate' => __('learning/learningTest.requirements.certificate'),
-                            ])
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 3,
-                            ]),
                         Toggle::make('is_active')
                             ->label(__('learning/learningTest.fields.active'))
                             ->columnSpan([
-                                'default' => 6,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 1,
+                                'default' => 4,
+                                'sm' => 4,
+                                'md' => 4,
+                                'lg' => 2,
                             ])
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->inline(false),
                         Toggle::make('is_question_transition_enabled')
                             ->label(__('learning/learningTest.fields.free_navigation'))
                             ->columnSpan([
-                                'default' => 6,
-                                'sm' => 3,
-                                'md' => 3,
+                                'default' => 5,
+                                'sm' => 4,
+                                'md' => 4,
                                 'lg' => 2,
                             ])
-                            ->inline(false)
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        Toggle::make('is_public')
+                            ->label('Available for everyone')
+                            ->columnSpan([
+                                'default' => 7,
+                                'sm' => 4,
+                                'md' => 4,
+                                'lg' => 2,
+                            ])
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
                         TextInput::make('min_score')
                             ->label(__('learning/learningTest.fields.fault_points'))
                             ->live()
@@ -187,23 +197,19 @@ class LearningTestResource extends Resource
                             })
                             ->default(0)
                             ->required()
-                            ->suffixIcon('tabler-award')
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->suffixIcon('tabler-award'),
                         TextInput::make('time_limit')
-                            ->label(__('learning/learningTest.fields.time_limit'))
+                            ->label('Time limit (minutes)')
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
                                 'md' => 6,
                                 'lg' => 6,
                             ])
+                            ->suffixIcon('tabler-clock')
                             ->placeholder('30')
-                            ->rules('integer')
-                            ->hidden(function ($get) {
-                                return $get('requirement_type') === 'certificate';
-                            }),
+                            ->minValue(5)
+                            ->numeric(),
                         Group::make()
                             ->columnSpan([
                                 'default' => 12,
@@ -251,15 +257,15 @@ class LearningTestResource extends Resource
                                         'md' => 12,
                                         'lg' => 12,
                                     ])
-                                    ->rules(['integer', 'min:0'])
-                                    ->hidden(function ($get) {
-                                        return $get('requirement_type') === 'certificate';
-                                    }),
+                                    ->suffixIcon('tabler-clock')
+                                    ->tooltip('Cooldown in minutes between attempts')
+                                    ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningTest.fields.thumbnail'))
                             ->image()
                             ->rules('image')
+                            ->imageEditor()
                             ->imageResizeTargetWidth('711')
                             ->imageResizeTargetHeight('400')
                             ->imageResizeMode('cover')
@@ -272,11 +278,48 @@ class LearningTestResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ]),
+                        TextInput::make('price')
+                            ->label('Price')
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->columnSpan([
+                                'default' => 8,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 4,
+                            ])
+                            ->numeric()
+                            ->suffixIcon('tabler-percentage')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Toggle::make('is_public')
+                            ->label('Public')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-circle-percentage')
+                            ->offIcon('tabler-circle-dashed-percentage')
+                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
                             ->columnSpan(12)
                             ->disableToolbarButtons([
                                 'attachFiles',
+                                'h2',
+                                'h3',
                                 'codeBlock',
                             ]),
                     ]),
@@ -299,7 +342,8 @@ class LearningTestResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 
@@ -316,19 +360,39 @@ class LearningTestResource extends Resource
                         ->size(TextColumnSize::Large),
                     TextColumn::make('description')
                         ->words(13)
-                        ->markdown()
+                        ->markdown(),
+                    TextColumn::make('price')
+                        ->label('Price')
+                        ->searchable()
+                        ->formatStateUsing(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return $record->price . ' €';
+                            } else {
+                                return 'Free';
+                            }
+                        })
+                        ->color(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return 'danger';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return 'primary';
+                            } else {
+                                return 'success';
+                            }
+                        })
+                        ->weight(FontWeight::Bold)
+                        ->size(TextColumnSize::Large),
                 ]),
             ])
+            ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                if (!is_null(Auth::user()->role_id)) {
-                    if (Auth::user()->role_id === 3) {
-                        return $query->where('is_active', true);
-                    }
-
-                    return $query;
+                if (Auth::user()->role_id > 2) {
+                    return $query->where('is_active', true);
                 }
 
-                return $query->where('is_active', true);
+                return $query;
             })
             ->contentGrid([
                 'default' => 1,
@@ -350,9 +414,33 @@ class LearningTestResource extends Resource
             ->actions([
                 //
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->role_id == 1) {
+                    return $query; // Admin sees all tests
+                } elseif (Auth::user()->role_id >= 2) {
+                    // Start with active tests requirement
+                    $query->where('is_active', true);
+                    
+                    // Create a nested where condition for public OR same school
+                    $query->where(function ($subquery) {
+                        // Public tests
+                        $subquery->where('is_public', true);
+                        
+                        // OR tests created by users from the same school
+                        if (Auth::user()->school_id) {
+                            $subquery->orWhereHas('createdBy', function ($userQuery) {
+                                $userQuery->where('school_id', Auth::user()->school_id);
+                            });
+                        }
+                    });
+                }
+                
+                return $query;
+            })
             ->bulkActions([
                 //
-            ])->recordUrl(
+            ])
+            ->recordUrl(
                 fn(Model $record) => ViewCustomTest::getUrl(['record' => $record->id], isAbsolute: false)
             );
     }

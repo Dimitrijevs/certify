@@ -87,12 +87,14 @@ class ActivitiesRelationManager extends RelationManager
             ])
             ->filters([
                 SelectFilter::make('resource_id')
+                    ->label('Resource')
                     ->multiple()
                     ->options(function () {
                         return LearningResource::all()->pluck('name', 'id');
                     })
                     ->preload(),
                 SelectFilter::make(name: 'user_id')
+                    ->label('User')
                     ->multiple()
                     ->options(function () {
                         return User::all()->pluck('name', 'id');

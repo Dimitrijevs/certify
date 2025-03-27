@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Tables;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -23,6 +22,7 @@ use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -39,8 +39,38 @@ use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningRes
 class LearningCategoryResource extends Resource
 {
     protected static ?string $model = LearningCategory::class;
+
     protected static ?string $navigationGroup = 'Learning';
 
+    public static function getLabel(): string
+    {
+        return __('learning/learningCategory.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('learning/learningCategory.label_plural');
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
 
     public static function form(Form $form): Form
     {
@@ -73,7 +103,12 @@ class LearningCategoryResource extends Resource
                         TextInput::make('name')
                             ->label(__('learning/learningCategory.fields.name'))
                             ->required()
-                            ->columnSpan(12),
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')
@@ -83,57 +118,61 @@ class LearningCategoryResource extends Resource
                             ->imageResizeTargetHeight('400')
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('16:9')
-                            ->columnSpan(12),
-                        Textarea::make('description')
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
+                        TextInput::make('price')
+                            ->label('Price')
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->columnSpan([
+                                'default' => 8,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 4,
+                            ])
+                            ->numeric()
+                            ->suffixIcon('tabler-percentage')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Toggle::make('is_public')
+                            ->label('Public')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-circle-percentage')
+                            ->offIcon('tabler-circle-dashed-percentage')
+                            ->inline(false),
+                        RichEditor::make('description')
                             ->label(__('learning/learningCategory.fields.description'))
                             ->nullable()
-                            ->rows(4)
-                            ->columnSpan(12),
-                        DatePicker::make('active_from')
-                            ->label(__('learning/learningCategory.fields.active_from'))
-                            ->nullable()
-                            ->disabled(function ($get, Set $set) {
-                                if ($get('is_active') == 0) {
-                                    $set('active_from', null);
-                                }
-                                return !$get('is_active');
-                            })
-                            ->rules(['after_or_equal:today'])
-                            ->dehydrated()
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                                'h2',
+                                'h3',
+                                'codeBlock',
+                            ])
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
-                                'md' => 5,
-                                'lg' => 5,
-                            ]),
-                        DatePicker::make('active_till')
-                            ->label(__('learning/learningCategory.fields.active_to'))
-                            ->nullable()
-                            ->disabled(function ($get, Set $set) {
-                                if ($get('is_active') == 0) {
-                                    $set('active_till', null);
-                                }
-                                return !$get('is_active');
-                            })
-                            ->afterOrEqual(function ($get) {
-                                return $get('active_from');
-                            })
-                            ->dehydrated()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 5,
-                                'lg' => 5,
-                            ]),
-                        Toggle::make('is_active')
-                            ->label(__('learning/learningCategory.fields.active'))
-                            ->live()
-                            ->inline(False)
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 2,
-                                'lg' => 2,
+                                'md' => 12,
+                                'lg' => 12,
                             ]),
                     ]),
 
@@ -155,7 +194,8 @@ class LearningCategoryResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 
@@ -174,19 +214,38 @@ class LearningCategoryResource extends Resource
                         ->size(TextColumnSize::Large),
                     TextColumn::make('description')
                         ->words(15)
-                        ->markdown()
+                        ->markdown(),
+                    TextColumn::make('price')
+                        ->label('Price')
+                        ->searchable()
+                        ->formatStateUsing(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return $record->price . ' €';
+                            } else {
+                                return 'Free';
+                            }
+                        })
+                        ->color(function ($record) {
+                            if ($record->price > 0 && $record->discount > 0) {
+                                return 'danger';
+                            } else if ($record->price > 0 && $record->discount == 0) {
+                                return 'primary';
+                            } else {
+                                return 'success';
+                            }
+                        })
+                        ->weight(FontWeight::Bold)
+                        ->size(TextColumnSize::Large),
                 ]),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (!is_null(Auth::user()->role_id)) {
-                    if (Auth::user()->role_id === 3) {
-                        return $query->where('is_active', true);
-                    }
-
-                    return $query;
+                if (Auth::user()->role_id > 2) {
+                    return $query->where('is_active', true);
                 }
 
-                return $query->where('is_active', true);
+                return $query;
             })
             ->contentGrid([
                 'default' => 1,
@@ -205,10 +264,9 @@ class LearningCategoryResource extends Resource
                         return true;
                     }),
             ])
+            ->defaultSort('id', 'desc')
             ->actions([
-                // ViewAction::make(),
-                // EditAction::make(),
-                // DeleteAction::make(),
+                //
             ])
             ->bulkActions([
                 // 

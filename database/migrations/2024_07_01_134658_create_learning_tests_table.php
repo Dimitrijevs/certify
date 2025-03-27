@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('learning_tests', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('sort_id');
             $table->json('category_id')->nullable()->onDelete('set null');
-            $table->boolean('is_active');
             $table->string('thumbnail')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
@@ -24,7 +22,12 @@ return new class extends Migration
             $table->integer('time_limit')->nullable();
             $table->integer('layout_id')->nullable();
             $table->integer('cooldown')->nullable();
-            $table->string('requirement_type');
+            $table->boolean('is_active');
+            $table->boolean('is_public');
+            $table->decimal('price', 8, 2)->nullable()->default(0);
+            $table->decimal('discount', 8, 2)->nullable();
+            $table->string('currency')->nullable()->default('EUR');
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

@@ -39,13 +39,6 @@ class LearningCertificateResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    // public static function getNavigationGroup(): ?string
-    // {
-    //     return __('learning/learningCategory.group_label');
-    // }
-
     public static function getLabel(): string
     {
         return __('learning/learningCertificate.label');
@@ -58,7 +51,17 @@ class LearningCertificateResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id != 3;
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form
@@ -92,7 +95,7 @@ class LearningCertificateResource extends Resource
                     ])
                     ->schema([
                         Select::make('user_id')
-                            ->label(__('employee.label'))
+                            ->label(__('participants.user'))
                             ->live()
                             ->relationship('user', 'name')
                             ->afterStateUpdated(function ($set) {
@@ -194,6 +197,8 @@ class LearningCertificateResource extends Resource
                             ])
                             ->disableToolbarButtons([
                                 'attachFiles',
+                                'h2',
+                                'h3',
                                 'codeBlock',
                             ]),
                         Hidden::make('admin_id')
@@ -233,12 +238,9 @@ class LearningCertificateResource extends Resource
                     ->label(__('user.label'))
                     ->relationship('user', 'name')
                     ->searchable()
-                    ->preload()
-                    ->multiple(),
-                SelectFilter::make('type_id')
-                    ->label('Type')
-                    ->relationship('type', 'name')
-                    ->searchable()
+                    ->visible(function () {
+                        return Auth::user()->role_id < 4;
+                    })
                     ->preload()
                     ->multiple(),
                 SelectFilter::make('test_id')

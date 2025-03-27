@@ -13,7 +13,8 @@ class ListSchools extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label(__('other.create_new_record')),
         ];
     }
 }

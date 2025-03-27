@@ -30,4 +30,10 @@ class Group extends Model
     {
         return $this->hasMany(User::class, 'group_id');
     }
+
+    public function certification_requirement()
+    {
+        return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')
+            ->where('entity_type', 'group');
+    }
 }

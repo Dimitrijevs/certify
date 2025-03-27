@@ -16,9 +16,14 @@ class LearningCertificationRequirement extends Model
         'test_id',
     ];
 
-    public function employee()
+    public function student()
     {
         return $this->belongsTo(User::class, 'entity_id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'entity_id');
     }
 
     public function test()

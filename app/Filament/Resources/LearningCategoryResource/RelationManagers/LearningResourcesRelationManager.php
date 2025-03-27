@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
+use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Actions\CreateAction;
@@ -138,10 +139,16 @@ class LearningResourcesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                AvatarWithDetails::make('name')
                     ->label(__('learning/learningResource.fields.name'))
-                    ->searchable()
-                    ->sortable(),
+                    ->title(function ($state) {
+                        return $state;
+                    })
+                    ->avatarType('icon')
+                    ->titleLimit(30)
+                    ->icon('tabler-file-description')
+                    ->sortable()
+                    ->searchable(),
                 IconColumn::make('is_active')
                     ->label(__('learning/learningResource.fields.active'))
                     ->boolean()
@@ -191,26 +198,9 @@ class LearningResourcesRelationManager extends RelationManager
                     ->label(__('learning/learningResource.form.create')),
             ])
             ->actions([
-                ActionGroup::make([
-                    DeleteAction::make()
-                        ->color('gray'),
-                    ViewAction::make()
-                        ->color('gray')
-                        ->url(fn(Model $record) => ViewCustomLearningResource::getUrl(['record' => $record->id], isAbsolute: false)),
-                ])->label('')
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(ActionSize::Small)
-                    ->color('gray')
-                    ->button()
-                    ->extraAttributes(['style' => 'padding-right: 0.15rem !important; padding-left: 0.425rem !important;']),
                 EditAction::make()
-                    ->label('')
-                    ->tooltip(__('learning/learningResource.table.edit_resource'))
-                    ->color('gray')
-                    ->icon('tabler-arrow-right')
-                    ->button()
-                    ->url(fn(Model $record) => CustomEditResource::getUrl(['record' => $record->id], isAbsolute: false))
-                    ->extraAttributes(['style' => 'padding-right: 0.2rem !important; padding-left: 0.35rem !important;']),
+                    ->modalHeading(__('learning/learningResource.custom.edit_resource')),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

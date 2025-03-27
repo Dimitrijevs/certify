@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'participant_general_information' => 'Participant General Information',
+    'certification_requirements' => 'Certification Requirements',
+    'label' => 'Participant',
+    'label_plural' => 'Participants',
+    'name' => 'Name',
+    'group' => 'Group',
+    'role' => 'Role',
+    'full_name' => 'Full Name',
+    'email_address' => 'Email Address',
+    'avatar' => 'Avatar',
+    'password_change' => 'Password Change',
+    'new_password' => 'New Password',
+    'confirm_password' => 'Confirm Password',
+    'password' => 'Password',
+    'admin' => 'Admin',
+    'instructor' => 'Instructor',
+    'student' => 'Student',
+    'no_role' => 'No Role',
+    'no_group' => 'No Group',
+    'no_institution' => 'No Institution',
+    'user' => 'User',
+];

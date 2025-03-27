@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('learning_resources', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('sort_id');
             $table->integer('category_id')->onDelete('set null');
             $table->string('name');
             $table->text('description')->nullable();

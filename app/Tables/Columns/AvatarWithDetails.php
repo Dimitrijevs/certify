@@ -98,24 +98,7 @@ class AvatarWithDetails extends Column
 
     public function avatar(string|\Closure $avatar = null, string|\Closure $name = null): static
     {
-        if ($name instanceof \Closure) {
-            $name = $this->evaluate($name);
-        }
-
-        if (is_null($avatar)) {
-            $words = explode(' ', $name);
-            if (count($words) > 1) {
-                $firstLetter = strtoupper(substr($words[0], 0, 1));
-                $secondLetter = strtoupper(substr($words[1], 0, 1));
-                $initials = $firstLetter . $secondLetter;
-                $this->avatar = $initials;
-            } else {
-                $initials = strtoupper(substr($name, 0, 2));
-                $this->avatar = $initials;
-            }
-        } else {
-            $this->avatar = $avatar;
-        }
+        $this->avatar = $avatar;
 
         return $this;
     }

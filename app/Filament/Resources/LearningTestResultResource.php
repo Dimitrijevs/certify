@@ -54,6 +54,16 @@ class LearningTestResultResource extends Resource
         return false;
     }
 
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -204,32 +214,8 @@ class LearningTestResultResource extends Resource
                     ->label(__('learning/learningTestResult.custom.passed')),
             ])
             ->actions([
-                ActionGroup::make([
-                    ViewAction::make()
-                        ->url(function (Model $record) {
-                            $incompleteTest = LearningTestResult::where('test_id', $record->test_id)->whereNull('finished_at')->first();
-
-                            if (!is_null($incompleteTest)) {
-                                return CreateCustomTestResult::getUrl(['record' => $incompleteTest->test_id, 'question' => 1, 'viewTest' => 0], isAbsolute: false);
-                            }
-
-                            return CreateCustomTestResult::getUrl(['record' => $record->id, 'question' => 1, 'viewTest' => 1], isAbsolute: false);
-                        }),
-                    DeleteAction::make()
-                        ->color('gray'),
-                ])->label('')
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(ActionSize::Small)
-                    ->color('gray')
-                    ->button()
-                    ->extraAttributes(['style' => 'padding-right: 0.15rem !important; padding-left: 0.425rem !important;']),
-                EditAction::make()
-                    ->label('')
-                    ->tooltip(__('learning/learningTestResult.table.edit_test_result'))
-                    ->color('gray')
-                    ->icon('tabler-arrow-right')
-                    ->button()
-                    ->extraAttributes(['style' => 'padding-right: 0.2rem !important; padding-left: 0.35rem !important;']),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

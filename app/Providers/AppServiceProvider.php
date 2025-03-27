@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
-use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\ServiceProvider;
-use Filament\Navigation\NavigationGroup;
+use App\Http\Responses\CustomLogoutResponse;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Http\Responses\Auth\LogoutResponse;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use Stripe\StripeClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind the custom LogoutResponse implementation
+        $this->app->singleton(LogoutResponse::class, CustomLogoutResponse::class);
     }
 
     /**
@@ -24,18 +27,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->singleton(StripeClient::class, function () {
+            return new StripeClient(config('stripe.secret'));
+        });
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['en','lv','ru']);
+                ->locales(['en', 'lv', 'ru']);
         });
 
         Field::macro("tooltip", function (string $tooltip) {
-            return $this->hint(
-                Action::make('help')
-                    ->icon('tabler-exclamation-circle')
-                    ->color('gray')
-                    ->label('')
-                    ->tooltip($tooltip)
+            return $this->hintAction(
+                function () use ($tooltip) {
+                    return Action::make('help')
+                        ->icon('tabler-help')
+                        ->extraAttributes(["class" => "text-gray-500"])
+                        ->label("")
+                        ->tooltip($tooltip);
+                }
             );
         });
     }

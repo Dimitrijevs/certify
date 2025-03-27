@@ -16,8 +16,10 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('lv_LV');
-        $groups = Group::all()->pluck('id')->toArray();
         $schools = School::all()->pluck('id')->toArray();
+
+        $school = School::find($faker->randomElement($schools));
+            $group = $school->groups->random();
 
         $users = [
             [
@@ -44,8 +46,8 @@ class UserSeeder extends Seeder
                 'name'=> 'Teacher',
                 'email'=> 'teacher@certify.com',
                 'role_id'=> 3,
-                'group_id'=> null,
-                'school_id'=> 1,
+                'group_id'=> $group->id,
+                'school_id'=> $school->id,
                 'password'=> bcrypt('demopass'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -54,28 +56,40 @@ class UserSeeder extends Seeder
                 'name'=> 'User',
                 'email'=> 'user@certify.com',
                 'role_id'=> 4,
-                'group_id'=> 1,
-                'school_id'=> 1,
+                'group_id'=> $group->id,
+                'school_id'=> $school->id,
                 'password'=> bcrypt('demopass'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
 
-        for($i = 0; $i < 200; $i++) {
+        for($i = 0; $i < 100; $i++) {
             if ($faker->boolean(90)) {
-                $isStrudent = 4;
+                $role = 4;
             } else {
-                $isStrudent = 3;
+                $role = 3;
+            }
+
+            if ($faker->boolean(50)) {
+                $school = School::find($faker->randomElement($schools));
+            } else {
+                $school = null;
+            }
+
+            if ($school) {
+                $group = $school->groups->random();
+            } else {
+                $group = null;
             }
 
             $users[] = [
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
-                'role_id' => $isStrudent,
+                'role_id' => $role,
                 'password' => bcrypt('demopass'),
-                'group_id' => $faker->randomElement($groups),
-                'school_id' => $faker->randomElement($schools),
+                'school_id' => $school?->id,
+                'group_id' => $group?->id,
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ];
@@ -89,6 +103,19 @@ class UserSeeder extends Seeder
         foreach ($groups as $group) {
             $group->teacher_id = $faker->randomElement($users);
             $group->save();
+        }
+
+        $schools = School::all();
+        foreach ($schools as $school) {
+            $users = User::whereIn('role_id', [3, 2])
+                ->where('school_id', $school->id)
+                ->pluck('id')
+                ->toArray();
+
+            if ($users) {
+                $school->created_by = $faker->randomElement($users);
+                $school->save();
+            }
         }
     }
 }

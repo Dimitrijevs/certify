@@ -9,12 +9,15 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\SchoolResource\Pages;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\SchoolResource\Pages\CustomGroupPage;
@@ -27,6 +30,36 @@ class SchoolResource extends Resource
 
     protected static ?string $navigationGroup = 'People';
 
+    public static function getLabel(): string
+    {
+        return __('institution.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('institution.label_plural');
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 4;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->isCreatedByAuthUser($record);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->role_id < 3;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -37,7 +70,7 @@ class SchoolResource extends Resource
                 'lg' => 12,
             ])
             ->schema([
-                Section::make('School Information')
+                Section::make(__('institution.institution_general_information'))
                     ->columns([
                         'default' => 12,
                         'sm' => 12,
@@ -47,13 +80,13 @@ class SchoolResource extends Resource
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
-                        'md' => 8,
+                        'md' => 12,
                         'lg' => 8,
                     ])
                     ->schema([
                         TextInput::make('name')
                             ->maxLength(200)
-                            ->label('Full Name')
+                            ->label(__('institution.name'))
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
@@ -63,7 +96,7 @@ class SchoolResource extends Resource
                             ->required(),
                         TextInput::make('address')
                             ->maxLength(200)
-                            ->label('Address')
+                            ->label(__('institution.address'))
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -73,7 +106,7 @@ class SchoolResource extends Resource
                             ->required(),
                         TextInput::make('city')
                             ->maxLength(200)
-                            ->label('City')
+                            ->label(__('institution.city'))
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -83,7 +116,7 @@ class SchoolResource extends Resource
                             ->required(),
                         TextInput::make('country')
                             ->maxLength(200)
-                            ->label('Country')
+                            ->label(__('institution.country'))
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -93,7 +126,7 @@ class SchoolResource extends Resource
                             ->required(),
                         TextInput::make('postal_code')
                             ->maxLength(200)
-                            ->label('Postal Code')
+                            ->label(__('institution.postal_code'))
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -102,7 +135,7 @@ class SchoolResource extends Resource
                             ])
                             ->required(),
                         TextInput::make('email')
-                            ->label('Email Address')
+                            ->label(__('institution.email_address'))
                             ->prefixIcon('tabler-mail')
                             ->required()
                             ->email()
@@ -114,10 +147,9 @@ class SchoolResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('phone')
-                            ->label('Phone Number')
+                            ->label(__('institution.phone_number'))
                             ->prefixIcon('tabler-phone')
                             ->required()
-                            ->email()
                             ->unique(ignoreRecord: true)
                             ->columnSpan([
                                 'default' => 12,
@@ -126,7 +158,7 @@ class SchoolResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('website')
-                            ->label('Website')
+                            ->label(__('institution.website'))
                             ->prefixIcon('tabler-globe')
                             ->required()
                             ->columnSpan([
@@ -135,9 +167,24 @@ class SchoolResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
+                        RichEditor::make('description')
+                            ->label(__('learning/learningCategory.fields.description'))
+                            ->nullable()
+                            ->disableToolbarButtons([
+                                'attachFiles',
+                                'h2',
+                                'h3',
+                                'codeBlock',
+                            ])
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                     ]),
                 Group::make([
-                    Section::make('School Photo')
+                    Section::make(__('institution.photo'))
                         ->columns([
                             'default' => 12,
                             'sm' => 12,
@@ -159,13 +206,14 @@ class SchoolResource extends Resource
                                     'lg' => 12,
                                 ])
                                 ->directory(function ($record, $operation) {
-                                    if ($operation === 'create') {
+                                    if ($operation == 'create') {
                                         $lastSchool = School::latest('id')->first();
                                         return "schools/" . ($lastSchool ? $lastSchool->id + 1 : 1);
                                     }
 
                                     return "schools/$record->id";
                                 })
+                                ->disk('public')
                                 ->image()
                                 ->imageEditor()
                                 ->label('')
@@ -181,20 +229,20 @@ class SchoolResource extends Resource
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
-                        'md' => 4,
+                        'md' => 12,
                         'lg' => 4,
                     ]),
 
                 Tabs::make()->columnSpanFull()->tabs([
-                    Tab::make('Groups')
-                        ->icon('tabler-notebook')
+                    Tab::make(__('institution.groups'))
+                        ->icon('tabler-users-group')
                         ->schema([
                             RelationManager::make()
                                 ->manager(GroupsRelationManager::class)
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                    Tab::make('Students')
+                    Tab::make('Workers')
                         ->icon('tabler-notebook')
                         ->schema([
                             RelationManager::make()
@@ -202,7 +250,8 @@ class SchoolResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create'),
+                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                    ->persistTabInQueryString(),
             ]);
     }
 
@@ -211,7 +260,7 @@ class SchoolResource extends Resource
         return $table
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Name')
+                    ->label(__('institution.label'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -221,42 +270,45 @@ class SchoolResource extends Resource
                     ->avatar(function ($record) {
                         return $record->avatar;
                     })
+                    ->tooltip(function ($record) {
+                        return $record->name;
+                    })
                     ->avatarType('image')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('city')
-                    ->label('City')
+                    ->label(__('institution.city'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable(),
                 TextColumn::make('country')
-                    ->label('Country')
+                    ->label(__('institution.country'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable(),
                 TextColumn::make('postal_code')
-                    ->label('Postal Code')
+                    ->label(__('institution.postal_code'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->badge()
                     ->color('gray')
                     ->sortable(),
                 TextColumn::make('phone')
-                    ->label('Phone Number')
+                    ->label(__('institution.phone_number'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('email')
-                    ->label('Email Address')
+                    ->label(__('institution.email_address'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->limit(20)
+                    ->limit(16)
                     ->tooltip(function ($record) {
                         return $record->email;
                     })
                     ->sortable(),
                 TextColumn::make('website')
-                    ->label('Website')
+                    ->label(__('institution.website'))
                     ->url(function ($record) {
                         return $record->website;
                     })
@@ -275,11 +327,15 @@ class SchoolResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->url(function ($record) {
+                        return 'schools/' . $record->id . '/view';
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -298,6 +354,7 @@ class SchoolResource extends Resource
             'edit' => Pages\EditSchool::route('/{record}/edit'),
 
             'edit-group' => CustomGroupPage::route('/{record}/edit-group'),
+            'view-insitution' => Pages\InstitutionCustomView::route('/{record}/view'),
         ];
     }
 }

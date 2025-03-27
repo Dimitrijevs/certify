@@ -11,33 +11,21 @@ class LearningTest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sort_id',
         'category_id',
         'is_active',
         'thumbnail',
         'name',
+        'is_public',
+        'cooldown',
         'description',
         'min_score',
         'time_limit',
         'is_question_transition_enabled',
-        'certificate_type_id',
     ];
 
     protected $casts = [
         'category_id' => 'array',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($test) {
-            if (empty($test->sort_id)) {
-                $test->sort_id = LearningTest::max('sort_id') + 1;
-            }
-        });
-    }
-
 
     public function category()
     {
@@ -57,5 +45,39 @@ class LearningTest extends Model
     public function requirements()
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'test_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($test) {
+            if (is_null($test->price)) {
+                $test->price = 0;
+            }
+
+            if ($test->price = 0 && $test->discount > 0) {
+                $test->discount = 0;
+            }
+
+            $test->saveQuietly();
+        });
+
+        static::updated(function ($test) {
+            if (is_null($test->price)) {
+                $test->price = 0;
+            }
+
+            if ($test->price = 0 && $test->discount > 0) {
+                $test->discount = 0;
+            }
+            
+            $test->saveQuietly();
+        });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Role;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Group;
@@ -10,24 +11,67 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Rules\MatchOldPassword;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\Role;
-use Filament\Forms\Components\Group as FilaGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Resources\UserResource\Pages;
+use Filament\Forms\Components\Group as FilaGroup;
+use App\Forms\Components\CertificateRequirementForm;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationGroup = 'People';
+
+    public static function getLabel(): string
+    {
+        return __('participants.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('participants.label_plural');
+    }
+
+    // public static function canViewAny(): bool
+    // {
+    //     return Auth::user()->role_id < 4;
+    // }
+
+    // public static function canView(Model $record): bool
+    // {
+    //     return true;
+    // }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()->role_id < 4;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->role_id < 4;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4 || Auth::user()->role_id < 3;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4 || Auth::user()->role_id < 3;
+    }
 
     public static function form(Form $form): Form
     {
@@ -39,67 +83,125 @@ class UserResource extends Resource
                 'lg' => 12,
             ])
             ->schema([
-                Section::make('Personal Information')
-                    ->schema([
-                        TextInput::make('name')
-                            ->maxLength(50)
-                            ->label('Full Name')
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
-                            ])
-                            ->required(),
-                        TextInput::make('email')
-                            ->label('Email Address')
-                            ->prefixIcon('tabler-mail')
-                            ->required()
-                            ->email()
-                            ->unique(ignoreRecord: true)
-                            ->afterStateUpdated(function ($record, $operation) {
-                                if ($operation != 'create') {
-                                    if ($record->id == Auth::id()) {
-                                        Session::flush();
+                FilaGroup::make([
+                    Section::make(__('participants.participant_general_information'))
+                        ->schema([
+                            TextInput::make('name')
+                                ->maxLength(50)
+                                ->label(__('participants.full_name'))
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ])
+                                ->required(),
+                            TextInput::make('email')
+                                ->label(__('institution.email_address'))
+                                ->prefixIcon('tabler-mail')
+                                ->required()
+                                ->email()
+                                ->unique(ignoreRecord: true)
+                                ->afterStateUpdated(function ($record, $operation) {
+                                    if ($operation != 'create') {
+                                        if ($record->id == Auth::id()) {
+                                            Session::flush();
 
-                                        return redirect('/app/login');
+                                            return redirect('/app/login');
+                                        }
                                     }
-                                }
-                            })
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
-                            ]),
-                        Select::make('school_id')
-                            ->label('School')
-                            ->live()
-                            ->options(School::all()->pluck('name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
-                            ]),
-                        Select::make('group_id')
-                            ->label('Group')
-                            ->options(function ($get) {
-                                if ($get('school_id')) {
-                                    return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
-                                }
-                            })
-                            ->searchable()
-                            ->preload()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
-                            ]),
-                    ])
+                                })
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                            Select::make('role_id')
+                                ->label(__('participants.role'))
+                                ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
+                                ->required()
+                                ->preload()
+                                ->searchable()
+                                ->visible(false)
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
+                                ]),
+                            Select::make('school_id')
+                                ->label(__('institution.label'))
+                                ->live()
+                                ->options(School::all()->pluck('name', 'id'))
+                                ->searchable()
+                                ->preload()
+                                ->visible(function () {
+                                    return Auth::user()->role_id < 3;
+                                })
+                                ->disabled()
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                            Select::make('group_id')
+                                ->label(__('participants.group'))
+                                ->options(function ($get) {
+                                    if ($get('school_id')) {
+                                        return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
+                                    }
+                                })
+                                ->visible(function () {
+                                    return Auth::user()->role_id < 3;
+                                })
+                                ->disabled()
+                                ->searchable()
+                                ->preload()
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                        ])
+                        ->columns([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ])
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ]),
+
+                    Section::make(__('participants.certification_requirements'))
+                        ->schema([
+                            CertificateRequirementForm::make('info')
+                                ->nullable()
+                                ->dehydrated(false)
+                                ->columnSpanFull()
+                        ])
+                        ->columns([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ])
+                        ->columnSpan([
+                            'default' => 12,
+                            'sm' => 12,
+                            'md' => 12,
+                            'lg' => 12,
+                        ])
+                        ->visible(function ($operation) {
+                            return $operation !== 'create';
+                        }),
+                ])
                     ->columns([
                         'default' => 12,
                         'sm' => 12,
@@ -112,11 +214,34 @@ class UserResource extends Resource
                         'md' => 8,
                         'lg' => 8,
                     ]),
+
                 FilaGroup::make([
-                    Section::make('Password Change')
+                    Section::make(__('participants.avatar'))
+                        ->schema([
+                            FileUpload::make('avatar')
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
+                                ])
+                                ->directory(function ($record, $operation) {
+                                    if ($operation === 'create') {
+                                        $lastUser = User::latest('id')->first();
+                                        return "avatars/" . ($lastUser ? $lastUser->id + 1 : 1);
+                                    }
+
+                                    return "avatars/$record->id";
+                                })
+                                ->image()
+                                ->imageEditor()
+                                ->label('')
+                                ->nullable(),
+                        ]),
+                    Section::make(__('participants.password_change'))
                         ->schema([
                             TextInput::make('password_old')
-                                ->label('Old Password')
+                                ->label(__('participants.password'))
                                 ->password()
                                 ->revealable()
                                 ->prefixIcon('tabler-lock')
@@ -151,7 +276,7 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                             TextInput::make('password')
-                                ->label('New Password')
+                                ->label(__('participants.new_password'))
                                 ->password()
                                 ->revealable()
                                 ->prefixIcon('tabler-lock-plus')
@@ -190,7 +315,7 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                             TextInput::make('password_confirmation')
-                                ->label('Confirm New Password')
+                                ->label(__('participants.confirm_password'))
                                 ->password()
                                 ->required(function ($context): bool {
                                     return $context === 'create';
@@ -228,28 +353,6 @@ class UserResource extends Resource
                                     'lg' => 12,
                                 ]),
                         ]),
-                    Section::make('Avatar Upload')
-                        ->schema([
-                            FileUpload::make('avatar')
-                                ->columnSpan([
-                                    'default' => 12,
-                                    'sm' => 12,
-                                    'md' => 12,
-                                    'lg' => 12,
-                                ])
-                                ->directory(function ($record, $operation) {
-                                    if ($operation === 'create') {
-                                        $lastUser = User::latest('id')->first();
-                                        return "avatars/" . ($lastUser ? $lastUser->id + 1 : 1);
-                                    }
-
-                                    return "avatars/$record->id";
-                                })
-                                ->image()
-                                ->imageEditor()
-                                ->label('')
-                                ->nullable(),
-                        ])
                 ])
                     ->columns([
                         'default' => 12,
@@ -271,7 +374,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Name')
+                    ->label(__('participants.name'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -286,12 +389,12 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('school_id')
-                    ->label('School')
+                    ->label(__('institution.label'))
                     ->title(function ($record) {
                         if ($record->school) {
                             return $record->school->name;
                         } else {
-                            return 'No School';
+                            return __('participants.no_institution');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -305,12 +408,12 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('group_id')
-                    ->label('Group')
+                    ->label(__('participants.group'))
                     ->title(function ($record) {
                         if ($record->group) {
                             return $record->group->name;
                         } else {
-                            return 'No Group';
+                            return __('participants.no_group');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -322,20 +425,14 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('role_id')
-                    ->label('Role')
+                    ->label(__('participants.role'))
                     ->title(function ($record) {
-                        if ($record->role) {
-                            if ($record->role->name == 'super_admin' || $record->role->name == 'admin') {
-                                return 'Admin';
-                            } else if ($record->role->name == 'student') {
-                                return 'Student';
-                            } else if ($record->role->name == 'teacher') {
-                                return 'Teacher';
-                            } else {
-                                return $record->role->name;
-                            }
-                        } else {
-                            return 'No Role';
+                        if ($record->role->name == 'Super Admin' || $record->role->name == 'Admin') {
+                            return __('participants.admin');
+                        } else if ($record->role->name == 'Student') {
+                            return __('participants.student');
+                        } else if ($record->role->name == 'Teacher') {
+                            return __('participants.instructor');
                         }
                     })
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -346,28 +443,33 @@ class UserResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('school_id')
-                    ->label('School')
+                    ->label(__('institution.label'))
                     ->options(School::all()->pluck('name', 'id'))
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('group_id')
-                    ->label('Group')
-                    ->options(Group::all()->pluck('name', 'id'))
+                    ->label(__('participants.group'))
+                    ->options(
+                        Group::all()->mapWithKeys(function ($group) {
+                            return [$group->id => $group->year . ' ' . $group->group];
+                        })
+                    )
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('role_id')
-                    ->label('Role')
+                    ->label(__('participants.role'))
                     ->options(Role::all()->pluck('name', 'id'))
                     ->searchable()
                     ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

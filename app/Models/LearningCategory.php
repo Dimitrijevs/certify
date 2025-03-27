@@ -14,7 +14,6 @@ class LearningCategory extends Model
         'name',
         'thumbnail',
         'description',
-        'sort_id',
         'is_active',
         'active_from',
         'active_till',
@@ -28,16 +27,5 @@ class LearningCategory extends Model
     public function activities()
     {
         return $this->hasMany(LearningUserStudyRecord::class, 'category_id');
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($category) {
-            if (empty($category->sort_id)) {
-                $category->sort_id = LearningCategory::max('sort_id') + 1;
-            }
-        });
     }
 }
