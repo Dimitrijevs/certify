@@ -20,6 +20,7 @@ class School extends Model
         'avatar',
         'website',
         'description',
+        'created_by',
     ];
 
     protected $hidden = [
@@ -56,5 +57,10 @@ class School extends Model
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')
             ->where('entity_type', 'school');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

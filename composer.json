@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "8.2.27",
+        "php": "8.2.*",
         "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-language-switch": "^3.1",
         "filament/filament": "^3",
@@ -15,6 +15,7 @@
         "njxqlus/filament-relation-manager-component": "^1.0",
         "opcodesio/log-viewer": "^3.14",
         "ryangjchandler/blade-tabler-icons": "^2.3",
+        "stripe/stripe-php": "^16.6",
         "twig/twig": "^3.14"
     },
     "require-dev": {

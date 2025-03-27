@@ -9,6 +9,7 @@ use App\Http\Responses\CustomLogoutResponse;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Http\Responses\Auth\LogoutResponse;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use Stripe\StripeClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->app->singleton(StripeClient::class, function () {
+            return new StripeClient(config('stripe.secret'));
+        });
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->locales(['en', 'lv', 'ru']);

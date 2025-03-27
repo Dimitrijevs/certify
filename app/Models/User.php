@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Filament\Panel;
+use Illuminate\Support\Facades\Auth;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
@@ -27,6 +28,8 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         'group_id',
         'school_id',
         'password',
+        'stripe_connect_id',
+        'completed_stripe_onboarding',
     ];
 
     /**
@@ -49,6 +52,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'completed_stripe_onboarding' => 'boolean',
         ];
     }
 
@@ -87,5 +91,10 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     public function certificates()
     {
         return $this->hasMany(LearningCertificate::class);
+    }
+
+    public function isCreatedByAuthUser($school)
+    {
+        return Auth::user()->id === $school->created_by;
     }
 }

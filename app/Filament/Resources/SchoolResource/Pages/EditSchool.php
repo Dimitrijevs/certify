@@ -15,13 +15,14 @@ class EditSchool extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
             ViewAction::make()
                 ->url('view'),
+            DeleteAction::make()
+                ->icon('tabler-trash'),
         ];
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('other.edit_record');
     }

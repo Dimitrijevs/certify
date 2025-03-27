@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\Group as FilaGroup;
@@ -42,24 +43,34 @@ class UserResource extends Resource
         return __('participants.label_plural');
     }
 
-    public static function canViewAny(): bool
+    // public static function canViewAny(): bool
+    // {
+    //     return Auth::user()->role_id < 4;
+    // }
+
+    // public static function canView(Model $record): bool
+    // {
+    //     return true;
+    // }
+
+    public static function shouldRegisterNavigation(): bool
     {
         return Auth::user()->role_id < 4;
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 4;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id <= 4 && Auth::id() == $record->id || Auth::user()->role_id < 3;
+        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4 || Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4 || Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form
@@ -112,13 +123,7 @@ class UserResource extends Resource
                                 ->required()
                                 ->preload()
                                 ->searchable()
-                                ->visible(function ($operation) {
-                                    if ($operation == 'edit' && Auth::user()->role_id == 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
-                                })
+                                ->visible(false)
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 12,
@@ -131,12 +136,10 @@ class UserResource extends Resource
                                 ->options(School::all()->pluck('name', 'id'))
                                 ->searchable()
                                 ->preload()
-                                ->required(function () {
-                                    return Auth::user()->role_id > 2;
-                                })
                                 ->visible(function () {
                                     return Auth::user()->role_id < 3;
                                 })
+                                ->disabled()
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -153,9 +156,7 @@ class UserResource extends Resource
                                 ->visible(function () {
                                     return Auth::user()->role_id < 3;
                                 })
-                                ->required(function () {
-                                    return Auth::user()->role_id > 2;
-                                })
+                                ->disabled()
                                 ->searchable()
                                 ->preload()
                                 ->columnSpan([
@@ -463,6 +464,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

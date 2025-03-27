@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->text('description')->nullable();
+            $table->integer('created_by')->nullable()->default(1);
             $table->timestamps();
         });
     }

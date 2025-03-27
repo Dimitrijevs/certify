@@ -47,12 +47,12 @@ class SchoolResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 4;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->isCreatedByAuthUser($record);
     }
 
     public static function canDelete(Model $record): bool
@@ -242,7 +242,7 @@ class SchoolResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                    Tab::make(__('institution.students'))
+                    Tab::make('Workers')
                         ->icon('tabler-notebook')
                         ->schema([
                             RelationManager::make()

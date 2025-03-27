@@ -64,23 +64,32 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        for($i = 0; $i < 10; $i++) {
+        for($i = 0; $i < 100; $i++) {
             if ($faker->boolean(90)) {
                 $role = 4;
             } else {
                 $role = 3;
             }
 
-            $school = School::find($faker->randomElement($schools));
-            $group = $school->groups->random();
+            if ($faker->boolean(50)) {
+                $school = School::find($faker->randomElement($schools));
+            } else {
+                $school = null;
+            }
+
+            if ($school) {
+                $group = $school->groups->random();
+            } else {
+                $group = null;
+            }
 
             $users[] = [
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
                 'role_id' => $role,
                 'password' => bcrypt('demopass'),
-                'school_id' => $school->id,
-                'group_id' => $group->id,
+                'school_id' => $school?->id,
+                'group_id' => $group?->id,
                 'created_at' => $faker->dateTimeThisYear,
                 'updated_at' => $faker->dateTimeThisYear,
             ];
@@ -94,6 +103,19 @@ class UserSeeder extends Seeder
         foreach ($groups as $group) {
             $group->teacher_id = $faker->randomElement($users);
             $group->save();
+        }
+
+        $schools = School::all();
+        foreach ($schools as $school) {
+            $users = User::whereIn('role_id', [3, 2])
+                ->where('school_id', $school->id)
+                ->pluck('id')
+                ->toArray();
+
+            if ($users) {
+                $school->created_by = $faker->randomElement($users);
+                $school->save();
+            }
         }
     }
 }
