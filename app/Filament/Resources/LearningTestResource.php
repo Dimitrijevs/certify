@@ -391,9 +391,26 @@ class LearningTestResource extends Resource
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    return $query->where('is_active', true);
+                    // Basic requirements: must be active and public
+                    $query->where('is_active', true)
+                          ->where('is_public', true);
+                    
+                    // Then add conditions for either available_for_everyone OR same school_id
+                    $query->where(function($subQuery) {
+                        // Either available for everyone
+                        $subQuery->where('available_for_everyone', true);
+                        
+                        // OR created by someone from the same school (if user has a school)
+                        if (Auth::user()->school_id) {
+                            $subQuery->orWhereHas('createdBy', function($userQuery) {
+                                $userQuery->where('school_id', Auth::user()->school_id);
+                            });
+                        }
+                    });
+                    
+                    return $query;
                 }
-
+            
                 return $query;
             })
             ->contentGrid([
