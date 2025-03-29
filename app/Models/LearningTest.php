@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\PdfTemplate;
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LearningTest extends Model
@@ -21,6 +23,12 @@ class LearningTest extends Model
         'min_score',
         'time_limit',
         'is_question_transition_enabled',
+        'layout_id',
+        'price',
+        'discount',
+        'currency',
+        'created_by',
+        'aproved_by',
     ];
 
     protected $casts = [
@@ -52,6 +60,11 @@ class LearningTest extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'aproved_by');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -66,6 +79,23 @@ class LearningTest extends Model
             }
 
             $test->saveQuietly();
+
+            $recipients = User::where('role_id', '<', 3)
+                ->get();
+
+            Notification::make()
+                ->title('New Learning Material Created')
+                ->info()
+                ->body('A new learning material has been created: ' . $test->name)
+                ->actions([
+                    Action::make('view')
+                        ->icon('tabler-eye')
+                        ->url(function () use ($test) {
+                            return '/app/learning-tests/' . $test->id . '/edit';
+                        })
+                        ->button(),
+                ])
+                ->sendToDatabase($recipients);
         });
 
         static::updated(function ($test) {

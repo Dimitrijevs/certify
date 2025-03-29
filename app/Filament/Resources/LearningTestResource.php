@@ -8,7 +8,9 @@ use App\Models\LearningTest;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -301,8 +303,8 @@ class LearningTestResource extends Resource
                             ->suffixIcon('tabler-percentage')
                             ->minValue(0)
                             ->maxValue(100),
-                        Toggle::make('is_public')
-                            ->label('Public')
+                        Toggle::make('available_for_everyone')
+                            ->label('Available for everyone')
                             ->columnSpan([
                                 'default' => 4,
                                 'sm' => 3,
@@ -310,8 +312,8 @@ class LearningTestResource extends Resource
                                 'lg' => 2,
                             ])
                             ->default(true)
-                            ->onIcon('tabler-circle-percentage')
-                            ->offIcon('tabler-circle-dashed-percentage')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
@@ -403,14 +405,93 @@ class LearningTestResource extends Resource
             ->filters([
                 TernaryFilter::make('is_active')
                     ->label('Active')
-                    ->hidden(function () {
-                        if (Auth::user()->role_id) {
-                            return Auth::user()->role_id === 3 ? true : false;
+                    ->columnSpan(1)
+                    ->native(false)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                TernaryFilter::make('is_public')
+                    ->label('Public')
+                    ->native(false)
+                    ->columnSpan(1)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                Filter::make('is_free')
+                    ->columnSpan(2)
+                    ->columns(2)
+                    ->form([
+                        Select::make('is_free')
+                            ->live()
+                            ->options([
+                                true => 'Free',
+                                false => 'Paid',
+                            ])
+                            ->columnSpan(2)
+                            ->label('Price')
+                            ->native(false),
+                        TextInput::make('price_from')
+                            ->label('Price From')
+                            ->numeric()
+                            ->live()
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->columnSpan(1)
+                            ->minValue(0),
+                        TextInput::make('price_to')
+                            ->label('Price To')
+                            ->numeric()
+                            ->live()
+                            ->columnSpan(1)
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->minValue(0),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!isset($data['is_free'])) {
+                            return $query;
                         }
-
-                        return true;
+                    
+                        if ($data['is_free'] == true) {
+                            return $query->where(function ($query) {
+                                $query->where('price', 0)
+                                    ->orWhereNull('price');
+                            });
+                        } else {
+                            // Base query for paid items
+                            $query->where('price', '>', 0);
+                            
+                            // Apply price range filters if set, considering discount
+                            if (!empty($data['price_from'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '>=', $data['price_from'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
+                                });
+                            }
+                            
+                            if (!empty($data['price_to'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '<=', $data['price_to'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
+                                });
+                            }
+                            
+                            // If both from and to are set, we already applied the constraints above
+                            
+                            return $query;
+                        }
                     }),
             ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->actions([
                 //
             ])

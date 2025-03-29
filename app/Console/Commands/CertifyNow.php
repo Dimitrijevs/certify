@@ -12,7 +12,7 @@ class CertifyNow extends Command
      *
      * @var string
      */
-    protected $signature = 'certifyNow:fresh';
+    protected $signature = 'certify:fresh';
 
     /**
      * The console command description.

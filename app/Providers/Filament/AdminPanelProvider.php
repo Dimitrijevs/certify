@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->font('Playfair Display')
             ->registration(Register::class)
+            ->databaseNotifications()
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()

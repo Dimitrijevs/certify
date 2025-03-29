@@ -9,7 +9,11 @@ use App\Models\LearningCategory;
 use App\Models\LearningResource;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Tables\Filters\Filter;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
@@ -100,15 +104,68 @@ class LearningCategoryResource extends Resource
                         'lg' => 12,
                     ])
                     ->schema([
+                        Hidden::make('created_by')
+                            ->default(Auth::id()),
+
                         TextInput::make('name')
                             ->label(__('learning/learningCategory.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
+                                'default' => 8,
+                                'sm' => 9,
+                                'md' => 9,
+                                'lg' => 10,
                             ]),
+                        Toggle::make('is_active')
+                            ->label('Active')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        TextInput::make('price')
+                            ->label('Price')
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->visible(function ($get) {
+                                return $get('price') > 0;
+                            })
+                            ->columnSpan([
+                                'default' => 8,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 4,
+                            ])
+                            ->numeric()
+                            ->suffixIcon('tabler-percentage')
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Toggle::make('available_for_everyone')
+                            ->label('Available for everyone')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')
@@ -124,41 +181,6 @@ class LearningCategoryResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
-                        TextInput::make('price')
-                            ->label('Price')
-                            ->live()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ])
-                            ->numeric()
-                            ->minValue(0),
-                        TextInput::make('discount')
-                            ->label('Discount')
-                            ->columnSpan([
-                                'default' => 8,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 4,
-                            ])
-                            ->numeric()
-                            ->suffixIcon('tabler-percentage')
-                            ->minValue(0)
-                            ->maxValue(100),
-                        Toggle::make('is_public')
-                            ->label('Public')
-                            ->columnSpan([
-                                'default' => 4,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 2,
-                            ])
-                            ->default(true)
-                            ->onIcon('tabler-circle-percentage')
-                            ->offIcon('tabler-circle-dashed-percentage')
-                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningCategory.fields.description'))
                             ->nullable()
@@ -256,15 +278,102 @@ class LearningCategoryResource extends Resource
             ->filters([
                 TernaryFilter::make('is_active')
                     ->label('Active')
-                    ->hidden(function () {
-                        if (!is_null(Auth::user()->role_id)) {
-                            return Auth::user()->role_id === 3 ? true : false;
+                    ->columnSpan(1)
+                    ->native(false)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                TernaryFilter::make('is_public')
+                    ->label('Public')
+                    ->native(false)
+                    ->columnSpan(1)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                Filter::make('is_free')
+                    ->columnSpan(2)
+                    ->columns(2)
+                    ->form([
+                        Select::make('is_free')
+                            ->live()
+                            ->options([
+                                true => 'Free',
+                                false => 'Paid',
+                            ])
+                            ->columnSpan(2)
+                            ->label('Price')
+                            ->native(false),
+                        TextInput::make('price_from')
+                            ->label('Price From')
+                            ->numeric()
+                            ->live()
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->columnSpan(1)
+                            ->minValue(0),
+                        TextInput::make('price_to')
+                            ->label('Price To')
+                            ->numeric()
+                            ->live()
+                            ->columnSpan(1)
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->minValue(0),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!isset($data['is_free'])) {
+                            return $query;
                         }
 
-                        return true;
+                        if ($data['is_free'] == true) {
+                            return $query->where(function ($query) {
+                                $query->where('price', 0)
+                                    ->orWhereNull('price');
+                            });
+                        } else {
+                            // Base query for paid items
+                            $query->where('price', '>', 0);
+
+                            // Apply price range filters if set, considering discount
+                            if (!empty($data['price_from'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '>=', $data['price_from'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
+                                });
+                            }
+
+                            if (!empty($data['price_to'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '<=', $data['price_to'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
+                                });
+                            }
+
+                            // If both from and to are set, we already applied the constraints above
+            
+                            return $query;
+                        }
                     }),
             ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->defaultSort('id', 'desc')
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->role_id > 2) {
+                    return $query->where('is_active', true)
+                        ->where('is_public', true);
+                }
+
+                return $query;
+            })
             ->actions([
                 //
             ])

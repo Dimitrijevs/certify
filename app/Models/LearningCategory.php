@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\LearningUserStudyRecord;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LearningCategory extends Model
@@ -15,8 +17,12 @@ class LearningCategory extends Model
         'thumbnail',
         'description',
         'is_active',
-        'active_from',
-        'active_till',
+        'price',
+        'discount',
+        'currency',
+        'created_by',
+        'is_public',
+        'aproved_by',
     ];
 
     public function learningResources()
@@ -27,5 +33,51 @@ class LearningCategory extends Model
     public function activities()
     {
         return $this->hasMany(LearningUserStudyRecord::class, 'category_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'aproved_by');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($category) {
+            if (is_null($category->price)) {
+                $category->price = 0;
+                $category->saveQuietly();
+            }
+
+            $recipients = User::where('role_id', '<', 3)
+                ->get();
+
+            Notification::make()
+                ->title('New Learning Material Created')
+                ->info()
+                ->body('A new learning material has been created: ' . $category->name)
+                ->actions([
+                    Action::make('view')
+                        ->icon('tabler-eye')
+                        ->url(function () use ($category) {
+                            return '/app/learning-categories/' . $category->id . '/edit';
+                        })
+                        ->button(),
+                ])
+                ->sendToDatabase($recipients);
+        });
+
+        static::updated(function ($category) {
+            if (is_null($category->price)) {
+                $category->price = 0;
+                $category->saveQuietly();
+            }
+        });
     }
 }

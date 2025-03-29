@@ -23,11 +23,13 @@ return new class extends Migration
             $table->integer('layout_id')->nullable();
             $table->integer('cooldown')->nullable();
             $table->boolean('is_active');
-            $table->boolean('is_public');
             $table->decimal('price', 8, 2)->nullable()->default(0);
             $table->decimal('discount', 8, 2)->nullable();
             $table->string('currency')->nullable()->default('EUR');
             $table->integer('created_by');
+            $table->boolean('is_public')->default(false);
+            $table->integer('aproved_by')->nullable();
+            $table->boolean('available_for_everyone')->default(false);
             $table->timestamps();
         });
     }

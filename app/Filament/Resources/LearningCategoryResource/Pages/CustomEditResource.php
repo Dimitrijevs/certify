@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LearningCategoryResource\Pages;
 use Filament\Forms\Form;
 use Filament\Actions\Action;
 use App\Models\LearningResource;
+use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -37,9 +38,7 @@ class CustomEditResource extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('view')
-                ->label(__('learning/learningResource.form.view'))
-                ->color('gray')
+            ViewAction::make()
                 ->icon('tabler-eye')
                 ->url(LearningCategoryResource::getUrl('resource', ['record' => $this->record->id])),
             Action::make('save')
