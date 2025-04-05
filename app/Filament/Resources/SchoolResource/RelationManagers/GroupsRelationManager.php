@@ -7,10 +7,11 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -103,9 +104,6 @@ class GroupsRelationManager extends RelationManager
                         return $record->students->count();
                     }),
             ])
-            ->recordUrl(function ($record) {
-                return route('filament.app.resources.schools.edit-group', ['record' => $record->id]);
-            })
             ->filters([
                 //
             ])
@@ -114,12 +112,72 @@ class GroupsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->url(fn($record) => route('filament.app.resources.schools.edit-group', ['record' => $record->id])),
-                Tables\Actions\DeleteAction::make(),
+                    ->after(function ($livewire) {
+                        $livewire->dispatch('update-students-relation-manager');
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function ($record, $livewire) {
+
+                        $users = User::where('group_id', $record->id)->get();
+
+                        if ($users) {
+                            foreach ($users as $user) {
+
+                                $user->group_id = null;
+                                $user->save();
+                            }
+
+                            $record->delete();
+
+                            Notification::make()
+                                ->title('You have been removed from the group')
+                                ->body('You have been removed from the group ' . $record->name)
+                                ->warning()
+                                ->sendToDatabase($users);
+
+                            $livewire->dispatch('update-students-relation-manager');
+                        }
+
+                        Notification::make()
+                            ->title('Group Deleted')
+                            ->body('Group ' . $record->name . ' has been deleted')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->deselectRecordsAfterCompletion()
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Groups')
+                        ->modalDescription('Are you sure you want to delete these groups?')
+                        ->action(function (Collection $records, $livewire) {
+                            foreach ($records as $group) {
+                                $users = User::where('group_id', $group->id)->get();
+
+                                foreach ($users as $user) {
+                                    $user->group_id = null;
+                                    $user->save();
+                                }
+
+                                $group->delete();
+
+                                Notification::make()
+                                    ->title('Group Deleted')
+                                    ->body('Group ' . $group->name . ' has been deleted')
+                                    ->success()
+                                    ->send();
+
+                                Notification::make()
+                                    ->title('You have been removed from the group')
+                                    ->body('You have been removed from the group ' . $group->name)
+                                    ->warning()
+                                    ->sendToDatabase($users);
+                            }
+
+                            $livewire->dispatch('update-students-relation-manager');
+                        }),
                 ]),
             ]);
     }

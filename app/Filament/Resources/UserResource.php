@@ -19,10 +19,12 @@ use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\Group as FilaGroup;
 use App\Forms\Components\CertificateRequirementForm;
@@ -132,14 +134,18 @@ class UserResource extends Resource
                                 ]),
                             Select::make('school_id')
                                 ->label(__('institution.label'))
-                                ->live()
-                                ->options(School::all()->pluck('name', 'id'))
+                                ->live(debounce: 500)
+                                ->options(function () {
+                                    if (Auth::user()->role_id < 3) {
+                                        return School::all()->pluck('name', 'id');
+                                    } else if (Auth::user()->school_id && Auth::user()->role_id > 2) {
+                                        return School::where('id', Auth::user()->school_id)->pluck('name', 'id');
+                                    }
+
+                                    return null;
+                                })
                                 ->searchable()
                                 ->preload()
-                                ->visible(function () {
-                                    return Auth::user()->role_id < 3;
-                                })
-                                ->disabled()
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -147,16 +153,17 @@ class UserResource extends Resource
                                     'lg' => 6,
                                 ]),
                             Select::make('group_id')
+                                ->live(debounce: 500)
                                 ->label(__('participants.group'))
-                                ->options(function ($get) {
-                                    if ($get('school_id')) {
+                                ->options(function ($get, $state) {
+                                    if ($get('school_id') && Auth::user()->role_id < 3) {
                                         return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
+                                    } else if (Auth::user()->group_id && Auth::user()->role_id > 2) {
+                                        return Group::where('id', Auth::user()->group_id)->pluck('name', 'id');
                                     }
+
+                                    return null;
                                 })
-                                ->visible(function () {
-                                    return Auth::user()->role_id < 3;
-                                })
-                                ->disabled()
                                 ->searchable()
                                 ->preload()
                                 ->columnSpan([

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use Filament\Actions;
+use Livewire\Attributes\On;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use App\CertificateRequirementsLogic;
@@ -47,5 +48,11 @@ class EditUser extends EditRecord
     public function getTitle(): string|Htmlable
     {
         return __('other.edit_record');
+    }
+
+    #[On('update-user-edit-page')] 
+    public function refresh()
+    {
+        // ...
     }
 }

@@ -352,8 +352,7 @@ class SchoolResource extends Resource
             'index' => Pages\ListSchools::route('/'),
             'create' => Pages\CreateSchool::route('/create'),
             'edit' => Pages\EditSchool::route('/{record}/edit'),
-
-            'edit-group' => CustomGroupPage::route('/{record}/edit-group'),
+            
             'view-insitution' => Pages\InstitutionCustomView::route('/{record}/view'),
         ];
     }
