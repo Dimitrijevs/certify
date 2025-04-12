@@ -6,6 +6,8 @@ use App\Models\User;
 use Stripe\StripeClient;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Stripe\Exception\ApiErrorException;
+use Filament\Notifications\Notification;
 use Illuminate\Database\DatabaseManager;
 
 class SellerController extends Controller
@@ -43,18 +45,18 @@ class SellerController extends Controller
                     'type' => 'express',
                     'email' => $seller->email,
                 ]);
-    
+
                 $seller->update(['stripe_connect_id' => $account->id]);
                 $seller->fresh();
             }
-    
+
             $onboardingLink = $this->stripeClient->accountLinks->create([
                 'account' => $seller->stripe_connect_id,
                 'refresh_url' => route('redirect.stripe', $seller->id),
                 'return_url' => route('save.stripe', $token),
                 'type' => 'account_onboarding',
             ]);
-    
+
             return redirect($onboardingLink->url);
         }
 
@@ -78,8 +80,61 @@ class SellerController extends Controller
             abort(404);
         }
 
-       $seller->update(['completed_stripe_onboarding' => true]);
+        $seller->update(['completed_stripe_onboarding' => true]);
 
-       return redirect()->route('filament.app.pages.dashboard');
+        return redirect()->route('filament.app.pages.dashboard');
+    }
+
+    public function purchase($id, Request $request)
+    {
+        $validated = $request->validate([
+            'stripeToken' => 'required|string',
+        ]);
+
+        dd($validated);
+
+        $seller = User::findOrFail($id);
+
+        if (is_null($seller)) {
+            abort(404);
+        }
+
+        if (!$seller->completed_stripe_onboarding) {
+            return redirect()->route('redirect.stripe', $seller->id);
+        }
+
+        try {
+            $charge = $this->stripeClient->charges->create([
+                'amount' => 5000,
+                'currency' => 'eur',
+                'source' => $request->stripeToken,
+                'description' => 'This is an example charge.'
+            ]);
+        } catch (ApiErrorException $exception) {
+            abort(500, $exception->getMessage());
+
+            return;
+        }
+
+        try {
+            $this->stripeClient->transfers->create([
+                'amount' => 5000,
+                'currency' => 'eur',
+                'destination' => $seller->stripe_connect_id,
+                'description' => 'This is an example transfer.',
+            ]);
+        } catch (ApiErrorException $exception) {
+            abort(500, $exception->getMessage());
+
+            return;
+        }
+
+        Notification::make()
+            ->title('Payment Successful')
+            ->body('Your payment was successful.')
+            ->success()
+            ->send();
+
+        return redirect()->route('filament.app.pages.dashboard');
     }
 }

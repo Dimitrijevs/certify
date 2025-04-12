@@ -33,6 +33,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
+use App\Filament\Resources\LearningCategoryResource\Pages\CourseWelocomePage;
 use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
 use App\Filament\Resources\LearningCategoryResource\Pages\EditLearningCategory;
 use App\Filament\Resources\LearningCategoryResource\Pages\ListLearningCategories;
@@ -399,45 +400,49 @@ class LearningCategoryResource extends Resource
             ])
             ->recordUrl(
                 function (Model $record): ?string {
-                    $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
+                    // $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
 
-                    $activities = [];
+                    // $activities = [];
 
-                    foreach ($resources as $resource) {
-                        $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
-                            ->where('resource_id', $resource->id)
-                            ->exists();
+                    // foreach ($resources as $resource) {
+                    //     $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
+                    //         ->where('resource_id', $resource->id)
+                    //         ->exists();
 
-                        $activity = new \stdClass();
-                        $activity->id = $resource->id;
-                        $activity->name = $resource->name;
-                        $activity->is_seen = $is_seen;
+                    //     $activity = new \stdClass();
+                    //     $activity->id = $resource->id;
+                    //     $activity->name = $resource->name;
+                    //     $activity->is_seen = $is_seen;
 
-                        $activities[] = $activity;
-                    }
+                    //     $activities[] = $activity;
+                    // }
 
-                    if (count($activities) == 0) {
+                    // if (count($activities) == 0) {
 
-                        if (Auth::user()->role_id !== 3) {
-                            return EditLearningCategory::getUrl([
-                                'record' => $record->id,
-                            ], isAbsolute: false);
-                        } else {
-                            return ListLearningCategories::getUrl(isAbsolute: false);
-                        }
-                    } else {
-                        foreach ($activities as $activity) {
-                            if ($activity->is_seen == false) {
-                                return ViewCustomLearningResource::getUrl([
-                                    'record' => $activity->id,
-                                ], isAbsolute: false);
-                            }
-                        }
+                    //     if (Auth::user()->role_id !== 3) {
+                    //         return EditLearningCategory::getUrl([
+                    //             'record' => $record->id,
+                    //         ], isAbsolute: false);
+                    //     } else {
+                    //         return ListLearningCategories::getUrl(isAbsolute: false);
+                    //     }
+                    // } else {
+                    //     foreach ($activities as $activity) {
+                    //         if ($activity->is_seen == false) {
+                    //             return ViewCustomLearningResource::getUrl([
+                    //                 'record' => $activity->id,
+                    //             ], isAbsolute: false);
+                    //         }
+                    //     }
 
-                        return ViewCustomLearningResource::getUrl([
-                            'record' => $activities[0]->id,
-                        ], isAbsolute: false);
-                    }
+                    //     return ViewCustomLearningResource::getUrl([
+                    //         'record' => $activities[0]->id,
+                    //     ], isAbsolute: false);
+                    // }
+
+                    return CourseWelocomePage::getUrl([
+                        'record' => $record->id,
+                    ], isAbsolute: false);
                 },
             );
     }
@@ -455,6 +460,8 @@ class LearningCategoryResource extends Resource
             'index' => Pages\ListLearningCategories::route('/'),
             'create' => Pages\CreateLearningCategory::route('/create'),
             'edit' => Pages\EditLearningCategory::route('/{record}/edit'),
+
+            'course-welcome-page' => Pages\CourseWelocomePage::route('/{record}/welcome'),
 
             // for resource relation mamanger
             'resource' => ViewCustomLearningResource::route('/resource/{record}'),
