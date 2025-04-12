@@ -1,6 +1,6 @@
 <x-filament-panels::page>
-    <div class="grid grid-cols-12 space-x-4">
-        <x-filament::section class="col-span-12 md:col-span-4">
+    <div class="grid grid-cols-12 gap-4 items-start">
+        <x-filament::section class="col-span-12 md:col-span-4 self-start">
             <x-slot name="heading">
                 Course Information
             </x-slot>
@@ -12,11 +12,7 @@
                         @foreach ($this->userActivity() as $resource)
                             <li class="group">
                                 <span class="flex items-start">
-                                    <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                                        <span class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
-                                        <span
-                                            class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
-                                    </span>
+                                    <x-circle-bullet/>
                                     <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                         {{ $resource->name }}
                                     </span>
@@ -31,11 +27,7 @@
                     <ul class="space-y-4">
                         <li class="group">
                             <span class="flex items-start">
-                                <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                                    <span class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
-                                    <span
-                                        class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
-                                </span>
+                                <x-circle-bullet/>
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Certificate of Completion
                                 </span>
@@ -49,11 +41,7 @@
                     <ul class="space-y-4">
                         <li class="group">
                             <span class="flex items-start">
-                                <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                                    <span class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
-                                    <span
-                                        class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
-                                </span>
+                                <x-circle-bullet/>
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Created At: {{ $record->created_at->format('d M Y') }}
                                 </span>
@@ -61,11 +49,7 @@
                         </li>
                         <li class="group">
                             <span class="flex items-start">
-                                <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                                    <span class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
-                                    <span
-                                        class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
-                                </span>
+                                <x-circle-bullet/>
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
                                 </span>
@@ -80,8 +64,9 @@
 
                 <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
                 <input type="hidden" name="price" value="{{ $this->getTotalPrice() }}">
+                <input type="hidden" name="course_id" value="{{ $record->id }}">
 
-                <button type="submit">
+                <x-cyan-button>
                         @if ($this->getTotalPrice() > 0 && $record->discount > 0)
                             Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
                             {{ number_format($this->getTotalPrice(), 2) }}
@@ -92,8 +77,30 @@
                         @else
                             Enroll Now For Free
                         @endif
-                </button>
+                </x-cyan-button>
             </form>
+        </x-filament::section>
+
+        <x-filament::section class="col-span-12 md:col-span-8 self-start">
+            <x-slot name="heading">
+                Course Information
+            </x-slot>
+
+            <div class="w-full mb-4">
+                @if ($record->thumbnail)
+                    <img src="{{ asset($record->thumbnail) }}" class="rounded-md" alt="Cover Image"
+                        style="height: 400px; width: 100%; object-fit: cover;">
+                @else
+                    <div class="aspect-w-16 aspect-h-9 w-full rounded-lg bg-gray-200 flex justify-center items-center"
+                        style="height: 400px">
+                        <span class="text-lg text-gray-600"><x-tabler-photo-off class="w-12 h-12" /></span>
+                    </div>
+                @endif
+            </div>
+
+            <div class="">
+                <p>{!! $record->description !!}</p>
+            </div>
         </x-filament::section>
     </div>
 </x-filament-panels::page>

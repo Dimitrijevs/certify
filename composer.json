@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.9",
         "njxqlus/filament-relation-manager-component": "^1.0",
         "opcodesio/log-viewer": "^3.14",
+        "parfaitementweb/filament-country-field": "^2.4",
         "ryangjchandler/blade-tabler-icons": "^2.3",
         "stripe/stripe-php": "^16.6",
         "twig/twig": "^3.14"

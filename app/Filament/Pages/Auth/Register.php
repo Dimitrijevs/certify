@@ -3,13 +3,11 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
-use App\Models\Group;
-use App\Models\School;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Register as BaseRegister;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
 class Register extends BaseRegister
 {
@@ -25,12 +23,22 @@ class Register extends BaseRegister
                     ->schema([
                         $this->getNameFormComponent(),
                         $this->getEmailFormComponent(),
+                        $this->getCountryFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
                     ])
                     ->statePath('data'),
             ),
         ];
+    }
+
+    protected function getCountryFormComponent(): Component
+    {
+        return Country::make('country')
+            ->label('Country')
+            ->preload()
+            ->searchable()
+            ->required();
     }
 
     protected function getNameFormComponent(): Component

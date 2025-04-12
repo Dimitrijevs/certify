@@ -11,7 +11,6 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Rules\MatchOldPassword;
 use Filament\Resources\Resource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
@@ -19,15 +18,14 @@ use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\Group as FilaGroup;
 use App\Forms\Components\CertificateRequirementForm;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
 class UserResource extends Resource
 {
@@ -93,9 +91,9 @@ class UserResource extends Resource
                                 ->label(__('participants.full_name'))
                                 ->columnSpan([
                                     'default' => 12,
-                                    'sm' => 6,
-                                    'md' => 6,
-                                    'lg' => 6,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
                                 ])
                                 ->required(),
                             TextInput::make('email')
@@ -113,6 +111,17 @@ class UserResource extends Resource
                                         }
                                     }
                                 })
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
+                            Country::make('country')
+                                ->label('Country')
+                                ->required()
+                                ->preload()
+                                ->searchable()
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,

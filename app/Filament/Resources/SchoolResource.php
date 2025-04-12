@@ -52,7 +52,7 @@ class SchoolResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->isCreatedByAuthUser($record);
+        return Auth::user()->id === $record->created_by || Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool

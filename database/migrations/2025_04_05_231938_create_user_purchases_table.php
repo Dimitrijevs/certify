@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_purchases', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('course_id')->nullable();
+            $table->integer('test_id')->nullable();
+            $table->integer('seller_id');
+            $table->decimal('price', 10, 2)->default(0);
+            $table->string('currency')->default('EUR');
             $table->timestamps();
         });
     }

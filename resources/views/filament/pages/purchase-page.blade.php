@@ -6,18 +6,27 @@
             </div>
 
             <div class="col-span-1 flex items-center">
-                <form id="payment-form" action="{{ route('complete.purchase', ['id' => $seller->id]) }}" method="POST" class="w-full">
+                <form id="payment-form" action="{{ route('complete.purchase', ['id' => $seller->id]) }}" method="POST"
+                    class="w-full">
                     @csrf
-            
-                    <h1 class="mb-4 items-center">{{ $price ? $price : 'Enroll Now For Free' }}</h1>
-                    <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+
+                    @if ($price > 0)
+                        <h2 class="text-2xl font-bold mb-6 items-center text-center">Total Price: {{ number_format($price, 2) }} {{ $course->currency }}</h2>
+                    @endif
+
+                    <div class="mb-6 p-3 border rounded bg-white shadow-sm">
                         <div id="card-element"></div>
                         <div id="card-errors" class="text-red-500 text-sm mt-2"></div>
                     </div>
-            
-                    <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 duration-300 text-white px-4 py-2 rounded-lg shadow-sm">
-                        Pay Now
-                    </button>
+
+                    <input type="hidden" name="price" value="{{ $price }}">
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="currency" value="{{ $course->currency }}">
+
+
+                    <x-cyan-button>
+                        {{ $price ? 'Pay Now' : 'Enroll Now For Free' }}
+                    </x-cyan-button>
                 </form>
             </div>
         </div>
@@ -31,7 +40,9 @@
     const elements = stripe.elements();
 
     // Create the card Element
-    const cardElement = elements.create('card');
+    const cardElement = elements.create('card', {
+        hidePostalCode: true,
+    });
 
     // Add it to the DOM
     cardElement.mount('#card-element');

@@ -267,24 +267,24 @@ class LearningCategoryResource extends Resource
                 if (Auth::user()->role_id > 2) {
                     // Basic requirements: must be active and public
                     $query->where('is_active', true)
-                          ->where('is_public', true);
-                    
+                        ->where('is_public', true);
+
                     // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function($subQuery) {
+                    $query->where(function ($subQuery) {
                         // Either available for everyone
                         $subQuery->where('available_for_everyone', true);
-                        
+
                         // OR created by someone from the same school (if user has a school)
                         if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function($userQuery) {
+                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
                                 $userQuery->where('school_id', Auth::user()->school_id);
                             });
                         }
                     });
-                    
+
                     return $query;
                 }
-            
+
                 return $query;
             })
             ->contentGrid([
@@ -384,14 +384,6 @@ class LearningCategoryResource extends Resource
             ->filtersFormColumns(2)
             ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->defaultSort('id', 'desc')
-            ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id > 2) {
-                    return $query->where('is_active', true)
-                        ->where('is_public', true);
-                }
-
-                return $query;
-            })
             ->actions([
                 //
             ])
@@ -400,46 +392,6 @@ class LearningCategoryResource extends Resource
             ])
             ->recordUrl(
                 function (Model $record): ?string {
-                    // $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
-
-                    // $activities = [];
-
-                    // foreach ($resources as $resource) {
-                    //     $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
-                    //         ->where('resource_id', $resource->id)
-                    //         ->exists();
-
-                    //     $activity = new \stdClass();
-                    //     $activity->id = $resource->id;
-                    //     $activity->name = $resource->name;
-                    //     $activity->is_seen = $is_seen;
-
-                    //     $activities[] = $activity;
-                    // }
-
-                    // if (count($activities) == 0) {
-
-                    //     if (Auth::user()->role_id !== 3) {
-                    //         return EditLearningCategory::getUrl([
-                    //             'record' => $record->id,
-                    //         ], isAbsolute: false);
-                    //     } else {
-                    //         return ListLearningCategories::getUrl(isAbsolute: false);
-                    //     }
-                    // } else {
-                    //     foreach ($activities as $activity) {
-                    //         if ($activity->is_seen == false) {
-                    //             return ViewCustomLearningResource::getUrl([
-                    //                 'record' => $activity->id,
-                    //             ], isAbsolute: false);
-                    //         }
-                    //     }
-
-                    //     return ViewCustomLearningResource::getUrl([
-                    //         'record' => $activities[0]->id,
-                    //     ], isAbsolute: false);
-                    // }
-
                     return CourseWelocomePage::getUrl([
                         'record' => $record->id,
                     ], isAbsolute: false);
