@@ -40,7 +40,7 @@ class EditLearningTest extends EditRecord
                 ->icon('tabler-circle-check')
                 ->action(function () {
                     $this->record->is_public = true;
-                    $this->record->aproved_by = Auth::user()->id;
+                    $this->record->aproved_by = Auth::id();
                     $this->record->saveQuietly();
 
                     return Notification::make()
@@ -61,7 +61,7 @@ class EditLearningTest extends EditRecord
                 ->icon('tabler-circle-x')
                 ->action(function () {
                     $this->record->is_public = false;
-                    $this->record->aproved_by = null;
+                    $this->record->aproved_by = Auth::id();
                     $this->record->saveQuietly();
 
                     return Notification::make()

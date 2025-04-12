@@ -11,7 +11,7 @@
                     @csrf
 
                     @if ($price > 0)
-                        <h2 class="text-2xl font-bold mb-6 items-center text-center">Total Price: {{ number_format($price, 2) }} {{ $course->currency }}</h2>
+                        <h2 class="text-2xl font-bold mb-6 items-center text-center">Total Price: {{ number_format($price, 2) }} {{ $course->currency->symbol }}</h2>
                     @endif
 
                     <div class="mb-6 p-3 border rounded bg-white shadow-sm">
@@ -21,7 +21,7 @@
 
                     <input type="hidden" name="price" value="{{ $price }}">
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
-                    <input type="hidden" name="currency" value="{{ $course->currency }}">
+                    <input type="hidden" name="currency" value="{{ $course->currency_id }}">
 
 
                     <x-cyan-button>

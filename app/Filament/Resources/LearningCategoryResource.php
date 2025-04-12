@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms\Set;
+use App\Models\Currency;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningCategory;
@@ -112,15 +113,27 @@ class LearningCategoryResource extends Resource
                             ->label(__('learning/learningCategory.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 8,
-                                'sm' => 9,
-                                'md' => 9,
-                                'lg' => 10,
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 8,
                             ]),
                         Toggle::make('is_active')
                             ->label('Active')
                             ->columnSpan([
-                                'default' => 4,
+                                'default' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        Toggle::make('available_for_everyone')
+                            ->label('Available for everyone')
+                            ->columnSpan([
+                                'default' => 6,
                                 'sm' => 3,
                                 'md' => 3,
                                 'lg' => 2,
@@ -134,39 +147,55 @@ class LearningCategoryResource extends Resource
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
                             ])
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('discount')
                             ->label('Discount')
+                            ->live()
                             ->visible(function ($get) {
                                 return $get('price') > 0;
                             })
                             ->columnSpan([
-                                'default' => 8,
+                                'default' => 12,
                                 'sm' => 3,
                                 'md' => 3,
-                                'lg' => 4,
+                                'lg' => 3,
                             ])
                             ->numeric()
-                            ->suffixIcon('tabler-percentage')
                             ->minValue(0)
                             ->maxValue(100),
-                        Toggle::make('available_for_everyone')
-                            ->label('Available for everyone')
+                        Select::make('currency_id')
+                            ->label('Currency')
+                            ->preload()
+                            ->live()
+                            ->searchable()
+                            ->required()
                             ->columnSpan([
-                                'default' => 4,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 2,
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
-                            ->default(true)
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false),
+                            ->options(function () {
+                                return Currency::all()
+                                    ->mapWithKeys(function ($currency) {
+                                        return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                                    });
+                            })
+                            ->suffix(function ($get, $state) {
+                                $discount = $get('discount');
+
+                                if ($discount > 0) {
+                                    $price = $get('price');
+                                    $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
+                                }
+                            }),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')

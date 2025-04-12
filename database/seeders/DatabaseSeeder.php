@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             UserSeeder::class,
             PdfTemplateSeeder::class,
+            CurrencySeeder::class,
             LearningCategorySeeder::class,
             LearningResourceSeeder::class,
             LearningTestSeeder::class,

@@ -70,10 +70,10 @@
                         @if ($this->getTotalPrice() > 0 && $record->discount > 0)
                             Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
                             {{ number_format($this->getTotalPrice(), 2) }}
-                            {{ $record->currency }})
+                            {{ $record->currency->symbol }})
                         @elseif ($this->getTotalPrice() > 0 && $record->discount == 0)
                             Buy Now ( {{ number_format($this->getTotalPrice(), 2) }}
-                            {{ $record->currency }})
+                            {{ $record->currency->symbol }})
                         @else
                             Enroll Now For Free
                         @endif

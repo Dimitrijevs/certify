@@ -12,7 +12,7 @@ class UserPurchase extends Model
         'test_id',
         'seller_id',
         'price',
-        'currency',
+        'currency_id',
     ];
 
     public function user()

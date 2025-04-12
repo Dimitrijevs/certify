@@ -1,0 +1,614 @@
+[
+    {
+        "id": 1,
+        "code": "ALL",
+        "name": "Albanian Lek",
+        "symbol": "L"
+    },
+    {
+        "id": 2,
+        "code": "DZD",
+        "name": "Algerian Dinar",
+        "symbol": "د.ج"
+    },
+    {
+        "id": 3,
+        "code": "AOA",
+        "name": "Angolan Kwanza",
+        "symbol": "Kz"
+    },
+    {
+        "id": 4,
+        "code": "ARS",
+        "name": "Argentine Peso",
+        "symbol": "$"
+    },
+    {
+        "id": 5,
+        "code": "AMD",
+        "name": "Armenian Dram",
+        "symbol": "֏"
+    },
+    {
+        "id": 6,
+        "code": "AUD",
+        "name": "Australian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 7,
+        "code": "AZN",
+        "name": "Azerbaijani Manat",
+        "symbol": "₼"
+    },
+    {
+        "id": 8,
+        "code": "BSD",
+        "name": "Bahamian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 9,
+        "code": "BHD",
+        "name": "Bahraini Dinar",
+        "symbol": ".د.ب"
+    },
+    {
+        "id": 10,
+        "code": "BYN",
+        "name": "Belarusian Ruble",
+        "symbol": "Br"
+    },
+    {
+        "id": 11,
+        "code": "BOB",
+        "name": "Bolivian Boliviano",
+        "symbol": "Bs."
+    },
+    {
+        "id": 12,
+        "code": "BAM",
+        "name": "Bosnia and Herzegovina Convertible Mark",
+        "symbol": "KM"
+    },
+    {
+        "id": 13,
+        "code": "BWP",
+        "name": "Botswana Pula",
+        "symbol": "P"
+    },
+    {
+        "id": 14,
+        "code": "BRL",
+        "name": "Brazilian Real",
+        "symbol": "R$"
+    },
+    {
+        "id": 15,
+        "code": "BGN",
+        "name": "Bulgarian Lev",
+        "symbol": "лв"
+    },
+    {
+        "id": 16,
+        "code": "KHR",
+        "name": "Cambodian Riel",
+        "symbol": "៛"
+    },
+    {
+        "id": 17,
+        "code": "CAD",
+        "name": "Canadian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 18,
+        "code": "CLP",
+        "name": "Chilean Peso",
+        "symbol": "$"
+    },
+    {
+        "id": 19,
+        "code": "CNY",
+        "name": "Chinese Yuan",
+        "symbol": "¥"
+    },
+    {
+        "id": 20,
+        "code": "COP",
+        "name": "Colombian Peso",
+        "symbol": "$"
+    },
+    {
+        "id": 21,
+        "code": "CRC",
+        "name": "Costa Rican Colón",
+        "symbol": "₡"
+    },
+    {
+        "id": 23,
+        "code": "CUP",
+        "name": "Cuban Peso",
+        "symbol": "$"
+    },
+    {
+        "id": 24,
+        "code": "CZK",
+        "name": "Czech Koruna",
+        "symbol": "Kč"
+    },
+    {
+        "id": 25,
+        "code": "DKK",
+        "name": "Danish Krone",
+        "symbol": "kr"
+    },
+    {
+        "id": 26,
+        "code": "DOP",
+        "name": "Dominican Peso",
+        "symbol": "RD$"
+    },
+    {
+        "id": 27,
+        "code": "EGP",
+        "name": "Egyptian Pound",
+        "symbol": "£"
+    },
+    {
+        "id": 28,
+        "code": "ETB",
+        "name": "Ethiopian Birr",
+        "symbol": "Br"
+    },
+    {
+        "id": 29,
+        "code": "FJD",
+        "name": "Fijian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 30,
+        "code": "GEL",
+        "name": "Georgian Lari",
+        "symbol": "₾"
+    },
+    {
+        "id": 32,
+        "code": "HKD",
+        "name": "Hong Kong Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 33,
+        "code": "HUF",
+        "name": "Hungarian Forint",
+        "symbol": "Ft"
+    },
+    {
+        "id": 34,
+        "code": "ISK",
+        "name": "Icelandic Krona",
+        "symbol": "kr"
+    },
+    {
+        "id": 35,
+        "code": "INR",
+        "name": "Indian Rupee",
+        "symbol": "₹"
+    },
+    {
+        "id": 36,
+        "code": "IDR",
+        "name": "Indonesian Rupiah",
+        "symbol": "Rp"
+    },
+    {
+        "id": 37,
+        "code": "IQD",
+        "name": "Iraqi Dinar",
+        "symbol": "ع.د"
+    },
+    {
+        "id": 38,
+        "code": "EUR",
+        "name": "Euro",
+        "symbol": "€"
+    },
+    {
+        "id": 39,
+        "code": "ILS",
+        "name": "Israeli Shekel",
+        "symbol": "₪"
+    },
+    {
+        "id": 40,
+        "code": "JMD",
+        "name": "Jamaican Dollar",
+        "symbol": "J$"
+    },
+    {
+        "id": 41,
+        "code": "JPY",
+        "name": "Japanese Yen",
+        "symbol": "¥"
+    },
+    {
+        "id": 42,
+        "code": "KZT",
+        "name": "Kazakhstani Tenge",
+        "symbol": "₸"
+    },
+    {
+        "id": 43,
+        "code": "KES",
+        "name": "Kenyan Shilling",
+        "symbol": "KSh"
+    },
+    {
+        "id": 44,
+        "code": "KGS",
+        "name": "Kyrgyzstani Som",
+        "symbol": "лв"
+    },
+    {
+        "id": 45,
+        "code": "LAK",
+        "name": "Lao Kip",
+        "symbol": "₭"
+    },
+    {
+        "id": 46,
+        "code": "LBP",
+        "name": "Lebanese Pound",
+        "symbol": "ل.ل."
+    },
+    {
+        "id": 47,
+        "code": "LYD",
+        "name": "Libyan Dinar",
+        "symbol": "ل.د"
+    },
+    {
+        "id": 48,
+        "code": "CHF",
+        "name": "Swiss Franc",
+        "symbol": "CHF"
+    },
+    {
+        "id": 50,
+        "code": "MGA",
+        "name": "Malagasy Ariary",
+        "symbol": "Ar"
+    },
+    {
+        "id": 51,
+        "code": "MYR",
+        "name": "Malaysian Ringgit",
+        "symbol": "RM"
+    },
+    {
+        "id": 52,
+        "code": "MVR",
+        "name": "Maldivian Rufiyaa",
+        "symbol": "Rf"
+    },
+    {
+        "id": 53,
+        "code": "MXN",
+        "name": "Mexican Peso",
+        "symbol": "$"
+    },
+    {
+        "id": 54,
+        "code": "MDL",
+        "name": "Moldovan Leu",
+        "symbol": "L"
+    },
+    {
+        "id": 55,
+        "code": "MNT",
+        "name": "Mongolian Tugrik",
+        "symbol": "₮"
+    },
+    {
+        "id": 56,
+        "code": "MAD",
+        "name": "Moroccan Dirham",
+        "symbol": "د.م."
+    },
+    {
+        "id": 57,
+        "code": "MZN",
+        "name": "Mozambican Metical",
+        "symbol": "MT"
+    },
+    {
+        "id": 58,
+        "code": "MMK",
+        "name": "Myanmar Kyat",
+        "symbol": "K"
+    },
+    {
+        "id": 59,
+        "code": "NAD",
+        "name": "Namibian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 60,
+        "code": "NPR",
+        "name": "Nepalese Rupee",
+        "symbol": "₨"
+    },
+    {
+        "id": 61,
+        "code": "NZD",
+        "name": "New Zealand Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 62,
+        "code": "NGN",
+        "name": "Nigerian Naira",
+        "symbol": "₦"
+    },
+    {
+        "id": 63,
+        "code": "MKD",
+        "name": "Macedonian Denar",
+        "symbol": "ден"
+    },
+    {
+        "id": 64,
+        "code": "NOK",
+        "name": "Norwegian Krone",
+        "symbol": "kr"
+    },
+    {
+        "id": 65,
+        "code": "OMR",
+        "name": "Omani Rial",
+        "symbol": "ر.ع."
+    },
+    {
+        "id": 66,
+        "code": "PAB",
+        "name": "Panamanian Balboa",
+        "symbol": "B/."
+    },
+    {
+        "id": 67,
+        "code": "PGK",
+        "name": "Papua New Guinean Kina",
+        "symbol": "K"
+    },
+    {
+        "id": 68,
+        "code": "PYG",
+        "name": "Paraguayan Guarani",
+        "symbol": "₲"
+    },
+    {
+        "id": 69,
+        "code": "PEN",
+        "name": "Peruvian Sol",
+        "symbol": "S/."
+    },
+    {
+        "id": 70,
+        "code": "PHP",
+        "name": "Philippine Peso",
+        "symbol": "₱"
+    },
+    {
+        "id": 71,
+        "code": "PLN",
+        "name": "Polish Zloty",
+        "symbol": "zł"
+    },
+    {
+        "id": 73,
+        "code": "QAR",
+        "name": "Qatari Riyal",
+        "symbol": "ر.ق"
+    },
+    {
+        "id": 74,
+        "code": "RON",
+        "name": "Romanian Leu",
+        "symbol": "lei"
+    },
+    {
+        "id": 85,
+        "code": "RUB",
+        "name": "Russian Ruble",
+        "symbol": "₽"
+    },
+    {
+        "id": 86,
+        "code": "SAR",
+        "name": "Saudi Riyal",
+        "symbol": "﷼"
+    },
+    {
+        "id": 87,
+        "code": "RSD",
+        "name": "Serbian Dinar",
+        "symbol": "дин."
+    },
+    {
+        "id": 88,
+        "code": "SCR",
+        "name": "Seychellois Rupee",
+        "symbol": "₨"
+    },
+    {
+        "id": 89,
+        "code": "SGD",
+        "name": "Singapore Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 90,
+        "code": "ZAR",
+        "name": "South African Rand",
+        "symbol": "R"
+    },
+    {
+        "id": 91,
+        "code": "KRW",
+        "name": "South Korean Won",
+        "symbol": "₩"
+    },
+    {
+        "id": 92,
+        "code": "LKR",
+        "name": "Sri Lankan Rupee",
+        "symbol": "₨"
+    },
+    {
+        "id": 93,
+        "code": "SEK",
+        "name": "Swedish Krona",
+        "symbol": "kr"
+    },
+    {
+        "id": 95,
+        "code": "TWD",
+        "name": "New Taiwan Dollar",
+        "symbol": "NT$"
+    },
+    {
+        "id": 96,
+        "code": "THB",
+        "name": "Thai Baht",
+        "symbol": "฿"
+    },
+    {
+        "id": 97,
+        "code": "TRY",
+        "name": "Turkish Lira",
+        "symbol": "₺"
+    },
+    {
+        "id": 98,
+        "code": "UAH",
+        "name": "Ukrainian Hryvnia",
+        "symbol": "₴"
+    },
+    {
+        "id": 99,
+        "code": "GBP",
+        "name": "British Pound",
+        "symbol": "£"
+    },
+    {
+        "id": 100,
+        "code": "USD",
+        "name": "United States Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 101,
+        "code": "UYU",
+        "name": "Uruguayan Peso",
+        "symbol": "$U"
+    },
+    {
+        "id": 102,
+        "code": "UZS",
+        "name": "Uzbekistani Som",
+        "symbol": "so'm"
+    },
+    {
+        "id": 103,
+        "code": "VND",
+        "name": "Vietnamese Dong",
+        "symbol": "₫"
+    },
+    {
+        "id": 104,
+        "code": "ZWL",
+        "name": "Zimbabwean Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 105,
+        "code": "BDT",
+        "name": "Bangladeshi Taka",
+        "symbol": "৳"
+    },
+    {
+        "id": 106,
+        "code": "BBD",
+        "name": "Barbadian Dollar",
+        "symbol": "$"
+    },
+    {
+        "id": 107,
+        "code": "GTQ",
+        "name": "Guatemalan Quetzal",
+        "symbol": "Q"
+    },
+    {
+        "id": 108,
+        "code": "HNL",
+        "name": "Honduran Lempira",
+        "symbol": "L"
+    },
+    {
+        "id": 109,
+        "code": "JOD",
+        "name": "Jordanian Dinar",
+        "symbol": "د.ا"
+    },
+    {
+        "id": 110,
+        "code": "SDG",
+        "name": "Sudanese Pound",
+        "symbol": "£"
+    },
+    {
+        "id": 111,
+        "code": "TJS",
+        "name": "Tajikistani Somoni",
+        "symbol": "ЅM"
+    },
+    {
+        "id": 112,
+        "code": "TZS",
+        "name": "Tanzanian Shilling",
+        "symbol": "TSh"
+    },
+    {
+        "id": 113,
+        "code": "TND",
+        "name": "Tunisian Dinar",
+        "symbol": "د.ت"
+    },
+    {
+        "id": 114,
+        "code": "TMT",
+        "name": "Turkmenistani Manat",
+        "symbol": "m"
+    },
+    {
+        "id": 115,
+        "code": "UGX",
+        "name": "Ugandan Shilling",
+        "symbol": "USh"
+    },
+    {
+        "id": 116,
+        "code": "AED",
+        "name": "United Arab Emirates Dirham",
+        "symbol": "د.إ"
+    },
+    {
+        "id": 117,
+        "code": "VES",
+        "name": "Venezuelan Bolívar",
+        "symbol": "Bs."
+    }
+]

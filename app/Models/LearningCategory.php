@@ -19,7 +19,7 @@ class LearningCategory extends Model
         'is_active',
         'price',
         'discount',
-        'currency',
+        'currency_id',
         'created_by',
         'is_public',
         'aproved_by',
@@ -43,6 +43,11 @@ class LearningCategory extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'aproved_by');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     protected static function boot()

@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_purchases', function (Blueprint $table) {
+        Schema::create('currencies', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('course_id')->nullable();
-            $table->integer('test_id')->nullable();
-            $table->integer('seller_id');
-            $table->decimal('price', 10, 2)->default(0);
-            $table->string('currency_id')->nullable();
+            $table->string('code')->unique(); // Currency ISO code (e.g., USD, EUR)
+            $table->string('name'); // Full name of the currency
+            $table->string('symbol')->nullable(); // Currency symbol (e.g., $, €)
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_purchases');
+        Schema::dropIfExists('currencies');
     }
 };

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('is_active');
             $table->decimal('price', 8, 2)->nullable()->default(0);
             $table->decimal('discount', 8, 2)->nullable();
-            $table->string('currency')->nullable()->default('EUR');
+            $table->string('currency_id')->nullable();
             $table->integer('created_by');
             $table->boolean('is_public')->default(false);
             $table->integer('aproved_by')->nullable();

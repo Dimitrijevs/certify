@@ -2,15 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Currency;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningTest;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -144,7 +145,7 @@ class LearningTestResource extends Resource
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false),
-                        Toggle::make('is_public')
+                        Toggle::make('available_for_everyone')
                             ->label('Available for everyone')
                             ->columnSpan([
                                 'default' => 7,
@@ -280,29 +281,60 @@ class LearningTestResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ]),
-                        TextInput::make('price')
+                            TextInput::make('price')
                             ->label('Price')
                             ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->live()
+                            ->visible(function ($get) {
+                                return $get('price') > 0;
+                            })
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ])
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Select::make('currency_id')
+                            ->label('Currency')
+                            ->preload()
+                            ->live()
+                            ->searchable()
+                            ->required()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
                                 'md' => 6,
                                 'lg' => 6,
                             ])
-                            ->numeric()
-                            ->minValue(0),
-                        TextInput::make('discount')
-                            ->label('Discount')
-                            ->columnSpan([
-                                'default' => 8,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 4,
-                            ])
-                            ->numeric()
-                            ->suffixIcon('tabler-percentage')
-                            ->minValue(0)
-                            ->maxValue(100),
+                            ->options(function () {
+                                return Currency::all()
+                                    ->mapWithKeys(function ($currency) {
+                                        return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                                    });
+                            })
+                            ->suffix(function ($get, $state) {
+                                $discount = $get('discount');
+
+                                if ($discount > 0) {
+                                    $price = $get('price');
+                                    $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
+                                }
+                            }),
                         Toggle::make('available_for_everyone')
                             ->label('Available for everyone')
                             ->columnSpan([

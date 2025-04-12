@@ -26,7 +26,7 @@ class LearningTest extends Model
         'layout_id',
         'price',
         'discount',
-        'currency',
+        'currency_id',
         'created_by',
         'aproved_by',
     ];
@@ -53,6 +53,11 @@ class LearningTest extends Model
     public function requirements()
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'test_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     public function createdBy()

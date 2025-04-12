@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LearningCategoryResource\Pages;
 
+use Filament\Actions\Action;
 use App\Models\LearningResource;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,20 @@ class CourseWelocomePage extends Page
     public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('edit')
+                ->label('Edit')
+                ->url(route('filament.app.resources.learning-categories.edit', ['record' => $this->record->id]))
+                ->icon('tabler-edit')
+                ->color('primary')
+                ->visible(function () {
+                    return Auth::user()->role_id < 3 || Auth::user()->id == $this->record->created_by;
+                }),
+        ];
     }
 
     public function getTitle(): string
