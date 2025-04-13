@@ -2,10 +2,11 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\LearningCategory;
 use App\Models\User;
 use Filament\Pages\Page;
+use App\Models\LearningTest;
 use Illuminate\Http\Request;
+use App\Models\LearningCategory;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class PurchasePage extends Page
@@ -23,11 +24,18 @@ class PurchasePage extends Page
 
     public $course;
 
+    public $test;
+
     public function mount(Request $request)
     {
         $this->seller = User::find($request->seller_id);
         $this->price = $request->price;
-        $this->course = LearningCategory::find($request->course_id);
+
+        if ($request->course_id) {
+            $this->course = LearningCategory::find($request->course_id);
+        } else {
+            $this->test = LearningTest::find($request->test_id);
+        }
     }
 
     protected static string $view = 'filament.pages.purchase-page';

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LearningCategoryResource\Pages;
 
+use App\Models\UserPurchase;
 use Filament\Actions\Action;
 use App\Models\LearningResource;
 use Filament\Resources\Pages\Page;
@@ -62,6 +63,25 @@ class CourseWelocomePage extends Page
         }
 
         return $activities;
+    }
+
+    public function checkUserPurchase()
+    {
+        $user = Auth::id();
+        $is_purchased = UserPurchase::where('user_id', $user)
+            ->where('course_id', $this->record->id)
+            ->exists();
+
+        return $is_purchased;
+    }
+
+    public function getFirstResourceId()
+    {
+        $firstResourceId = LearningResource::where('category_id', $this->record->id)
+            ->where('is_active', true)
+            ->value('id');
+
+        return $firstResourceId;
     }
 
     public function getTotalPrice()

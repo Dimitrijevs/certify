@@ -9,6 +9,7 @@ use App\Models\LearningTestResult;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Resources\LearningTestResource;
+use App\Models\UserPurchase;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewCustomTest extends Page
@@ -17,7 +18,7 @@ class ViewCustomTest extends Page
 
     protected static string $resource = LearningTestResource::class;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = LearningTest::findOrFail($record);
     }
@@ -35,7 +36,7 @@ class ViewCustomTest extends Page
                     ->label(__('learning/learningTest.form.edit'))
                     ->color('gray')
                     ->icon('tabler-eye-edit')
-                    ->visible(fn () => Auth::user()->role_id < 4)
+                    ->visible(fn() => Auth::user()->role_id < 4)
                     ->url(LearningTestResource::getUrl('edit', ['record' => $this->record->id])),
             ];
         }
@@ -47,6 +48,35 @@ class ViewCustomTest extends Page
     {
         $name = LearningCategory::findOrFail($id)->name;
         return $name;
+    }
+
+    public function getTotalPrice()
+    {
+        $price = $this->record->price ?? 0;
+        $discount = $this->record->discount ?? 0;
+
+        if ($price == 0 || $discount == 100) {
+            return 0;
+        }
+
+        // Calculate discounted price
+        if ($discount > 0) {
+            $discountedPrice = $price - ($price * $discount / 100);
+
+            return round($discountedPrice, 2);
+        }
+
+        return round($price, 2);
+    }
+
+    public function checkUserPurchase()
+    {
+        $user = Auth::id();
+        $purchased = UserPurchase::where('user_id', $user)
+            ->where('test_id', $this->record->id)
+            ->exists();
+
+        return $purchased;
     }
 
     public function cooldownFinished()

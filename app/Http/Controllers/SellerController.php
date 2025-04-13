@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserPurchase;
+use App\Models\Currency;
 use Stripe\StripeClient;
 use Illuminate\Support\Str;
+use App\Models\LearningTest;
+use App\Models\UserPurchase;
 use Illuminate\Http\Request;
+use App\Models\LearningCategory;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Exception\ApiErrorException;
 use Filament\Notifications\Notification;
@@ -115,9 +118,12 @@ class SellerController extends Controller
 
     public function purchase($id, Request $request)
     {
-        $validated = $request->validate([
-            'stripeToken' => 'required|string',
-        ]);
+        if ($request->price > 0) {
+            $request->validate([
+                'price' => 'required|numeric|min:0',
+                'currency_id' => 'required|exists:currencies,id',
+            ]);
+        }
 
         $seller = User::findOrFail($id);
 
@@ -125,39 +131,73 @@ class SellerController extends Controller
             return $this->redirectAndNotify('Seller Not Found', 'The seller was not found.');
         }
 
-        if (!$seller->completed_stripe_onboarding) {
-            Notification::make()
-                ->title(Auth::user()->name . ' is trying to purchase your course')
-                ->body('Please complete your Stripe onboarding process to receive payments.')
-                ->warning()
-                ->sendToDatabase($seller);
-
-            $this->redirectAndNotify('Creator does not have a Stripe account yet', 'We are notifying the creator to complete their Stripe onboarding process.');
-        }
-
-        $currency = $request->currency ?? 'EUR';
-
         if ($request->price > 0) {
+
+            if (!$seller->completed_stripe_onboarding) {
+                Notification::make()
+                    ->title(Auth::user()->name . ' is trying to purchase your course')
+                    ->body('Please complete your Stripe onboarding process to receive payments.')
+                    ->warning()
+                    ->sendToDatabase($seller);
+
+                $this->redirectAndNotify('Creator does not have a Stripe account yet', 'We are notifying the creator to complete their Stripe onboarding process.');
+            }
+
+            $currency_id = $request->currency_id ?? 38;
+            $currency = Currency::find($currency_id);
+
+            if ($request->course_id) {
+                $course = LearningCategory::find($request->course_id);
+
+                $description = 'Payment for course ' . $course->name . ' by ' . Auth::user()->name;
+            } else {
+                $test = LearningTest::find($request->test_id);
+
+                $description = 'Payment for test ' . $test->name . ' by ' . Auth::user()->name;
+            }
+
             try {
                 $this->stripeClient->charges->create([
                     'amount' => $request->price * 100,
-                    'currency' => strtolower($currency),
+                    'currency' => strtolower($currency->code),
                     'source' => $request->stripeToken,
-                    'description' => 'Payment for course ' . $request->course_id . ' by ' . Auth::user()->name,
+                    'description' => $description,
                 ]);
             } catch (ApiErrorException $exception) {
                 $this->redirectAndNotify('Payment Failed', $exception->getMessage());
             }
 
+            $fee = $request->price * 100 * 0.1; // 10% fee
+            $sellerMoney = $request->price * 100 - $fee; // seller gets 90%
+
             try {
                 $this->stripeClient->transfers->create([
-                    'amount' => $request->price * 100,
-                    'currency' => strtolower($currency),
+                    'amount' => $sellerMoney,
+                    'currency' => strtolower($currency->code),
                     'destination' => $seller->stripe_connect_id,
-                    'description' => 'Payment for course ' . $request->course_id . ' by ' . Auth::user()->name,
+                    'description' => $description,
                 ]);
             } catch (ApiErrorException $exception) {
                 $this->redirectAndNotify('Transfer Failed', $exception->getMessage());
+            }
+
+            $admins = User::where('role_id', '<', 3)->get();
+            $adminFee = (int) floor($fee / count($admins));
+            foreach ($admins as $admin) {
+                try {
+                    $this->stripeClient->transfers->create([
+                        'amount' => $adminFee,
+                        'currency' => strtolower($currency->code),
+                        'destination' => $admin->stripe_connect_id,
+                        'description' => $description,
+                    ]);
+                } catch (ApiErrorException $exception) {
+                    Notification::make()
+                        ->title('Transfer Failed')
+                        ->body('Please create a Stripe account to receive payments.')
+                        ->danger()
+                        ->sendToDatabase($admin);
+                }
             }
         }
 
@@ -172,9 +212,9 @@ class SellerController extends Controller
 
         $userPurchase->seller_id = $seller->id;
         $userPurchase->price = $request->price;
-        $userPurchase->currency = $currency;
+        $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
 
-        $this->redirectAndNotify('Payment Successful', 'Your payment was successful.', 'success');
+        return $this->redirectAndNotify('Payment Successful', 'Your payment was successful.', 'success');
     }
 }

@@ -11,13 +11,13 @@
                         @foreach ($record->category_id as $id)
                             <li>
                                 <a
-                                    href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $id]) }}">
+                                    href="{{ route('filament.app.resources.learning-categories.course-welcome-page', ['record' => $id]) }}">
                                     <span class="flex items-start">
                                         <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
                                             <span
-                                                class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
+                                                class="absolute h-5 w-5 rounded-full bg-cyan-200 dark:bg-cyan-700"></span>
                                             <span
-                                                class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
+                                                class="relative block h-3 w-3 rounded-full bg-cyan-500 dark:bg-cyan-300"></span>
                                         </span>
                                         <span
                                             class="ml-4 text-md font-medium text-gray-500 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
@@ -60,7 +60,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-blue-500 p-3">
+                                    <div class="absolute rounded-md bg-cyan-500 p-3">
                                         <x-tabler-question-mark class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -80,7 +80,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-blue-500 p-3">
+                                    <div class="absolute rounded-md bg-cyan-500 p-3">
                                         <x-tabler-award class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -101,7 +101,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-blue-500 p-3">
+                                    <div class="absolute rounded-md bg-cyan-500 p-3">
                                         <x-tabler-clock class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -124,58 +124,90 @@
                 </div>
 
                 <div class="text-center">
-                    <x-filament::modal id="start-test">
-                        <x-slot name="trigger">
-                            <x-filament::button size="xl">
-                                <div class="flex items-center">
-                                    <x-tabler-player-play class="me-1" />
-                                    {{ __('learning/learningTest.custom.start_test') }}
-                                </div>
-                            </x-filament::button>
-                        </x-slot>
+                    @if ($this->checkUserPurchase())
+                        <x-filament::modal id="start-test">
+                            <x-slot name="trigger">
+                                <x-cyan-button>
+                                    <div class="flex items-center">
+                                        <x-tabler-player-play class="me-1" />
+                                        {{ __('learning/learningTest.custom.start_test') }}
+                                    </div>
+                                </x-cyan-button>
+                            </x-slot>
 
-                        <x-tabler-exclamation-circle class="mx-auto text-red-500 w-16 h-16" />
+                            <x-tabler-exclamation-circle class="mx-auto text-red-500 w-16 h-16" />
 
-                        <h3
-                            class="fi-section-header-heading text-lg font-bold leading-6 text-gray-950 dark:text-white mb-0 text-center">
-                            {{ __('learning/learningTest.custom.start_test') }}
-                        </h3>
+                            <h3
+                                class="fi-section-header-heading text-lg font-bold leading-6 text-gray-950 dark:text-white mb-0 text-center">
+                                {{ __('learning/learningTest.custom.start_test') }}
+                            </h3>
 
-                        <p class="text-base leading-6 text-gray-950 dark:text-white mb-2 text-center opacity-60">
-                            {{ __('learning/learningTest.custom.are_you_sure_you_want_to_start_the_test') }}?
-                        </p>
+                            <p class="text-base leading-6 text-gray-950 dark:text-white mb-2 text-center opacity-60">
+                                {{ __('learning/learningTest.custom.are_you_sure_you_want_to_start_the_test') }}?
+                            </p>
 
-                        <div class="flex text-center justify-between space-x-4">
-                            <x-filament::button x-on:click="$dispatch('close-modal', { id: 'start-test' })"
-                                class="w-1/2" color="danger">
-                                {{ __('learning/learningTest.custom.no') }}
-                            </x-filament::button>
-
-                            @if ($this->record->details->where('is_active', true)->count() == 0)
-                                <x-filament::button color="primary" class="w-1/2" disabled>
-                                    {{ __('learning/learningTest.custom.yes') }}
+                            <div class="flex text-center justify-between space-x-4">
+                                <x-filament::button x-on:click="$dispatch('close-modal', { id: 'start-test' })"
+                                    class="w-1/2" color="danger">
+                                    {{ __('learning/learningTest.custom.no') }}
                                 </x-filament::button>
-                            @elseif (!$this->cooldownFinished())
-                                <x-filament::button color="primary" class="w-1/2" disabled>
-                                    {{ __('learning/learningTest.custom.yes') }}
-                                </x-filament::button>
-                            @elseif ($this->cooldownFinished())
-                                <a class="w-1/2"
-                                    href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                    <x-filament::button color="primary" class="w-full">
+
+                                @if ($this->record->details->where('is_active', true)->count() == 0)
+                                    <x-filament::button color="primary" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
-                                </a>
-                            @else
-                                <a class="w-1/2"
-                                    href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                    <x-filament::button color="primary" class="w-full">
+                                @elseif (!$this->cooldownFinished())
+                                    <x-filament::button color="primary" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
-                                </a>
-                            @endif
-                        </div>
-                    </x-filament::modal>
+                                @elseif ($this->cooldownFinished())
+                                    <a class="w-1/2"
+                                        href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
+                                        <x-filament::button color="primary" class="w-full">
+                                            {{ __('learning/learningTest.custom.yes') }}
+                                        </x-filament::button>
+                                    </a>
+                                @else
+                                    <a class="w-1/2"
+                                        href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
+                                        <x-filament::button color="primary" class="w-full">
+                                            {{ __('learning/learningTest.custom.yes') }}
+                                        </x-filament::button>
+                                    </a>
+                                @endif
+                            </div>
+                        </x-filament::modal>
+                    @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() == 0)
+                        <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
+                            @csrf
+
+                            <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
+                            <input type="hidden" name="test_id" value="{{ $record->id }}">
+
+                            <x-cyan-button>
+                                Enroll Now For Free
+                            </x-cyan-button>
+                        </form>
+                    @else
+                        <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
+                            @csrf
+
+                            <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
+                            <input type="hidden" name="price" value="{{ $this->getTotalPrice() }}">
+                            <input type="hidden" name="test_id" value="{{ $record->id }}">
+
+                            <x-cyan-button>
+                                @if ($this->getTotalPrice() > 0 && $record->discount > 0)
+                                    Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
+                                    {{ number_format($this->getTotalPrice(), 2) }}
+                                    {{ $record->currency->symbol }})
+                                @elseif ($this->getTotalPrice() > 0 && $record->discount == 0)
+                                    Buy Now ( {{ number_format($this->getTotalPrice(), 2) }}
+                                    {{ $record->currency->symbol }})
+                                @endif
+                            </x-cyan-button>
+                        </form>
+                    @endif
                 </div>
             </x-filament::section>
         </div>

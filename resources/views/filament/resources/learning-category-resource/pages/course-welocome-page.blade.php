@@ -12,7 +12,7 @@
                         @foreach ($this->userActivity() as $resource)
                             <li class="group">
                                 <span class="flex items-start">
-                                    <x-circle-bullet/>
+                                    <x-circle-bullet />
                                     <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                         {{ $resource->name }}
                                     </span>
@@ -27,7 +27,7 @@
                     <ul class="space-y-4">
                         <li class="group">
                             <span class="flex items-start">
-                                <x-circle-bullet/>
+                                <x-circle-bullet />
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Certificate of Completion
                                 </span>
@@ -41,7 +41,7 @@
                     <ul class="space-y-4">
                         <li class="group">
                             <span class="flex items-start">
-                                <x-circle-bullet/>
+                                <x-circle-bullet />
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Created At: {{ $record->created_at->format('d M Y') }}
                                 </span>
@@ -49,7 +49,7 @@
                         </li>
                         <li class="group">
                             <span class="flex items-start">
-                                <x-circle-bullet/>
+                                <x-circle-bullet />
                                 <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
                                     Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
                                 </span>
@@ -59,14 +59,15 @@
                 </div>
             </div>
 
-            <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
-                @csrf
+            @if (!$this->checkUserPurchase() && $this->getTotalPrice() > 0)
+                <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
+                    @csrf
 
-                <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
-                <input type="hidden" name="price" value="{{ $this->getTotalPrice() }}">
-                <input type="hidden" name="course_id" value="{{ $record->id }}">
+                    <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
+                    <input type="hidden" name="price" value="{{ $this->getTotalPrice() }}">
+                    <input type="hidden" name="course_id" value="{{ $record->id }}">
 
-                <x-cyan-button>
+                    <x-cyan-button>
                         @if ($this->getTotalPrice() > 0 && $record->discount > 0)
                             Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
                             {{ number_format($this->getTotalPrice(), 2) }}
@@ -74,11 +75,28 @@
                         @elseif ($this->getTotalPrice() > 0 && $record->discount == 0)
                             Buy Now ( {{ number_format($this->getTotalPrice(), 2) }}
                             {{ $record->currency->symbol }})
-                        @else
-                            Enroll Now For Free
                         @endif
-                </x-cyan-button>
-            </form>
+                    </x-cyan-button>
+                </form>
+            @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() == 0)
+                <form action="{{ route('complete.purchase', ['id' => $record->created_by]) }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="price" value="0">
+                    <input type="hidden" name="course_id" value="{{ $record->id }}">
+
+                    <x-cyan-button>
+                        Enroll Now For Free
+                    </x-cyan-button>
+                </form>
+            @else
+                <a
+                    href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $this->getFirstResourceId()]) }}">
+                    <x-cyan-button>
+                        Continue Learning
+                    </x-cyan-button>
+                </a>
+            @endif
         </x-filament::section>
 
         <x-filament::section class="col-span-12 md:col-span-8 self-start">
