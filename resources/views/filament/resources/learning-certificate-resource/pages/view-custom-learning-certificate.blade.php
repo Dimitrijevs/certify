@@ -86,8 +86,7 @@
                                     {{ \Carbon\Carbon::parse($this->record->completedTest->total_time)->format('H:i:s') }}
                                 </dd>
                             </div>
-                            <div
-                                class="{{ $this->record->description ? 'pb-2' : 'pb-3' }} flex w-full flex-none gap-x-4">
+                            <div class="pb-3 flex w-full flex-none gap-x-4">
                                 <dt class="flex-none">
                                     @if ($this->isValid())
                                         @if (is_null($this->record->valid_to))
@@ -111,8 +110,7 @@
                         </a>
                     @else
                         <div class="flex-auto border-t border-gray-900/5 pt-3">
-                            <div
-                                class="{{ $this->record->description ? 'pb-2' : 'pb-3' }} flex w-full flex-none gap-x-4">
+                            <div class="pb-3 flex w-full flex-none gap-x-4">
                                 <dt class="flex-none">
                                     @if ($this->isValid())
                                         <x-tabler-certificate class="text-green-600 dark:text-green-400" />
@@ -137,25 +135,16 @@
                         </div>
                     @endif
 
-                    @if ($this->record->description)
-                        <div class="pb-3">
-                            <h3 class="text-md font-semibold">
-                                {{ __('learning/learningCertificate.fields.description') }}
-                            </h3>
-                            <p class="text-sm">{!! Str::limit($this->record->description, 120) !!}</p>
-                        </div>
-                    @endif
-
                     <div class="border-t border-gray-900/5 pt-3">
                         <h3 class="text-base font-semibold mb-1">
                             {{ __('learning/learningCertificate.custom.created_by') }}
                         </h3>
-                        @if (Auth::user()->role_id < 4)
+                        @if (Auth::user()->role_id < 3 && $this->record->admin_id)
                             <a class="group"
                                 href="{{ route('filament.app.resources.users.edit', ['record' => $this->record->admin_id]) }}">
                         @endif
                         <div class="flex items-center gap-2 pe-3">
-                            @if (is_null($this->record->admin->avatar))
+                            @if (is_null($this->record->admin?->avatar))
                                 <div
                                     class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80 border border-gray-200 dark:border-gray-700">
                                     @svg('tabler-user', 'text-gray-400 dark:text-gray-500 h-6 w-6')
@@ -167,16 +156,21 @@
                                         class="w-full h-full object-cover">
                                 </div>
                             @endif
-                            <div class="flex flex-col justify-center mb-1">
-                                <p
-                                    class="text-sm text-gray-900 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400">
-                                    {{ Str::limit($this->record->admin->name, 26) }}</p>
-                                <p
-                                    class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500">
-                                    {{ Str::limit($this->record->admin->job_title, 36) }}</p>
-                            </div>
+                            
+                            @if ($this->record->admin)
+                                <div class="flex flex-col justify-center mb-1">
+                                    <p
+                                        class="text-sm text-gray-900 dark:text-gray-100 group-hover:text-gray-500 dark:group-hover:text-gray-400">
+                                        {{ Str::limit($this->record->admin->name, 26) }}</p>
+                                    <p
+                                        class="text-xs text-gray-600 dark:text-gray-400 group-hover:text-gray-400 dark:group-hover:text-gray-500">
+                                        {{ Str::limit($this->record->admin->job_title, 36) }}</p>
+                                </div>
+                            @else
+                                <p>Certificate created automatically</p>
+                            @endif
                         </div>
-                        @if (Auth::user()->role_id < 4)
+                        @if (Auth::user()->role_id < 3 && $this->record->admin_id)
                             </a>
                         @endif
                     </div>
@@ -219,7 +213,7 @@
                     </div>
                 @endif
 
-                @if (!is_null($this->record->description))
+                @if ($this->record->description)
                     <div class="mt-5">
                         <h3 class="text-lg font-semibold">{{ __('learning/learningCertificate.fields.description') }}
                         </h3>

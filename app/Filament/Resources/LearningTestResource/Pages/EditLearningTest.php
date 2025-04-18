@@ -69,6 +69,10 @@ class EditLearningTest extends EditRecord
                         ->success()
                         ->send();
                 }),
+            Action::make('save')
+                ->label(__('learning/learningTest.form.save_changes'))
+                ->action('save')
+                ->icon('tabler-checkbox'),
             Actions\DeleteAction::make()
                 ->icon('tabler-trash'),
         ];

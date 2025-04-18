@@ -215,6 +215,6 @@ class SellerController extends Controller
         $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
 
-        return $this->redirectAndNotify('Payment Successful', 'Your payment was successful.', 'success');
+        return $this->redirectAndNotify('Your purchase was successful!', 'You now have access to this content', 'success');
     }
 }

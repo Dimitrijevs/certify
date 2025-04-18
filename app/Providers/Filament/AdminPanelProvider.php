@@ -54,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->colors([
                 'primary' => '#3B81F6',
+                'cyan' => '#05B6D3',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

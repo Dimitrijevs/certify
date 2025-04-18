@@ -5,12 +5,14 @@ namespace App\Filament\Resources\LearningTestResultResource\Pages;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
 use App\Models\LearningTest;
+use App\Models\UserPurchase;
 use Filament\Actions\Action;
 use App\Models\LearningTestAnswer;
 use App\Models\LearningTestResult;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\LearningTestResultResource;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -63,7 +65,7 @@ class CreateCustomTestResult extends Page
         ];
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         if ($this->view_test) {
             return __('learning/learningTestResult.label');
@@ -93,6 +95,16 @@ class CreateCustomTestResult extends Page
             $this->result = $this->getOrCreateTestResult();
         }
 
+        if (!$this->checkPurchase($record)) {
+            Notification::make()
+                ->title('You do not have access to this test')
+                ->body('You need to purchase this test to access it.')
+                ->danger()
+                ->send();
+
+            return redirect()->route('filament.app.pages.dashboard');
+        }
+
         // Add this check to prevent out-of-bounds access
         $totalQuestions = $this->record->details->where('is_active', true)->count();
 
@@ -114,7 +126,8 @@ class CreateCustomTestResult extends Page
         if (!$this->view_test) {
             if ($this->checkTestCooldown() == false) {
                 return redirect()->route('filament.app.resources.learning-test-results.index');
-            };
+            }
+            ;
         }
 
         // current question
@@ -123,6 +136,15 @@ class CreateCustomTestResult extends Page
         if (!$this->view_test) {
             $this->checkFirstUnansweredQuestion();
         }
+    }
+
+    public function checkPurchase($id)
+    {
+        $purchase = UserPurchase::where('user_id', Auth::id())
+            ->where('test_id', $id)
+            ->exists();
+
+        return $purchase;
     }
 
     protected function checkTestCooldown()

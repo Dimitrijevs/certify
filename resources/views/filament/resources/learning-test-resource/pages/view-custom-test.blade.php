@@ -153,24 +153,24 @@
                                 </x-filament::button>
 
                                 @if ($this->record->details->where('is_active', true)->count() == 0)
-                                    <x-filament::button color="primary" class="w-1/2" disabled>
+                                    <x-filament::button color="cyan" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
                                 @elseif (!$this->cooldownFinished())
-                                    <x-filament::button color="primary" class="w-1/2" disabled>
+                                    <x-filament::button color="cyan" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
                                 @elseif ($this->cooldownFinished())
                                     <a class="w-1/2"
                                         href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                        <x-filament::button color="primary" class="w-full">
+                                        <x-filament::button color="cyan" class="w-full">
                                             {{ __('learning/learningTest.custom.yes') }}
                                         </x-filament::button>
                                     </a>
                                 @else
                                     <a class="w-1/2"
                                         href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                        <x-filament::button color="primary" class="w-full">
+                                        <x-filament::button color="cyan" class="w-full">
                                             {{ __('learning/learningTest.custom.yes') }}
                                         </x-filament::button>
                                     </a>
@@ -178,11 +178,11 @@
                             </div>
                         </x-filament::modal>
                     @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() == 0)
-                        <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
+                        <form action="{{ route('complete.purchase', ['id' => $record->created_by]) }}" method="POST">
                             @csrf
 
-                            <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
                             <input type="hidden" name="test_id" value="{{ $record->id }}">
+                            <input type="hidden" name="price" value="0">
 
                             <x-cyan-button>
                                 Enroll Now For Free
