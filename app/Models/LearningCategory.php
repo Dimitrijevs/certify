@@ -15,6 +15,7 @@ class LearningCategory extends Model
     protected $fillable = [
         'name',
         'thumbnail',
+        'language_id',
         'description',
         'is_active',
         'price',
@@ -28,6 +29,11 @@ class LearningCategory extends Model
     public function learningResources()
     {
         return $this->hasMany(LearningResource::class, 'category_id');
+    }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'language_id');
     }
 
     public function activities()

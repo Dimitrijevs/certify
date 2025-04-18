@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('thumbnail')->nullable();
+            $table->integer('language_id');
             $table->text('description')->nullable();
             $table->boolean('is_active');
             $table->decimal('price', 8, 2)->nullable()->default(0);
