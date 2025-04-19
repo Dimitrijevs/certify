@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms\Set;
 use App\Models\Currency;
+use App\Models\Language;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningCategory;
-use App\Models\LearningResource;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Tables\Filters\Filter;
@@ -18,17 +17,15 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
-use App\Models\LearningUserStudyRecord;
 use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
@@ -36,8 +33,6 @@ use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
 use App\Filament\Resources\LearningCategoryResource\Pages\CourseWelocomePage;
 use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
-use App\Filament\Resources\LearningCategoryResource\Pages\EditLearningCategory;
-use App\Filament\Resources\LearningCategoryResource\Pages\ListLearningCategories;
 use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningResourcesRelationManager;
@@ -176,9 +171,9 @@ class LearningCategoryResource extends Resource
                             ->required()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
                             ])
                             ->options(function () {
                                 return Currency::all()
@@ -196,6 +191,24 @@ class LearningCategoryResource extends Resource
                                     return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
                                 }
                             }),
+                        Select::make('language_id')
+                            ->label('Language')
+                            ->options(function () {
+                                return Language::all()
+                                    ->mapWithKeys(function ($lang) {
+                                        return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                                    });
+                            })
+                            ->prefixIcon('tabler-globe')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')
@@ -258,7 +271,10 @@ class LearningCategoryResource extends Resource
         return $table
             ->columns([
                 Stack::make([
-                    CustomImageColumn::make('thumbnail'),
+                    CustomImageColumn::make('thumbnail')
+                        ->languageName(function ($record) {
+                            return $record->language->name;
+                        }),
                     TextColumn::make('name')
                         ->label('Name')
                         ->searchable()
@@ -336,6 +352,17 @@ class LearningCategoryResource extends Resource
                     ->columnSpan(1)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
+                    }),
+                SelectFilter::make('language_id')
+                    ->label('Language')
+                    ->columnSpan(2)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return Language::all()
+                            ->mapWithKeys(function ($lang) {
+                                return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                            });
                     }),
                 Filter::make('is_free')
                     ->columnSpan(2)
