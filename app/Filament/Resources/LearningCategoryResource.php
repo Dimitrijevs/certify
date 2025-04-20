@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Language;
 use Filament\Forms\Form;
@@ -209,6 +210,19 @@ class LearningCategoryResource extends Resource
                                 'md' => 3,
                                 'lg' => 3,
                             ]),
+                        Select::make('categories')
+                            ->label('Categories')
+                            ->options(Category::all()->pluck('name', 'id'))
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningCategory.fields.thumbnail'))
                             ->disk('public')
@@ -272,6 +286,9 @@ class LearningCategoryResource extends Resource
             ->columns([
                 Stack::make([
                     CustomImageColumn::make('thumbnail')
+                        ->categories(function ($record) {
+                            return $record->categories;
+                        })
                         ->languageName(function ($record) {
                             return $record->language->name;
                         }),
@@ -355,7 +372,7 @@ class LearningCategoryResource extends Resource
                     }),
                 SelectFilter::make('language_id')
                     ->label('Language')
-                    ->columnSpan(2)
+                    ->columnSpan(1)
                     ->preload()
                     ->searchable()
                     ->options(function () {
@@ -363,6 +380,29 @@ class LearningCategoryResource extends Resource
                             ->mapWithKeys(function ($lang) {
                                 return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
                             });
+                    }),
+                Filter::make('category')
+                    ->form([
+                        Select::make('category_ids')
+                            ->label('Category')
+                            ->preload()
+                            ->searchable()
+                            ->multiple()
+                            ->options(function () {
+                                return Category::all()->pluck('name', 'id');
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['category_ids'],
+                            function (Builder $query, $categoryIds) {
+                                return $query->where(function (Builder $query) use ($categoryIds) {
+                                    foreach ($categoryIds as $categoryId) {
+                                        $query->orWhereJsonContains('categories', $categoryId);
+                                    }
+                                });
+                            }
+                        );
                     }),
                 Filter::make('is_free')
                     ->columnSpan(2)

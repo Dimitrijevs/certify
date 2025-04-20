@@ -22,19 +22,23 @@
                     </ul>
                 </div>
 
-                <div class="space-y-4">
-                    <p class="font-bold">Also Included</p>
-                    <ul class="space-y-4">
-                        <li class="group">
-                            <span class="flex items-start">
-                                <x-circle-bullet />
-                                <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                    Certificate of Completion
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+                @if ($this->getCategories())
+                    <div class="space-y-4">
+                        <p class="font-bold">Categories</p>
+                        <ul class="space-y-4">
+                            @foreach ($this->getCategories() as $category)
+                                <li class="group">
+                                    <span class="flex items-start">
+                                        <x-circle-bullet />
+                                        <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
+                                            {{ $category }}
+                                        </span>
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="space-y-4">
                     <p class="font-bold">Additional Information</p>

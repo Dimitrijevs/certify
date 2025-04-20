@@ -9,7 +9,17 @@
         </div>
     @endif
 
-    <div class="absolute bg-blue-50 border border-blue-600 rounded-xl shadow-md -top-2 -right-2 px-2 py-1 text-blue-800">
-        <p>{{ $getLanguageName() }}</p>
-    </div>
+    @if ($getLanguageName())
+        <div
+            class="absolute bg-blue-50 border border-blue-600 rounded-xl shadow-md -top-2 -right-2 px-2 py-1 text-blue-800">
+            <p>{{ $getLanguageName() }}</p>
+        </div>
+    @endif
+
+    @if ($getCategories())
+        <div
+            class="absolute bg-blue-50 border border-blue-600 rounded-xl shadow-md -bottom-2 -right-2 px-2 py-1 text-blue-800">
+            <p>{{ Str::limit($getCategories(), 24) }}</p>
+        </div>
+    @endif
 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LearningCategoryResource\Pages;
 
+use App\Models\Category;
 use App\Models\UserPurchase;
 use Filament\Actions\Action;
 use App\Models\LearningResource;
@@ -20,6 +21,21 @@ class CourseWelocomePage extends Page
     public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
+    }
+
+    protected function getCategories() {
+        $names = [];
+
+        $categoryIds = $this->record->categories ?? [];
+
+        foreach ($categoryIds as $categoryId) {
+            $category = Category::find($categoryId);
+            if ($category) {
+                $names[] = $category->name;
+            }
+        }
+
+        return $names;
     }
 
     protected function getHeaderActions(): array

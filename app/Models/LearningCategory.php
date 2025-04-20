@@ -16,6 +16,7 @@ class LearningCategory extends Model
         'name',
         'thumbnail',
         'language_id',
+        'categories',
         'description',
         'is_active',
         'price',
@@ -24,6 +25,10 @@ class LearningCategory extends Model
         'created_by',
         'is_public',
         'aproved_by',
+    ];
+
+    protected $casts = [
+        'categories' => 'array',
     ];
 
     public function learningResources()
@@ -45,7 +50,7 @@ class LearningCategory extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
+    
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'aproved_by');
