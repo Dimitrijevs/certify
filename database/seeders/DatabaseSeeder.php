@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CustomerQuestion;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
             GroupSeeder::class,
             UserSeeder::class,
             PdfTemplateSeeder::class,
+            CustomerQuestionSeeder::class,
             CurrencySeeder::class,
             LanguageSeeder::class,
             CategorySeeder::class,

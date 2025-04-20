@@ -4,9 +4,7 @@
             <div class="lg:col-span-5">
                 <h2 class="text-4xl heading font-semibold">Frequently asked
                     questions</h2>
-                <p class="mt-4 paragraph">Can’t find the answer you’re looking for? Reach out
-                    to our <button class="font-semibold text-blue-600 dark:text-blue-600 hover:text-blue-500 dark:hover:text-blue-500 duration-300 cursor-pointer">customer
-                        support</button> team.</p>
+                @livewire('user-support-form')
             </div>
             <div class="mt-10 lg:col-span-7 lg:mt-0">
                 <dl class="space-y-10">

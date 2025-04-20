@@ -13,9 +13,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use App\Filament\Widgets\CertificateRequirements;
@@ -43,7 +40,21 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
             ->userMenuItems([
-                'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit')
+                'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit'),
+                'landing-page' => MenuItem::make()->url('/')
+                    ->icon('tabler-home')
+                    ->label('Home Page')
+            ])
+            ->navigationItems([
+                NavigationItem::make('create_customer_question')
+                    ->label('Add Support Request')
+                    ->url(function () {
+                        return '/app/customer-questions/create';
+                    })
+                    ->visible(function () {
+                        return Auth::user()->role_id > 2;
+                    })
+                    ->group('Additional')
             ])
             ->plugins([
                 BreezyCore::make()

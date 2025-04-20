@@ -24,7 +24,7 @@ class EditLearningTest extends EditRecord
 
         $this->previousUrl = url()->previous();
 
-        if ($this->record->created_by != Auth::id()) {
+        if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
                 ->title('You are not authorized to edit this test')
                 ->danger()
