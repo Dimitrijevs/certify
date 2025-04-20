@@ -24,11 +24,17 @@ class CreateCustomTestResult extends Page
     protected static string $resource = LearningTestResultResource::class;
 
     public bool $view_test;
+
     public ?Model $result = null;
+
     public ?string $user_answer = null;
+
     public Carbon|string|null $start_time = null;
+
     public int $position;
+
     public bool $transition_enabled = false;
+
     public ?Model $current_question = null;
 
 
@@ -90,12 +96,22 @@ class CreateCustomTestResult extends Page
                 ->first();
 
             $this->record = $this->result->test;
+
+            if ($this->result->user_id != Auth::id()) {
+                Notification::make()
+                    ->title('You do not have access to this test')
+                    ->body('You need to purchase this test to access it.')
+                    ->danger()
+                    ->send();
+
+                return redirect()->route('filament.app.pages.dashboard');
+            }
         } else {
             $this->record = LearningTest::findOrFail($record);
             $this->result = $this->getOrCreateTestResult();
         }
 
-        if (!$this->checkPurchase($record)) {
+        if (!$this->checkPurchase($this->record->id)) {
             Notification::make()
                 ->title('You do not have access to this test')
                 ->body('You need to purchase this test to access it.')
@@ -126,8 +142,7 @@ class CreateCustomTestResult extends Page
         if (!$this->view_test) {
             if ($this->checkTestCooldown() == false) {
                 return redirect()->route('filament.app.resources.learning-test-results.index');
-            }
-            ;
+            };
         }
 
         // current question

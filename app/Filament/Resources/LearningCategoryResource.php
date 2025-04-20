@@ -59,16 +59,6 @@ class LearningCategoryResource extends Resource
         return true;
     }
 
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id < 3;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return Auth::user()->role_id < 3;
-    }
-
     public static function canDelete(Model $record): bool
     {
         return Auth::user()->role_id < 3;

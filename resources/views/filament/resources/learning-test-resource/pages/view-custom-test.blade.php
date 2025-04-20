@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     <div class="grid lg:grid-cols-12 md:grid-cols-12 gap-4">
-        <div class="lg:col-span-4 md:col-span-4 order-2 lg:order-1 md:order-1">
+        <div class="lg:col-span-4 md:col-span-4 order-2 lg:order-1 md:order-1 space-y-4">
             <x-filament::section>
                 <x-slot name="heading">
                     {{ __('learning/learningCategory.label_plural') }}
@@ -15,9 +15,9 @@
                                     <span class="flex items-start">
                                         <span class="relative flex h-6 w-6 flex-shrink-0 items-center justify-center">
                                             <span
-                                                class="absolute h-5 w-5 rounded-full bg-cyan-200 dark:bg-cyan-700"></span>
+                                                class="absolute h-5 w-5 rounded-full bg-blue-200 dark:bg-blue-700"></span>
                                             <span
-                                                class="relative block h-3 w-3 rounded-full bg-cyan-500 dark:bg-cyan-300"></span>
+                                                class="relative block h-3 w-3 rounded-full bg-blue-500 dark:bg-blue-300"></span>
                                         </span>
                                         <span
                                             class="ml-4 text-md font-medium text-gray-500 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
@@ -40,6 +40,29 @@
                     @endif
                 </ul>
             </x-filament::section>
+
+            @if ($this->getCategoriesNames())
+                <x-filament::section>
+                    <x-slot name="heading">
+                        Categories
+                    </x-slot>
+
+                    <div class="space-y-4">
+                        <ul class="space-y-4">
+                            @foreach ($this->getCategoriesNames() as $category)
+                                <li class="group">
+                                    <span class="flex items-start">
+                                        <x-circle-bullet />
+                                        <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
+                                            {{ $category }}
+                                        </span>
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </x-filament::section>
+            @endif
         </div>
 
         <div class="lg:col-span-8 md:col-span-8 order-1 lg:order-2 md:order-2">
@@ -60,7 +83,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-cyan-500 p-3">
+                                    <div class="absolute rounded-md bg-blue-500 p-3">
                                         <x-tabler-question-mark class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -80,7 +103,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-cyan-500 p-3">
+                                    <div class="absolute rounded-md bg-blue-500 p-3">
                                         <x-tabler-award class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -101,7 +124,7 @@
                             <div
                                 class="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 px-4 pt-5 shadow sm:px-6 sm:pt-6">
                                 <dt>
-                                    <div class="absolute rounded-md bg-cyan-500 p-3">
+                                    <div class="absolute rounded-md bg-blue-500 p-3">
                                         <x-tabler-clock class="text-white" />
                                     </div>
                                     <p class="ml-16 truncate text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -153,24 +176,24 @@
                                 </x-filament::button>
 
                                 @if ($this->record->details->where('is_active', true)->count() == 0)
-                                    <x-filament::button color="cyan" class="w-1/2" disabled>
+                                    <x-filament::button color="primary" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
                                 @elseif (!$this->cooldownFinished())
-                                    <x-filament::button color="cyan" class="w-1/2" disabled>
+                                    <x-filament::button color="primary" class="w-1/2" disabled>
                                         {{ __('learning/learningTest.custom.yes') }}
                                     </x-filament::button>
                                 @elseif ($this->cooldownFinished())
                                     <a class="w-1/2"
                                         href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                        <x-filament::button color="cyan" class="w-full">
+                                        <x-filament::button color="primary" class="w-full">
                                             {{ __('learning/learningTest.custom.yes') }}
                                         </x-filament::button>
                                     </a>
                                 @else
                                     <a class="w-1/2"
                                         href="{{ route('filament.app.resources.learning-test-results.do-test', ['record' => $record->id, 'question' => 1, 'viewTest' => 0]) }}">
-                                        <x-filament::button color="cyan" class="w-full">
+                                        <x-filament::button color="primary" class="w-full">
                                             {{ __('learning/learningTest.custom.yes') }}
                                         </x-filament::button>
                                     </a>

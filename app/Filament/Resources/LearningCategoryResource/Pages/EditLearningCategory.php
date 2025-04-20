@@ -13,6 +13,26 @@ class EditLearningCategory extends EditRecord
 {
     protected static string $resource = LearningCategoryResource::class;
 
+    public function mount(int | string $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+
+        if ($this->record->created_by != Auth::id()) {
+            Notification::make()
+                ->title('You are not authorized to edit this course')
+                ->danger()
+                ->send();
+
+            $this->redirect($this->previousUrl);
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

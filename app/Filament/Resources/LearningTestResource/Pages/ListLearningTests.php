@@ -20,7 +20,6 @@ class ListLearningTests extends ListRecords
                 ->icon('tabler-checkbox')
                 ->color('gray')
                 ->url(ListLearningTestResults::getUrl(['index'])),
-
             CreateAction::make()
                 ->label(__('learning/learningTest.form.create_new_qualification'))
                 ->icon('tabler-square-plus-2'),

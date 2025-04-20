@@ -14,9 +14,12 @@ class LearningTest extends Model
 
     protected $fillable = [
         'category_id',
+        'categories',
+        'available_for_everyone',
         'is_active',
         'thumbnail',
         'name',
+        'language_id',
         'is_public',
         'cooldown',
         'description',
@@ -33,6 +36,7 @@ class LearningTest extends Model
 
     protected $casts = [
         'category_id' => 'array',
+        'categories' => 'array',
     ];
 
     public function category()
@@ -53,6 +57,11 @@ class LearningTest extends Model
     public function requirements()
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'test_id');
+    }
+
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'language_id');
     }
 
     public function currency()

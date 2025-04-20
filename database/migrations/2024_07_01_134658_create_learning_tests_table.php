@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->json('category_id')->nullable()->onDelete('set null');
             $table->string('thumbnail')->nullable();
+            $table->json('categories');
             $table->string('name');
+            $table->string('language_id')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_question_transition_enabled')->default(false);
             $table->integer('min_score')->nullable();

@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Category;
 use App\Models\Currency;
+use App\Models\Language;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningTest;
@@ -25,6 +27,7 @@ use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
@@ -63,16 +66,6 @@ class LearningTestResource extends Resource
     public static function canView(Model $record): bool
     {
         return true;
-    }
-
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id < 3;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -286,9 +279,9 @@ class LearningTestResource extends Resource
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
                             ])
                             ->numeric()
                             ->minValue(0),
@@ -336,6 +329,37 @@ class LearningTestResource extends Resource
                                     return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
                                 }
                             }),
+                        Select::make('language_id')
+                            ->label('Language')
+                            ->options(function () {
+                                return Language::all()
+                                    ->mapWithKeys(function ($lang) {
+                                        return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                                    });
+                            })
+                            ->prefixIcon('tabler-globe')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ]),
+                        Select::make('categories')
+                            ->label('Categories')
+                            ->options(Category::all()->pluck('name', 'id'))
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
                             ->columnSpan(12)
@@ -375,7 +399,13 @@ class LearningTestResource extends Resource
         return $table
             ->columns([
                 Stack::make([
-                    CustomImageColumn::make('thumbnail'),
+                    CustomImageColumn::make('thumbnail')
+                        ->categories(function ($record) {
+                            return $record->categories;
+                        })
+                        ->languageName(function ($record) {
+                            return $record->language->name;
+                        }),
                     TextColumn::make('name')
                         ->label('Name')
                         ->searchable()
@@ -454,6 +484,40 @@ class LearningTestResource extends Resource
                     ->columnSpan(1)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
+                    }),
+                SelectFilter::make('language_id')
+                    ->label('Language')
+                    ->columnSpan(1)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return Language::all()
+                            ->mapWithKeys(function ($lang) {
+                                return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                            });
+                    }),
+                Filter::make('category')
+                    ->form([
+                        Select::make('category_ids')
+                            ->label('Category')
+                            ->preload()
+                            ->searchable()
+                            ->multiple()
+                            ->options(function () {
+                                return Category::all()->pluck('name', 'id');
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['category_ids'],
+                            function (Builder $query, $categoryIds) {
+                                return $query->where(function (Builder $query) use ($categoryIds) {
+                                    foreach ($categoryIds as $categoryId) {
+                                        $query->orWhereJsonContains('categories', $categoryId);
+                                    }
+                                });
+                            }
+                        );
                     }),
                 Filter::make('is_free')
                     ->columnSpan(2)

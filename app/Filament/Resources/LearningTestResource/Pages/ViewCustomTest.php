@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\LearningTestResource\Pages;
 
+use App\Models\Category;
 use App\Models\LearningTest;
+use App\Models\UserPurchase;
 use Filament\Actions\Action;
 use App\Models\LearningCategory;
 use App\Models\LearningTestResult;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Resources\LearningTestResource;
-use App\Models\UserPurchase;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewCustomTest extends Page
@@ -48,6 +49,22 @@ class ViewCustomTest extends Page
     {
         $name = LearningCategory::findOrFail($id)->name;
         return $name;
+    }
+
+    public function getCategoriesNames() {
+        $categories = $this->record->categories;
+        $categoryNames = [];
+
+        if ($categories) {
+            foreach ($categories as $categoryId) {
+                $category = Category::find($categoryId);
+                if ($category) {
+                    $categoryNames[] = $category->name;
+                }
+            }
+        }
+
+        return $categoryNames;
     }
 
     public function getTotalPrice()

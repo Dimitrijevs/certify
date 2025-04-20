@@ -14,6 +14,26 @@ class EditLearningTest extends EditRecord
 {
     protected static string $resource = LearningTestResource::class;
 
+    public function mount(int | string $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+
+        if ($this->record->created_by != Auth::id()) {
+            Notification::make()
+                ->title('You are not authorized to edit this test')
+                ->danger()
+                ->send();
+
+            $this->redirect($this->previousUrl);
+        }
+    }
+
     public function getTitle(): string|Htmlable
     {
         return __('learning/learningTest.custom.edit_test');
