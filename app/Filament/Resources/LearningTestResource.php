@@ -113,7 +113,7 @@ class LearningTestResource extends Resource
                     ->schema([
                         Hidden::make('created_by')
                             ->default(Auth::id()),
-                            
+
                         TextInput::make('name')
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
@@ -281,22 +281,23 @@ class LearningTestResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ]),
-                            TextInput::make('price')
+                        TextInput::make('price')
                             ->label('Price')
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('discount')
                             ->label('Discount')
                             ->live()
-                            ->visible(function ($get) {
-                                return $get('price') > 0;
+                            ->prefixIcon('tabler-percentage')
+                            ->disabled(function ($get) {
+                                return $get('price') == 0;
                             })
                             ->columnSpan([
                                 'default' => 12,
@@ -315,9 +316,9 @@ class LearningTestResource extends Resource
                             ->required()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
                             ])
                             ->options(function () {
                                 return Currency::all()
@@ -335,18 +336,6 @@ class LearningTestResource extends Resource
                                     return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
                                 }
                             }),
-                        Toggle::make('available_for_everyone')
-                            ->label('Available for everyone')
-                            ->columnSpan([
-                                'default' => 4,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 2,
-                            ])
-                            ->default(true)
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
                             ->columnSpan(12)
@@ -425,24 +414,24 @@ class LearningTestResource extends Resource
                 if (Auth::user()->role_id > 2) {
                     // Basic requirements: must be active and public
                     $query->where('is_active', true)
-                          ->where('is_public', true);
-                    
+                        ->where('is_public', true);
+
                     // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function($subQuery) {
+                    $query->where(function ($subQuery) {
                         // Either available for everyone
                         $subQuery->where('available_for_everyone', true);
-                        
+
                         // OR created by someone from the same school (if user has a school)
                         if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function($userQuery) {
+                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
                                 $userQuery->where('school_id', Auth::user()->school_id);
                             });
                         }
                     });
-                    
+
                     return $query;
                 }
-            
+
                 return $query;
             })
             ->contentGrid([
@@ -504,7 +493,7 @@ class LearningTestResource extends Resource
                         if (!isset($data['is_free'])) {
                             return $query;
                         }
-                    
+
                         if ($data['is_free'] == true) {
                             return $query->where(function ($query) {
                                 $query->where('price', 0)
@@ -513,7 +502,7 @@ class LearningTestResource extends Resource
                         } else {
                             // Base query for paid items
                             $query->where('price', '>', 0);
-                            
+
                             // Apply price range filters if set, considering discount
                             if (!empty($data['price_from'])) {
                                 $query->where(function ($query) use ($data) {
@@ -523,7 +512,7 @@ class LearningTestResource extends Resource
                                         ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
                                 });
                             }
-                            
+
                             if (!empty($data['price_to'])) {
                                 $query->where(function ($query) use ($data) {
                                     // Either the original price meets the criteria
@@ -532,9 +521,9 @@ class LearningTestResource extends Resource
                                         ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
                                 });
                             }
-                            
+
                             // If both from and to are set, we already applied the constraints above
-                            
+            
                             return $query;
                         }
                     }),
@@ -550,12 +539,12 @@ class LearningTestResource extends Resource
                 } elseif (Auth::user()->role_id >= 2) {
                     // Start with active tests requirement
                     $query->where('is_active', true);
-                    
+
                     // Create a nested where condition for public OR same school
                     $query->where(function ($subquery) {
                         // Public tests
                         $subquery->where('is_public', true);
-                        
+
                         // OR tests created by users from the same school
                         if (Auth::user()->school_id) {
                             $subquery->orWhereHas('createdBy', function ($userQuery) {
@@ -564,7 +553,7 @@ class LearningTestResource extends Resource
                         }
                     });
                 }
-                
+
                 return $query;
             })
             ->bulkActions([

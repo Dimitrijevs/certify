@@ -152,8 +152,9 @@ class LearningCategoryResource extends Resource
                         TextInput::make('discount')
                             ->label('Discount')
                             ->live()
-                            ->visible(function ($get) {
-                                return $get('price') > 0;
+                            ->prefixIcon('tabler-percentage')
+                            ->disabled(function ($get) {
+                                return $get('price') == 0;
                             })
                             ->columnSpan([
                                 'default' => 12,
