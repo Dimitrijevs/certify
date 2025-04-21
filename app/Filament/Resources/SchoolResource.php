@@ -241,7 +241,7 @@ class SchoolResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                    Tab::make('Workers')
+                    Tab::make(__('institution.workers'))
                         ->icon('tabler-notebook')
                         ->schema([
                             RelationManager::make()
@@ -332,9 +332,7 @@ class SchoolResource extends Resource
                     }),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // ...
             ]);
     }
 

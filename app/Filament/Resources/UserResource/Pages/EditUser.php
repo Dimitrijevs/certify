@@ -47,7 +47,7 @@ class EditUser extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return __('other.edit_record');
+        return __('user.fields.edit_user');
     }
 
     #[On('update-user-edit-page')] 

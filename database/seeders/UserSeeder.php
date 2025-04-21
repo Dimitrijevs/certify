@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $faker = Faker::create('lv_LV');
         $schools = School::with('groups')->get();
 
-        $iterations = 5;
+        $iterations = 10;
         $sub_iterations = 1000;
 
         $school = $faker->randomElement($schools);
@@ -98,7 +98,7 @@ class UserSeeder extends Seeder
 
                 $faker->boolean(90) ? $role = 4 : $role = 3;
 
-                $school = $faker->boolean(25) ? $faker->randomElement($schools) : null;
+                $school = $faker->boolean(10) ? $faker->randomElement($schools) : null;
 
                 $group = $school ?->groups->random() ?? null;
 
@@ -120,9 +120,13 @@ class UserSeeder extends Seeder
             User::insert($users);
 
             $groups = Group::all();
-            $users = User::where('role_id', 3)->pluck('id')->toArray();
 
             foreach ($groups as $group) {
+                $users = User::where('role_id', 3)
+                    ->where('school_id', $group->school_id)
+                    ->pluck('id')
+                    ->toArray();
+
                 $group->teacher_id = $faker->randomElement($users);
                 $group->save();
             }

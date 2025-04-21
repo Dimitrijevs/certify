@@ -19,4 +19,5 @@ return [
     'assigned_certificates' => 'Назначенные сертификаты',
     'no_group' => 'Нет группы',
     'student' => 'Ученик',
+    'workers' => 'Работники',
 ];

@@ -7,17 +7,24 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
-use Illuminate\Database\Eloquent\Collection;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use App\Tables\Columns\AvatarWithDetails;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class GroupsRelationManager extends RelationManager
 {
     protected static string $relationship = 'groups';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('institution.groups');
+    }
 
     public function form(Form $form): Form
     {
@@ -30,7 +37,7 @@ class GroupsRelationManager extends RelationManager
             ])
             ->schema([
                 TextInput::make('name')
-                    ->label('Name')
+                    ->label(__('group.name'))
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 6,
@@ -39,7 +46,7 @@ class GroupsRelationManager extends RelationManager
                     ])
                     ->required(),
                 Select::make('teacher_id')
-                    ->label('Teacher')
+                    ->label(__('group.superviser'))
                     ->preload()
                     ->searchable()
                     ->columnSpan([
@@ -48,10 +55,10 @@ class GroupsRelationManager extends RelationManager
                         'md' => 6,
                         'lg' => 6,
                     ])
-                    ->options(User::pluck('name', 'id')->toArray())
+                    ->options(User::where('school_id', $this->getOwnerRecord()->id)->get()->pluck('name', 'id')->toArray())
                     ->required(),
                 Textarea::make('description')
-                    ->label('Description')
+                    ->label(__('group.description'))
                     ->rows(4)
                     ->columnSpan([
                         'default' => 12,
@@ -67,7 +74,7 @@ class GroupsRelationManager extends RelationManager
         return $table
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Name')
+                    ->label(__('group.name'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -80,7 +87,7 @@ class GroupsRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('teacher_id')
-                    ->label('Teacher')
+                    ->label(__('group.superviser'))
                     ->title(function ($record) {
                         return $record->teacher->name;
                     })
@@ -95,7 +102,7 @@ class GroupsRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('students')
-                    ->label('Students Count')
+                    ->label(__('group.workers_count'))
                     ->sortable()
                     ->searchable()
                     ->icon('tabler-users-group')
@@ -105,13 +112,20 @@ class GroupsRelationManager extends RelationManager
                     }),
             ])
             ->filters([
-                //
+                SelectFilter::make('teacher_id')
+                    ->label(__('group.superviser'))
+                    ->options(User::where('school_id', $this->getOwnerRecord()->id)->get()->pluck('name', 'id')->toArray())
+                    ->searchable()
+                    ->preload(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label(__('group.add_new_group'))
+                    ->modalHeading(__('group.add_new_group')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->modalHeading(__('group.edit_group'))
                     ->after(function ($livewire) {
                         $livewire->dispatch('update-students-relation-manager');
                     }),
@@ -130,8 +144,8 @@ class GroupsRelationManager extends RelationManager
                             $record->delete();
 
                             Notification::make()
-                                ->title('You have been removed from the group')
-                                ->body('You have been removed from the group ' . $record->name)
+                                ->title(__('group.you_have_been_removed_from_the_group'))
+                                ->body(__('group.you_have_been_removed_from_the_group') . ' ' . $record->name)
                                 ->warning()
                                 ->sendToDatabase($users);
 
@@ -139,8 +153,8 @@ class GroupsRelationManager extends RelationManager
                         }
 
                         Notification::make()
-                            ->title('Group Deleted')
-                            ->body('Group ' . $record->name . ' has been deleted')
+                            ->title(__('group.group_deleted'))
+                            ->body(__('group.group') . ' ' . $record->name . ' ' . __('group.has_been_deleted'))
                             ->success()
                             ->send();
                     }),
@@ -150,8 +164,8 @@ class GroupsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()
                         ->deselectRecordsAfterCompletion()
                         ->requiresConfirmation()
-                        ->modalHeading('Delete Groups')
-                        ->modalDescription('Are you sure you want to delete these groups?')
+                        ->modalHeading(__('group.delete_groups'))
+                        ->modalDescription(__('group.are_you_sure_you_want_to_delete_these_groups'))
                         ->action(function (Collection $records, $livewire) {
                             foreach ($records as $group) {
                                 $users = User::where('group_id', $group->id)->get();
@@ -164,14 +178,14 @@ class GroupsRelationManager extends RelationManager
                                 $group->delete();
 
                                 Notification::make()
-                                    ->title('Group Deleted')
-                                    ->body('Group ' . $group->name . ' has been deleted')
+                                    ->title(__('group.group_deleted'))
+                                    ->body(__('group.group') . ' ' . $group->name . ' ' . __('group.has_been_deleted'))
                                     ->success()
                                     ->send();
 
                                 Notification::make()
-                                    ->title('You have been removed from the group')
-                                    ->body('You have been removed from the group ' . $group->name)
+                                    ->title(__('group.you_have_been_removed_from_the_group'))
+                                    ->body(__('group.you_have_been_removed_from_the_group') . ' ' . $group->name)
                                     ->warning()
                                     ->sendToDatabase($users);
                             }

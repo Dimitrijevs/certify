@@ -32,7 +32,7 @@ class StudentsRelationManager extends RelationManager
 
     public static function getTitle(EloquentModel $ownerRecord, string $pageClass): string
     {
-        return 'Workers';
+        return __('institution.workers');
     }
 
     public function canEdit(Model $record): bool
@@ -54,7 +54,7 @@ class StudentsRelationManager extends RelationManager
             ->defaultGroup('group.name')
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Worker')
+                    ->label(__('worker.worker'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -107,7 +107,7 @@ class StudentsRelationManager extends RelationManager
                         ])->schema([
                                     Select::make('user_id')
                                         ->live()
-                                        ->label('Worker')
+                                        ->label(__('worker.worker'))
                                         ->options(function () {
                                             return User::where('role_id', 4)
                                                 ->where('school_id', null)
@@ -123,7 +123,7 @@ class StudentsRelationManager extends RelationManager
                                         ->required()
                                         ->searchable(),
                                     Select::make('group_id')
-                                        ->label('Group')
+                                        ->label(__('worker.group'))
                                         ->options(function () {
                                             return Group::where('school_id', $this->getOwnerRecord()->id)
                                                 ->pluck('name', 'id');
@@ -147,7 +147,7 @@ class StudentsRelationManager extends RelationManager
 
                         Notification::make()
                             ->info()
-                            ->title('Institotion owner: ' . $this->getOwnerRecord()->creator->name . ' invited you to join the institution')
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
                             ->actions([
                                 NotificationAction::make('accept')
                                     ->url(route('accept-invite', [
@@ -171,18 +171,18 @@ class StudentsRelationManager extends RelationManager
                             ->sendToDatabase($recipient);
 
                         Notification::make()
-                            ->title('Invite sent')
+                            ->title(__('worker.invite_sent'))
                             ->success()
                             ->send();
 
                         return $data;
                     })
-                    ->label('Add Worker'),
+                    ->label(__('worker.add_new_worker')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->modalHeading(__('worker.edit_worker'))
                     ->form(function ($record) {
-
                         return [
                             Grid::make([
                                 'default' => 12,
@@ -192,13 +192,16 @@ class StudentsRelationManager extends RelationManager
                             ])->schema([
                                         Select::make('id')
                                             ->live()
-                                            ->label('Worker')
+                                            ->label(__('worker.worker'))
                                             ->options(function () {
                                                 return User::where('role_id', 4)
                                                     ->where('school_id', $this->getOwnerRecord()->id)
-                                                    ->pluck('name', 'id') ?? []; // Add null check here
+                                                    ->pluck('name', 'id') ?? [];
                                             })
-                                            ->default($record ? $record->id : null) // Add null check
+                                            ->afterStateUpdated(function ($state, callable $set) {
+                                                $set('group_id', null);
+                                            })
+                                            ->default($record ? $record->id : null)
                                             ->columnSpan([
                                                 'default' => 12,
                                                 'sm' => 12,
@@ -209,7 +212,7 @@ class StudentsRelationManager extends RelationManager
                                             ->required()
                                             ->searchable(),
                                         Select::make('group_id')
-                                            ->label('Group')
+                                            ->label(__('worker.group'))
                                             ->options(function () {
                                                 return Group::where('school_id', $this->getOwnerRecord()->id)
                                                     ->pluck('name', 'id') ?? []; // Add null check
@@ -235,7 +238,7 @@ class StudentsRelationManager extends RelationManager
 
                         Notification::make()
                             ->info()
-                            ->title('Institotion owner: ' . $this->getOwnerRecord()->creator->name . ' invited you to join the institution ' . $this->getOwnerRecord()->name)
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
                             ->actions([
                                 NotificationAction::make('accept')
                                     ->url(route('accept-invite', [
@@ -261,8 +264,7 @@ class StudentsRelationManager extends RelationManager
                             ->sendToDatabase($recipient);
 
                         Notification::make()
-                            ->title('Invite sent')
-                            ->body('Invite sent to ' . $recipient->name)
+                            ->title(__('worker.invite_sent'))
                             ->success()
                             ->send();
                     }),
@@ -274,18 +276,18 @@ class StudentsRelationManager extends RelationManager
                         $record->save();
 
                         Notification::make()
-                            ->title('Worker removed')
+                            ->title(__('worker.worker_removed'))
                             ->success()
                             ->send();
 
                         Notification::make()
                             ->info()
-                            ->title('Institotion owner: ' . $this->getOwnerRecord()->creator->name . ' removed you from the institution')
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.removed_you_from_the_institution') . ' ' . $this->getOwnerRecord()->name)
                             ->sendToDatabase($record);
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Remove Worker')
-                    ->modalDescription('Are you sure you want to remove this worker?')
+                    ->modalHeading(__('worker.remove_worker'))
+                    ->modalDescription(__('worker.are_you_sure_you_want_to_remove_this_worker'))
                     ->color('danger')
                     ->icon('tabler-trash')
                     ->label(__('Delete')),

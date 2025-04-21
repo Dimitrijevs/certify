@@ -8,7 +8,6 @@ use Filament\Actions\Action;
 use App\Models\LearningResource;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
-use App\Models\LearningUserStudyRecord;
 use App\Filament\Resources\LearningCategoryResource;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
@@ -47,7 +46,7 @@ class CourseWelocomePage extends Page
     {
         return [
             Action::make('edit')
-                ->label('Edit')
+                ->label(__('other.edit'))
                 ->url(route('filament.app.resources.learning-categories.edit', ['record' => $this->record->id]))
                 ->icon('tabler-edit')
                 ->color('primary')

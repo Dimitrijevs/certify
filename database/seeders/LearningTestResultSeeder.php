@@ -40,7 +40,7 @@ class LearningTestResultSeeder extends Seeder
                     $subQuery->where('answer_type', 'text');
                 });
             })
-            ->limit(100)
+            ->limit(2000)
             ->get();
 
         $results = [];

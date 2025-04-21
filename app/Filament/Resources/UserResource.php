@@ -43,16 +43,6 @@ class UserResource extends Resource
         return __('participants.label_plural');
     }
 
-    // public static function canViewAny(): bool
-    // {
-    //     return Auth::user()->role_id < 4;
-    // }
-
-    // public static function canView(Model $record): bool
-    // {
-    //     return true;
-    // }
-
     public static function shouldRegisterNavigation(): bool
     {
         return Auth::user()->role_id < 4;
@@ -118,7 +108,7 @@ class UserResource extends Resource
                                     'lg' => 6,
                                 ]),
                             Country::make('country')
-                                ->label('Country')
+                                ->label(__('user.fields.country'))
                                 ->required()
                                 ->preload()
                                 ->searchable()
@@ -467,7 +457,7 @@ class UserResource extends Resource
                     ->label(__('participants.group'))
                     ->options(
                         Group::all()->mapWithKeys(function ($group) {
-                            return [$group->id => $group->year . ' ' . $group->group];
+                            return [$group->id => $group->name . ' (' . $group->school?->name . ')'];
                         })
                     )
                     ->searchable()
@@ -483,9 +473,7 @@ class UserResource extends Resource
                 DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // ...
             ]);
     }
 

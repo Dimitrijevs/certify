@@ -19,4 +19,5 @@ return [
     'create_new_record' => 'Izveidot jaunu ierakstu',
     'edit_record' => 'Rediģēt ierakstu',
     'additional' => 'Papildus',
+    'edit' => 'Rediģēt',
 ];

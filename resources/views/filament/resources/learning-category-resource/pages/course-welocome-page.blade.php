@@ -2,13 +2,13 @@
     <div class="grid grid-cols-12 gap-4 items-start">
         <x-filament::section class="col-span-12 md:col-span-4 self-start">
             <x-slot name="heading">
-                Course Information
+                {{ __('welcome-course.course_general_information') }}
             </x-slot>
 
             <div class="space-y-6 mb-6">
                 <x-welcome-page-list>
                     @slot('title')
-                        Available Resources
+                        {{ __('welcome-course.available_resources') }}
                     @endslot
 
                     @slot('description')
@@ -23,7 +23,7 @@
                 @if ($this->getCategories())
                     <x-welcome-page-list>
                         @slot('title')
-                            Categories
+                            {{ __('welcome-course.categories') }}
                         @endslot
 
                         @slot('description')
@@ -38,21 +38,21 @@
 
                 <x-welcome-page-list>
                     @slot('title')
-                        Additional Information
+                        {{ __('welcome-course.additional_information') }}
                     @endslot
 
                     @slot('description')
                         <x-welcome-page-list-item>
-                            Created At: {{ $record->created_at->format('d M Y') }}
+                            {{ __('welcome-course.created_at') }}: {{ $record->created_at->format('d M Y') }}
                         </x-welcome-page-list-item>
                         <x-welcome-page-list-item>
-                            Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
+                            {{ __('welcome-course.last_time_updated_at') }}: {{ $record->updated_at->format('d M Y') }}
                         </x-welcome-page-list-item>
                         <x-welcome-page-list-item>
-                            Students Enrolled: {{ $purchasesCount }}
+                            {{ __('welcome-course.students_enrolled') }}: {{ $purchasesCount }}
                         </x-welcome-page-list-item>
                         <x-welcome-page-list-item>
-                            Created By: {{ $record->createdBy->name }}
+                            {{ __('welcome-course.created_by') }}: {{ $record->createdBy->name }}
                         </x-welcome-page-list-item>
                     @endslot
                 </x-welcome-page-list>
@@ -68,11 +68,11 @@
 
                     <x-cyan-button>
                         @if ($this->getTotalPrice() > 0 && $record->discount > 0)
-                            Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
+                            {{ __('welcome-course.buy_now') }} ( {{ $record->price }} - {{ $record->discount }}% =
                             {{ number_format($this->getTotalPrice(), 2) }}
                             {{ $record->currency->symbol }})
                         @elseif ($this->getTotalPrice() > 0 && $record->discount == 0)
-                            Buy Now ( {{ number_format($this->getTotalPrice(), 2) }}
+                            {{ __('welcome-course.buy_now') }} ( {{ number_format($this->getTotalPrice(), 2) }}
                             {{ $record->currency->symbol }})
                         @endif
                     </x-cyan-button>
@@ -85,14 +85,14 @@
                     <input type="hidden" name="course_id" value="{{ $record->id }}">
 
                     <x-cyan-button>
-                        Enroll Now For Free
+                        {{ __('welcome-course.enroll_now_for_free') }}
                     </x-cyan-button>
                 </form>
             @else
                 <a
                     href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $this->getFirstResourceId()]) }}">
                     <x-cyan-button>
-                        Continue Learning
+                        {{ __('welcome-course.continue_learning') }}
                     </x-cyan-button>
                 </a>
             @endif
@@ -100,7 +100,7 @@
 
         <x-filament::section class="col-span-12 md:col-span-8 self-start">
             <x-slot name="heading">
-                Course Information
+                {{ __('welcome-course.course_description') }}
             </x-slot>
 
             <div class="w-full mb-4">

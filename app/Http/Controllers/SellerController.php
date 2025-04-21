@@ -42,7 +42,7 @@ class SellerController extends Controller
         $seller = User::findOrFail($id);
 
         if (is_null($seller)) {
-            return $this->redirectAndNotify('Seller Not Found', 'The seller was not found.');
+            return $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
         // complete stripe onboarding
@@ -81,7 +81,7 @@ class SellerController extends Controller
                 return redirect($onboardLink->url);
 
             } catch (\Exception $exception) {
-                $this->redirectAndNotify('Stripe Onboarding Failed', $exception->getMessage());
+                $this->redirectAndNotify(__('seller.stripe_onboarding_failed'), $exception->getMessage());
             }
         }
 
@@ -91,7 +91,7 @@ class SellerController extends Controller
             return redirect($loginLink->url);
 
         } catch (\Exception $exception) {
-            $this->redirectAndNotify('Stripe Login Link Failed', $exception->getMessage());
+            $this->redirectAndNotify(__('seller.stripe_login_failed'), $exception->getMessage());
         }
     }
 
@@ -102,13 +102,13 @@ class SellerController extends Controller
             ->first();
 
         if (is_null($stripeToken)) {
-            $this->redirectAndNotify('Invalid Token', 'The token is invalid or has expired.');
+            $this->redirectAndNotify(__('seller.invalid_token'), __('seller.token_is_invalid_or_expired'));
         }
 
         $seller = User::findOrFail($stripeToken->seller_id);
 
         if (is_null($seller)) {
-            $this->redirectAndNotify('Seller Not Found', 'The seller was not found.');
+            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
         $seller->update(['completed_stripe_onboarding' => true]);
@@ -128,19 +128,19 @@ class SellerController extends Controller
         $seller = User::findOrFail($id);
 
         if (is_null($seller)) {
-            return $this->redirectAndNotify('Seller Not Found', 'The seller was not found.');
+            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
         if ($request->price > 0) {
 
             if (!$seller->completed_stripe_onboarding) {
                 Notification::make()
-                    ->title(Auth::user()->name . ' is trying to purchase your course')
-                    ->body('Please complete your Stripe onboarding process to receive payments.')
+                    ->title(Auth::user()->name . ' '. __('seller.is_trying_to_purchase_your_product'))
+                    ->body(__('seller.please_complete_stripe_onboarding_process_to_recieve_payements'))
                     ->warning()
                     ->sendToDatabase($seller);
 
-                $this->redirectAndNotify('Creator does not have a Stripe account yet', 'We are notifying the creator to complete their Stripe onboarding process.');
+                $this->redirectAndNotify(__('seller.creator_does_not_have_stripe_account_yet'), __('seller.we_are_notifying_the_creator_to_complete_their_stripe_onboarding_process'));
             }
 
             $currency_id = $request->currency_id ?? 38;
@@ -149,11 +149,11 @@ class SellerController extends Controller
             if ($request->course_id) {
                 $course = LearningCategory::find($request->course_id);
 
-                $description = 'Payment for course ' . $course->name . ' by ' . Auth::user()->name;
+                $description = __('seller.payment_for_course') . ' ' . $course->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
             } else {
                 $test = LearningTest::find($request->test_id);
 
-                $description = 'Payment for test ' . $test->name . ' by ' . Auth::user()->name;
+                $description = __('seller.payment_for_test') . ' ' . $test->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
             }
 
             try {
@@ -164,7 +164,7 @@ class SellerController extends Controller
                     'description' => $description,
                 ]);
             } catch (ApiErrorException $exception) {
-                $this->redirectAndNotify('Payment Failed', $exception->getMessage());
+                $this->redirectAndNotify(__('seller.payment_failed'), $exception->getMessage());
             }
 
             $fee = $request->price * 100 * 0.1; // 10% fee
@@ -178,7 +178,7 @@ class SellerController extends Controller
                     'description' => $description,
                 ]);
             } catch (ApiErrorException $exception) {
-                $this->redirectAndNotify('Transfer Failed', $exception->getMessage());
+                $this->redirectAndNotify(__('seller.transfer_failed'), $exception->getMessage());
             }
 
             $admins = User::where('role_id', '<', 3)->get();
@@ -193,8 +193,8 @@ class SellerController extends Controller
                     ]);
                 } catch (ApiErrorException $exception) {
                     Notification::make()
-                        ->title('Transfer Failed')
-                        ->body('Please create a Stripe account to receive payments.')
+                        ->title(__('seller.transfer_failed'))
+                        ->body($exception->getMessage())
                         ->danger()
                         ->sendToDatabase($admin);
                 }
@@ -215,6 +215,6 @@ class SellerController extends Controller
         $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
 
-        return $this->redirectAndNotify('Your purchase was successful!', 'You now have access to this content', 'success');
+        return $this->redirectAndNotify(__('seller.your_purchase_was_successful'), __('seller.now_you_can_access_the_course'), 'success');
     }
 }
