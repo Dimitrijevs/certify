@@ -11,12 +11,14 @@ return [
     ],
     'fields' => [
         'user' => 'Lietotājs',
-        'test' => 'Iziets tests',
         'valid_untill' => 'Derīgs līdz',
         'title' => 'Nosaukums',
         'certificate_type' => 'Sertifikāta veids',
         'certificate' => 'Sertifikāts',
         'description' => 'Apraksts',
+        'test' => 'Tests',
+        'completed_test' => 'Izietais tests',
+        'certificate_created_automatically' => 'Sertifikāts izveidots automātiski',
     ],
     'custom' => [
         'edit_certificate' => 'Rediģēt sertifikātu',

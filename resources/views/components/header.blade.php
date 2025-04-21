@@ -42,7 +42,7 @@
             <a href="#top-section">
                 <h1
                     class="text-4xl heading hover:text-gray-600 dark:hover:text-cyan-100 duration-200 cursor-pointer">
-                    certifyNow
+                    certify
                 </h1>
             </a>
 

@@ -11,12 +11,14 @@ return [
     ],
     'fields' => [
         'user' => 'User',
-        'test' => 'Completed test',
         'valid_untill' => 'Valid untill',
         'title' => 'Title',
         'certificate_type' => 'Certificate type',
         'certificate' => 'Certificate',
         'description' => 'Description',
+        'test' => 'Test',
+        'completed_test' => 'Completed test',
+        'certificate_created_automatically' => 'Certificate created automatically',
     ],
     'custom' => [
         'edit_certificate'=> 'Edit certificate',

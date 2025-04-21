@@ -115,7 +115,7 @@ class LearningCertificateResource extends Resource
                                 'lg' => 12,
                             ]),
                         Select::make('test_id')
-                            ->label('Test')
+                            ->label(__('learning/learningCertificate.fields.test'))
                             ->live()
                             ->options(function ($get) {
                                 if ($get('user_id')) {
@@ -147,7 +147,7 @@ class LearningCertificateResource extends Resource
                             ->required(),
                         Select::make('completed_test_id')
                             ->live()
-                            ->label('Completed Test')
+                            ->label(__('learning/learningCertificate.fields.completed_test'))
                             ->required()
                             ->native(false)
                             ->preload()
@@ -172,6 +172,7 @@ class LearningCertificateResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('name')
+                            ->required()
                             ->label(__('learning/learningCertificate.fields.title'))
                             ->columnSpan([
                                 'default' => 12,
@@ -222,7 +223,6 @@ class LearningCertificateResource extends Resource
                 Stack::make([
                     CustomCertificate::make('thumbnail'),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),

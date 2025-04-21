@@ -167,7 +167,7 @@
                                         {{ Str::limit($this->record->admin->job_title, 36) }}</p>
                                 </div>
                             @else
-                                <p>Certificate created automatically</p>
+                                <p>{{ __('learning/learningCertificate.fields.certificate_created_automatically') }}</p>
                             @endif
                         </div>
                         @if (Auth::user()->role_id < 3 && $this->record->admin_id)
