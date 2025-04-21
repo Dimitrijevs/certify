@@ -20,7 +20,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\SchoolResource\Pages;
 use Njxqlus\Filament\Components\Forms\RelationManager;
-use App\Filament\Resources\SchoolResource\Pages\CustomGroupPage;
 use App\Filament\Resources\SchoolResource\RelationManagers\GroupsRelationManager;
 use App\Filament\Resources\SchoolResource\RelationManagers\StudentsRelationManager;
 

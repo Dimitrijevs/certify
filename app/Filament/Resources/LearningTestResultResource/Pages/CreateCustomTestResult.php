@@ -97,7 +97,7 @@ class CreateCustomTestResult extends Page
 
             $this->record = $this->result->test;
 
-            if ($this->result->user_id != Auth::id()) {
+            if ($this->result->user_id != Auth::id() && Auth::user()->role_id > 3) {
                 Notification::make()
                     ->title('You do not have access to this test')
                     ->body('You need to purchase this test to access it.')
@@ -109,16 +109,16 @@ class CreateCustomTestResult extends Page
         } else {
             $this->record = LearningTest::findOrFail($record);
             $this->result = $this->getOrCreateTestResult();
-        }
 
-        if (!$this->checkPurchase($this->record->id)) {
-            Notification::make()
-                ->title('You do not have access to this test')
-                ->body('You need to purchase this test to access it.')
-                ->danger()
-                ->send();
-
-            return redirect()->route('filament.app.pages.dashboard');
+            if (!$this->checkPurchase($this->record->id)) {
+                Notification::make()
+                    ->title('You do not have access to this test')
+                    ->body('You need to purchase this test to access it.')
+                    ->danger()
+                    ->send();
+    
+                return redirect()->route('filament.app.pages.dashboard');
+            }
         }
 
         // Add this check to prevent out-of-bounds access

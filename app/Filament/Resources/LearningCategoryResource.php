@@ -274,6 +274,8 @@ class LearningCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([6, 18, 30, 60, 99])
+            ->defaultPaginationPageOption(30)
             ->columns([
                 Stack::make([
                     CustomImageColumn::make('thumbnail')

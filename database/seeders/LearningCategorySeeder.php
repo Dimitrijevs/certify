@@ -191,7 +191,7 @@ class LearningCategorySeeder extends Seeder
                 'aproved_by' => 1,
                 'price' => 0,
                 'discount' => 0,
-                'available_for_everyone' => rand(0, 1),
+                'available_for_everyone' => 1,
                 'currency_id' => 38,
                 'created_by' => $faker->randomElement($users)->id,
                 'created_at' => now(),

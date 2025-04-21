@@ -216,7 +216,7 @@ class LearningCertificateResource extends Resource
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->paginated([6, 18, 30, 60, 99, 'all'])
+            ->paginated([6, 18, 30, 60, 99])
             ->defaultPaginationPageOption(30)
             ->columns([
                 Stack::make([
@@ -237,9 +237,11 @@ class LearningCertificateResource extends Resource
                 'xl' => 3,
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id != 1) {
-                    $query->where('user_id', Auth::id());
+                if (Auth::user()->role_id < 3) {
+                    return $query;
                 }
+
+                return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 SelectFilter::make('user_id')

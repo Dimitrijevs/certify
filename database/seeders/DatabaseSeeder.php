@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             LearningTestQuestionSeeder::class,
             LearningTestQuestionAnswerSeeder::class,
             LearningCertificationRequirementSeeder::class,
+            UserPurchaseSeeder::class,
+            LearningTestResultSeeder::class,
             CertificateSeeder::class,
         ]);
     }

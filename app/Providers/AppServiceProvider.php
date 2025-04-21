@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Stripe\StripeClient;
+use Filament\Tables\Table;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\ServiceProvider;
@@ -9,7 +11,6 @@ use App\Http\Responses\CustomLogoutResponse;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Http\Responses\Auth\LogoutResponse;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
-use Stripe\StripeClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(StripeClient::class, function () {
             return new StripeClient(config('stripe.secret'));
+        });
+
+        Table::configureUsing(function (Table $table): void {
+            $table->paginationPageOptions([10, 20, 50, 100])
+                ->defaultPaginationPageOption(20);
         });
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {

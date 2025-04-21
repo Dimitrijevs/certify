@@ -204,7 +204,11 @@ class LearningTestResultResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                Auth::id() ? $query->where('user_id', Auth::user()->id) : null;
+                if (Auth::user()->role_id < 3) {
+                    return $query;
+                }
+
+                return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 TernaryFilter::make('is_passed')

@@ -30,7 +30,6 @@ class CertifyNow extends Command
             $this->call('migrate:fresh', [
                 '--seeder' => 'DatabaseSeeder',
             ]);
-            $this->info('Viss labi');
         } else {
             $this->error('This command can only be run in a development environment.');
         }

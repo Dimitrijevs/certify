@@ -27,6 +27,11 @@ class LearningTestResult extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function answers()
+    {
+        return $this->hasMany(LearningTestAnswer::class, 'result_id');
+    }
+
     public function test()
     {
         return $this->belongsTo(LearningTest::class, 'test_id');

@@ -21,10 +21,6 @@ class LearningTestDetail extends Model
         'visual_content',
     ];
 
-    protected $casts = [
-        'answer_options' => 'array',
-    ];
-
     public function test()
     {
         return $this->belongsTo(LearningTest::class);
