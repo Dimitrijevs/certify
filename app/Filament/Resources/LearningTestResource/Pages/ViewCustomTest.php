@@ -19,9 +19,13 @@ class ViewCustomTest extends Page
 
     protected static string $resource = LearningTestResource::class;
 
+    public $purchasesCount = 0;
+
     public function mount(int|string $record): void
     {
         $this->record = LearningTest::findOrFail($record);
+
+        $this->purchasesCount = UserPurchase::where('test_id', $this->record->id)->count();
     }
 
     public function getTitle(): string

@@ -41,28 +41,50 @@
                 </ul>
             </x-filament::section>
 
-            @if ($this->getCategoriesNames())
-                <x-filament::section>
-                    <x-slot name="heading">
-                        Categories
-                    </x-slot>
+            <x-filament::section>
+                <x-slot name="heading">
+                    Test Information
+                </x-slot>
 
-                    <div class="space-y-4">
-                        <ul class="space-y-4">
-                            @foreach ($this->getCategoriesNames() as $category)
-                                <li class="group">
-                                    <span class="flex items-start">
-                                        <x-circle-bullet />
-                                        <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                            {{ $category }}
-                                        </span>
-                                    </span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </x-filament::section>
-            @endif
+                <div class="space-y-6">
+                    @if ($this->getCategoriesNames())
+                        <x-welcome-page-list>
+                            @slot('title')
+                                Categories
+                            @endslot
+
+                            @slot('description')
+                                @foreach ($this->getCategoriesNames() as $category)
+                                    <x-welcome-page-list-item>
+                                        {{ $category }}
+                                    </x-welcome-page-list-item>
+                                @endforeach
+                            @endslot
+                        </x-welcome-page-list>
+                    @endif
+
+                    <x-welcome-page-list>
+                        @slot('title')
+                            Additional Information
+                        @endslot
+
+                        @slot('description')
+                            <x-welcome-page-list-item>
+                                Created At: {{ $record->created_at->format('d M Y') }}
+                            </x-welcome-page-list-item>
+                            <x-welcome-page-list-item>
+                                Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
+                            </x-welcome-page-list-item>
+                            <x-welcome-page-list-item>
+                                Students Enrolled: {{ $purchasesCount }}
+                            </x-welcome-page-list-item>
+                            <x-welcome-page-list-item>
+                                Created By: {{ $record->createdBy->name }}
+                            </x-welcome-page-list-item>
+                        @endslot
+                    </x-welcome-page-list>
+                </div>
+            </x-filament::section>
         </div>
 
         <div class="lg:col-span-8 md:col-span-8 order-1 lg:order-2 md:order-2">

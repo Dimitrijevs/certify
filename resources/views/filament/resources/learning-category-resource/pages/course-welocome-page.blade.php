@@ -6,61 +6,56 @@
             </x-slot>
 
             <div class="space-y-6 mb-6">
-                <div class="">
-                    <p class="mb-4 font-bold">Available Resources</p>
-                    <ul class="space-y-4">
-                        @foreach ($this->userActivity() as $resource)
-                            <li class="group">
-                                <span class="flex items-start">
-                                    <x-circle-bullet />
-                                    <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                        {{ $resource->name }}
-                                    </span>
-                                </span>
-                            </li>
+                <x-welcome-page-list>
+                    @slot('title')
+                        Available Resources
+                    @endslot
+
+                    @slot('description')
+                        @foreach ($this->availableResources() as $resource)
+                            <x-welcome-page-list-item>
+                                {{ $resource->name }}
+                            </x-welcome-page-list-item>
                         @endforeach
-                    </ul>
-                </div>
+                    @endslot
+                </x-welcome-page-list>
 
                 @if ($this->getCategories())
-                    <div class="space-y-4">
-                        <p class="font-bold">Categories</p>
-                        <ul class="space-y-4">
+                    <x-welcome-page-list>
+                        @slot('title')
+                            Categories
+                        @endslot
+
+                        @slot('description')
                             @foreach ($this->getCategories() as $category)
-                                <li class="group">
-                                    <span class="flex items-start">
-                                        <x-circle-bullet />
-                                        <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                            {{ $category }}
-                                        </span>
-                                    </span>
-                                </li>
+                                <x-welcome-page-list-item>
+                                    {{ $category }}
+                                </x-welcome-page-list-item>
                             @endforeach
-                        </ul>
-                    </div>
+                        @endslot
+                    </x-welcome-page-list>
                 @endif
 
-                <div class="space-y-4">
-                    <p class="font-bold">Additional Information</p>
-                    <ul class="space-y-4">
-                        <li class="group">
-                            <span class="flex items-start">
-                                <x-circle-bullet />
-                                <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                    Created At: {{ $record->created_at->format('d M Y') }}
-                                </span>
-                            </span>
-                        </li>
-                        <li class="group">
-                            <span class="flex items-start">
-                                <x-circle-bullet />
-                                <span class="ml-3 text-md font-medium text-gray-900 dark:text-white">
-                                    Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+                <x-welcome-page-list>
+                    @slot('title')
+                        Additional Information
+                    @endslot
+
+                    @slot('description')
+                        <x-welcome-page-list-item>
+                            Created At: {{ $record->created_at->format('d M Y') }}
+                        </x-welcome-page-list-item>
+                        <x-welcome-page-list-item>
+                            Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
+                        </x-welcome-page-list-item>
+                        <x-welcome-page-list-item>
+                            Students Enrolled: {{ $purchasesCount }}
+                        </x-welcome-page-list-item>
+                        <x-welcome-page-list-item>
+                            Created By: {{ $record->createdBy->name }}
+                        </x-welcome-page-list-item>
+                    @endslot
+                </x-welcome-page-list>
             </div>
 
             @if (!$this->checkUserPurchase() && $this->getTotalPrice() > 0)

@@ -18,12 +18,17 @@ class CourseWelocomePage extends Page
 
     protected static string $resource = LearningCategoryResource::class;
 
+    public $purchasesCount = 0;
+
     public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
+
+        $this->purchasesCount = UserPurchase::where('course_id', $this->record->id)->count();
     }
 
-    protected function getCategories() {
+    protected function getCategories()
+    {
         $names = [];
 
         $categoryIds = $this->record->categories ?? [];
@@ -57,28 +62,13 @@ class CourseWelocomePage extends Page
         return $this->record->name;
     }
 
-    public function userActivity()
+    public function availableResources()
     {
-        $user = Auth::id();
-        $resources = LearningResource::where('category_id', $this->record->id)->where('is_active', true)->get(['id', 'name']);
+        $resources = LearningResource::where('category_id', $this->record->id)
+            ->where('is_active', true)
+            ->get(['id', 'name']);
 
-        $activities = [];
-
-        foreach ($resources as $resource) {
-            $is_seen = LearningUserStudyRecord::where('user_id', $user)
-                ->where('resource_id', $resource->id)
-                ->exists();
-
-            $activity = new \stdClass();
-            $activity->id = $resource->id;
-            $activity->name = $resource->name;
-            $activity->is_seen = $is_seen;
-            $activity->is_current = $resource->id == $this->record->id;
-
-            $activities[] = $activity;
-        }
-
-        return $activities;
+        return $resources;
     }
 
     public function checkUserPurchase()
