@@ -7,8 +7,6 @@ use App\Models\LearningTest;
 use App\Models\LearningTestAnswer;
 use App\Models\UserPurchase;
 use Illuminate\Database\Seeder;
-use App\Models\LearningTestDetail;
-use App\Models\LearningTestQuestionAnswer;
 use App\Models\LearningTestResult;
 use Illuminate\Support\Facades\Schema;
 
@@ -27,7 +25,7 @@ class LearningTestResultSeeder extends Seeder
             // step 2: seed answers on questions
             $this->seedAnswersOnQuestions();
 
-            // step 3: seed completed tests
+            // step 3: finish tests
             $this->seedCompletedTests();
         }
     }
@@ -76,27 +74,28 @@ class LearningTestResultSeeder extends Seeder
         foreach ($results as $result) {
             $test = LearningTest::find($result->test_id);
 
-            $questions = $test->details;
+            $questions = $test->details()
+                ->where('is_active', true)
+                ->get();
 
             foreach ($questions as $question) {
 
                 $isCorrect = $faker->boolean(75);
 
                 if ($isCorrect) {
-                    $answer = LearningTestQuestionAnswer::where('is_correct', true)
-                        ->where('question_id', $question->id)
+                    $answer = $question->answers()
+                        ->where('is_correct', true)
                         ->first();
                 } else {
-                    $answer = LearningTestQuestionAnswer::where('is_correct', false)
-                        ->where('question_id', $question->id)
-                        ->inRandomOrder()
+                    $answer = $question->answers()
+                        ->where('is_correct', false)
                         ->first();
                 }
 
                 $testAnswers[] = [
                     'result_id' => $result->id,
                     'test_question_id' => $question->id,
-                    'user_answer' => $answer->id,
+                    'user_answer' => $answer->answer,
                     'points' => $isCorrect ? $question->points : 0,
                     'question_time' => rand(10, 100),
                     'created_at' => now(),
