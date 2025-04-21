@@ -43,6 +43,9 @@
 
                     @slot('description')
                         <x-welcome-page-list-item>
+                            {{ __('welcome-course.language') }}: {{ $record->language->name }}
+                        </x-welcome-page-list-item>
+                        <x-welcome-page-list-item>
                             {{ __('welcome-course.created_at') }}: {{ $record->created_at->format('d M Y') }}
                         </x-welcome-page-list-item>
                         <x-welcome-page-list-item>

@@ -13,4 +13,5 @@ return [
     'enroll_now_for_free' => 'Reģistrēties tagad bez maksas',
     'continue_learning' => 'Turpināt mācīties',
     'course_description' => 'Kursa apraksts',
+    'language' => 'Valoda',
 ];

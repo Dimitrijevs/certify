@@ -105,7 +105,7 @@ class LearningCategoryResource extends Resource
                                 'lg' => 8,
                             ]),
                         Toggle::make('is_active')
-                            ->label('Active')
+                            ->label(__('learning/learningCategory.fields.active'))
                             ->columnSpan([
                                 'default' => 6,
                                 'sm' => 3,
@@ -117,7 +117,7 @@ class LearningCategoryResource extends Resource
                             ->offIcon('tabler-x')
                             ->inline(false),
                         Toggle::make('available_for_everyone')
-                            ->label('Available for everyone')
+                            ->label(__('learning/learningCategory.fields.available_for_everyone'))
                             ->columnSpan([
                                 'default' => 6,
                                 'sm' => 3,
@@ -129,7 +129,7 @@ class LearningCategoryResource extends Resource
                             ->offIcon('tabler-x')
                             ->inline(false),
                         TextInput::make('price')
-                            ->label('Price')
+                            ->label(__('learning/learningCategory.fields.price'))
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
@@ -140,7 +140,7 @@ class LearningCategoryResource extends Resource
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('discount')
-                            ->label('Discount')
+                            ->label(__('learning/learningCategory.fields.discount'))
                             ->live()
                             ->prefixIcon('tabler-percentage')
                             ->disabled(function ($get) {
@@ -156,7 +156,7 @@ class LearningCategoryResource extends Resource
                             ->minValue(0)
                             ->maxValue(100),
                         Select::make('currency_id')
-                            ->label('Currency')
+                            ->label(__('learning/learningCategory.fields.currency'))
                             ->preload()
                             ->live()
                             ->searchable()
@@ -184,7 +184,7 @@ class LearningCategoryResource extends Resource
                                 }
                             }),
                         Select::make('language_id')
-                            ->label('Language')
+                            ->label(__('learning/learningCategory.fields.language'))
                             ->options(function () {
                                 return Language::all()
                                     ->mapWithKeys(function ($lang) {
@@ -202,7 +202,7 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ]),
                         Select::make('categories')
-                            ->label('Categories')
+                            ->label(__('learning/learningCategory.fields.categories'))
                             ->options(Category::all()->pluck('name', 'id'))
                             ->multiple()
                             ->preload()
@@ -286,7 +286,6 @@ class LearningCategoryResource extends Resource
                             return $record->language->name;
                         }),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),
@@ -294,7 +293,6 @@ class LearningCategoryResource extends Resource
                         ->words(15)
                         ->markdown(),
                     TextColumn::make('price')
-                        ->label('Price')
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
@@ -302,7 +300,7 @@ class LearningCategoryResource extends Resource
                             } else if ($record->price > 0 && $record->discount == 0) {
                                 return $record->price . ' €';
                             } else {
-                                return 'Free';
+                                return __('learning/learningCategory.fields.free');
                             }
                         })
                         ->color(function ($record) {
@@ -350,21 +348,21 @@ class LearningCategoryResource extends Resource
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('Active')
+                    ->label(__('learning/learningCategory.fields.active'))
                     ->columnSpan(1)
                     ->native(false)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
                     }),
                 TernaryFilter::make('is_public')
-                    ->label('Public')
+                    ->label(__('learning/learningCategory.fields.public'))
                     ->native(false)
                     ->columnSpan(1)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
                     }),
                 SelectFilter::make('language_id')
-                    ->label('Language')
+                    ->label(__('learning/learningCategory.fields.language'))
                     ->columnSpan(1)
                     ->preload()
                     ->searchable()
@@ -377,7 +375,7 @@ class LearningCategoryResource extends Resource
                 Filter::make('category')
                     ->form([
                         Select::make('category_ids')
-                            ->label('Category')
+                            ->label(__('learning/learningCategory.fields.category'))
                             ->preload()
                             ->searchable()
                             ->multiple()
@@ -402,16 +400,16 @@ class LearningCategoryResource extends Resource
                     ->columns(2)
                     ->form([
                         Select::make('is_free')
+                            ->label(__('learning/learningCategory.fields.price'))
                             ->live()
                             ->options([
-                                true => 'Free',
-                                false => 'Paid',
+                                true => __('learning/learningCategory.fields.free'),
+                                false => __('learning/learningCategory.fields.paid'),
                             ])
                             ->columnSpan(2)
-                            ->label('Price')
                             ->native(false),
                         TextInput::make('price_from')
-                            ->label('Price From')
+                            ->label(__('learning/learningCategory.fields.price_from'))
                             ->numeric()
                             ->live()
                             ->visible(function ($get) {
@@ -421,7 +419,7 @@ class LearningCategoryResource extends Resource
                             ->columnSpan(1)
                             ->minValue(0),
                         TextInput::make('price_to')
-                            ->label('Price To')
+                            ->label(__('learning/learningCategory.fields.price_to'))
                             ->numeric()
                             ->live()
                             ->columnSpan(1)

@@ -13,4 +13,5 @@ return [
     'enroll_now_for_free' => 'Записаться бесплатно',
     'continue_learning' => 'Продолжить обучение',
     'course_description' => 'Описание курса',
+    'language' => 'Язык',
 ];

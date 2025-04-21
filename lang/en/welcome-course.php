@@ -13,4 +13,5 @@ return [
     'enroll_now_for_free' => 'Enroll Now for Free',
     'continue_learning' => 'Continue Learning',
     'course_description' => 'Course Description',
+    'language' => 'Language',
 ];

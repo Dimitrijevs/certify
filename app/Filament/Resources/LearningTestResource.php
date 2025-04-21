@@ -46,21 +46,14 @@ class LearningTestResource extends Resource
 
     protected static ?string $navigationGroup = 'Learning';
 
-    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    // public static function getNavigationGroup(): ?string
-    // {
-    //     return __('learning/learningCategory.group_label');
-    // }
-
     public static function getLabel(): string
     {
-        return 'Test';
+        return __('learning/learningTest.fields.test');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Tests';
+        return __('learning/learningTest.fields.tests');
     }
 
     public static function canView(Model $record): bool
@@ -139,7 +132,7 @@ class LearningTestResource extends Resource
                             ->offIcon('tabler-x')
                             ->inline(false),
                         Toggle::make('available_for_everyone')
-                            ->label('Available for everyone')
+                            ->label(__('learning/learningTest.fields.available_for_everyone'))
                             ->columnSpan([
                                 'default' => 7,
                                 'sm' => 4,
@@ -195,7 +188,8 @@ class LearningTestResource extends Resource
                             ->required()
                             ->suffixIcon('tabler-award'),
                         TextInput::make('time_limit')
-                            ->label('Time limit (minutes)')
+                            ->label(__('learning/learningTest.fields.time_limit_minutes'))
+                            ->live()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -275,7 +269,7 @@ class LearningTestResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('price')
-                            ->label('Price')
+                            ->label(__('learning/learningTest.fields.price'))
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
@@ -286,7 +280,7 @@ class LearningTestResource extends Resource
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('discount')
-                            ->label('Discount')
+                            ->label(__('learning/learningTest.fields.discount'))
                             ->live()
                             ->prefixIcon('tabler-percentage')
                             ->disabled(function ($get) {
@@ -302,7 +296,7 @@ class LearningTestResource extends Resource
                             ->minValue(0)
                             ->maxValue(100),
                         Select::make('currency_id')
-                            ->label('Currency')
+                            ->label(__('learning/learningTest.fields.currency'))
                             ->preload()
                             ->live()
                             ->searchable()
@@ -330,7 +324,7 @@ class LearningTestResource extends Resource
                                 }
                             }),
                         Select::make('language_id')
-                            ->label('Language')
+                            ->label(__('learning/learningTest.fields.language'))
                             ->options(function () {
                                 return Language::all()
                                     ->mapWithKeys(function ($lang) {
@@ -348,7 +342,7 @@ class LearningTestResource extends Resource
                                 'lg' => 3,
                             ]),
                         Select::make('categories')
-                            ->label('Categories')
+                            ->label(__('learning/learningTest.fields.categories'))
                             ->options(Category::all()->pluck('name', 'id'))
                             ->multiple()
                             ->preload()
@@ -409,7 +403,6 @@ class LearningTestResource extends Resource
                             return $record->language->name;
                         }),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),
@@ -417,7 +410,6 @@ class LearningTestResource extends Resource
                         ->words(13)
                         ->markdown(),
                     TextColumn::make('price')
-                        ->label('Price')
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
@@ -425,7 +417,7 @@ class LearningTestResource extends Resource
                             } else if ($record->price > 0 && $record->discount == 0) {
                                 return $record->price . ' €';
                             } else {
-                                return 'Free';
+                                return __('learning/learningTest.fields.free');
                             }
                         })
                         ->color(function ($record) {
@@ -442,30 +434,6 @@ class LearningTestResource extends Resource
                 ]),
             ])
             ->defaultSort('id', 'desc')
-            ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id > 2) {
-                    // Basic requirements: must be active and public
-                    $query->where('is_active', true)
-                        ->where('is_public', true);
-
-                    // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function ($subQuery) {
-                        // Either available for everyone
-                        $subQuery->where('available_for_everyone', true);
-
-                        // OR created by someone from the same school (if user has a school)
-                        if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                $userQuery->where('school_id', Auth::user()->school_id);
-                            });
-                        }
-                    });
-
-                    return $query;
-                }
-
-                return $query;
-            })
             ->contentGrid([
                 'default' => 1,
                 'md' => 2,
@@ -474,21 +442,21 @@ class LearningTestResource extends Resource
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('Active')
+                    ->label(__('learning/learningTest.fields.active'))
                     ->columnSpan(1)
                     ->native(false)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
                     }),
                 TernaryFilter::make('is_public')
-                    ->label('Public')
+                    ->label(__('learning/learningTest.fields.public'))
                     ->native(false)
                     ->columnSpan(1)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
                     }),
                 SelectFilter::make('language_id')
-                    ->label('Language')
+                    ->label(__('learning/learningTest.fields.language'))
                     ->columnSpan(1)
                     ->preload()
                     ->searchable()
@@ -501,7 +469,7 @@ class LearningTestResource extends Resource
                 Filter::make('category')
                     ->form([
                         Select::make('category_ids')
-                            ->label('Category')
+                            ->label(__('learning/learningTest.fields.categories'))
                             ->preload()
                             ->searchable()
                             ->multiple()
@@ -528,14 +496,14 @@ class LearningTestResource extends Resource
                         Select::make('is_free')
                             ->live()
                             ->options([
-                                true => 'Free',
-                                false => 'Paid',
+                                true => __('learning/learningTest.fields.free'),
+                                false => __('learning/learningTest.fields.paid'),
                             ])
                             ->columnSpan(2)
                             ->label('Price')
                             ->native(false),
                         TextInput::make('price_from')
-                            ->label('Price From')
+                            ->label(__('learning/learningTest.fields.price_from'))
                             ->numeric()
                             ->live()
                             ->visible(function ($get) {
@@ -545,7 +513,7 @@ class LearningTestResource extends Resource
                             ->columnSpan(1)
                             ->minValue(0),
                         TextInput::make('price_to')
-                            ->label('Price To')
+                            ->label(__('learning/learningTest.fields.price_to'))
                             ->numeric()
                             ->live()
                             ->columnSpan(1)
@@ -589,7 +557,6 @@ class LearningTestResource extends Resource
                             }
 
                             // If both from and to are set, we already applied the constraints above
-            
                             return $query;
                         }
                     }),
@@ -600,24 +567,25 @@ class LearningTestResource extends Resource
                 //
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id == 1) {
-                    return $query; // Admin sees all tests
-                } elseif (Auth::user()->role_id >= 2) {
-                    // Start with active tests requirement
-                    $query->where('is_active', true);
+                if (Auth::user()->role_id > 2) {
+                    // Basic requirements: must be active and public
+                    $query->where('is_active', true)
+                        ->where('is_public', true);
 
-                    // Create a nested where condition for public OR same school
-                    $query->where(function ($subquery) {
-                        // Public tests
-                        $subquery->where('is_public', true);
+                    // Then add conditions for either available_for_everyone OR same school_id
+                    $query->where(function ($subQuery) {
+                        // Either available for everyone
+                        $subQuery->where('available_for_everyone', true);
 
-                        // OR tests created by users from the same school
+                        // OR created by someone from the same school (if user has a school)
                         if (Auth::user()->school_id) {
-                            $subquery->orWhereHas('createdBy', function ($userQuery) {
+                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
                                 $userQuery->where('school_id', Auth::user()->school_id);
                             });
                         }
                     });
+
+                    return $query;
                 }
 
                 return $query;

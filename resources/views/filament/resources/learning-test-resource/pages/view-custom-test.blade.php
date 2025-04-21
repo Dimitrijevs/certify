@@ -43,14 +43,14 @@
 
             <x-filament::section>
                 <x-slot name="heading">
-                    Test Information
+                    {{ __('learning/learningTest.fields.test_general_information') }}
                 </x-slot>
 
                 <div class="space-y-6">
                     @if ($this->getCategoriesNames())
                         <x-welcome-page-list>
                             @slot('title')
-                                Categories
+                                {{ __('learning/learningTest.fields.categories') }}
                             @endslot
 
                             @slot('description')
@@ -65,21 +65,27 @@
 
                     <x-welcome-page-list>
                         @slot('title')
-                            Additional Information
+                            {{ __('learning/learningTest.fields.additional_information') }}
                         @endslot
 
                         @slot('description')
                             <x-welcome-page-list-item>
-                                Created At: {{ $record->created_at->format('d M Y') }}
+                                {{ __('learning/learningTest.fields.language') }}:
+                                {{ $record->language->name }}
                             </x-welcome-page-list-item>
                             <x-welcome-page-list-item>
-                                Last Time Updated At: {{ $record->updated_at->format('d M Y') }}
+                                {{ __('learning/learningTest.fields.created_at') }}:
+                                {{ $record->created_at->format('d M Y') }}
                             </x-welcome-page-list-item>
                             <x-welcome-page-list-item>
-                                Students Enrolled: {{ $purchasesCount }}
+                                {{ __('learning/learningTest.fields.last_time_updated_at') }}:
+                                {{ $record->updated_at->format('d M Y') }}
                             </x-welcome-page-list-item>
                             <x-welcome-page-list-item>
-                                Created By: {{ $record->createdBy->name }}
+                                {{ __('learning/learningTest.fields.students_enrolled') }}: {{ $purchasesCount }}
+                            </x-welcome-page-list-item>
+                            <x-welcome-page-list-item>
+                                {{ __('learning/learningTest.fields.created_by') }}: {{ $record->createdBy->name }}
                             </x-welcome-page-list-item>
                         @endslot
                     </x-welcome-page-list>
@@ -155,7 +161,7 @@
                                 <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
                                     <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                                         @if (!is_null($record->time_limit))
-                                            {{ $record->time_limit }} min
+                                            {{ $record->time_limit }} {{ __('learning/learningTest.fields.minutes') }}
                                         @else
                                             {{ __('learning/learningTest.custom.n_a') }}
                                         @endif
@@ -230,7 +236,7 @@
                             <input type="hidden" name="price" value="0">
 
                             <x-cyan-button>
-                                Enroll Now For Free
+                                {{ __('learning/learningTest.fields.enroll_now_for_free') }}
                             </x-cyan-button>
                         </form>
                     @else
@@ -243,11 +249,13 @@
 
                             <x-cyan-button>
                                 @if ($this->getTotalPrice() > 0 && $record->discount > 0)
-                                    Buy Now ( {{ $record->price }} - {{ $record->discount }}% =
+                                    {{ __('learning/learningTest.fields.buy_now') }} ( {{ $record->price }} -
+                                    {{ $record->discount }}% =
                                     {{ number_format($this->getTotalPrice(), 2) }}
                                     {{ $record->currency->symbol }})
                                 @elseif ($this->getTotalPrice() > 0 && $record->discount == 0)
-                                    Buy Now ( {{ number_format($this->getTotalPrice(), 2) }}
+                                    {{ __('learning/learningTest.fields.buy_now') }} (
+                                    {{ number_format($this->getTotalPrice(), 2) }}
                                     {{ $record->currency->symbol }})
                                 @endif
                             </x-cyan-button>
