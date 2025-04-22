@@ -11,7 +11,7 @@
                     @csrf
 
                     @if ($price > 0)
-                        <h2 class="text-2xl font-bold mb-6 items-center text-center">Total Price:
+                        <h2 class="text-2xl font-bold mb-6 items-center text-center">{{ __('other.total_price') }}:
                             {{ number_format($price, 2) }} @if ($course)
                                 {{ $course->currency->symbol }}
                             @else
@@ -37,7 +37,7 @@
 
 
                     <x-cyan-button>
-                        {{ $price ? 'Pay Now' : 'Enroll Now For Free' }}
+                        {{ $price ? __('other.pay_now') : __('other.enroll_now_for_free') }}
                     </x-cyan-button>
                 </form>
             </div>
@@ -49,7 +49,10 @@
 <script>
     // Initialize Stripe with your publishable key
     const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-    const elements = stripe.elements();
+    
+    const elements = stripe.elements({
+        locale: 'en',
+    });
 
     // Create the card Element
     const cardElement = elements.create('card', {

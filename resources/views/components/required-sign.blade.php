@@ -1,1 +1,1 @@
-<sup class="text-red-600 text-sm mt-1.5 -ml-1">*</sup>
+<sup class="text-red-600 dark:text-red-400 text-sm mt-1.5 -ml-1">*</sup>

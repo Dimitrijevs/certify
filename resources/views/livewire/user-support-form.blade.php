@@ -18,10 +18,10 @@
     <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-300"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-        class="flex flex-col max-w-4xl fixed top-28 w-3/5 left-1/2 transform -translate-x-1/2 bg-white p-6 shadow-lg rounded-lg z-50 dark:bg-gray-800 dark:text-white">
+        class="flex flex-col max-w-4xl fixed top-28 w-3/5 left-1/2 transform -translate-x-1/2 bg-white p-6 shadow-lg rounded-lg z-50 dark:bg-gray-900 dark:text-white">
 
         <div class="w-full justify-between flex mb-4">
-            <p class="text-gray-900 font-semibold text-md">Support Request</p>
+            <p class="heading font-semibold text-md">Support Request</p>
             <button class="text-gray-400" @click="handleOpen()">
                 <x-tabler-x class="w-6 h-6" />
             </button>
@@ -30,22 +30,22 @@
         <form wire:submit="save" class="w-full flex flex-col gap-2">
             <div class="space-y-4">
                 <div class="w-full">
-                    <label class="mb-2 text-gray-900">Title</label>
+                    <label class="mb-2 heading">Title</label>
                     <x-required-sign />
                     <input type="text" name="title" wire:model="title"
-                        class="w-full rounded-lg border-gray-300 max-h-[36px]">
+                        class="w-full rounded-lg border-gray-300 max-h-[36px] dark:bg-gray-800 dark:text-white">
                     @error('title')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
+                        <span class="text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="w-full">
-                    <label class="mb-2 text-gray-900">Description</label>
+                    <label class="mb-2 heading">Description</label>
                     <x-required-sign />
                     <textarea name="description" wire:model="description" id="" rows="4"
-                        class="w-full rounded-lg border-gray-300"></textarea>
+                        class="w-full rounded-lg border-gray-300 dark:bg-gray-800 dark:text-white"></textarea>
                     @error('description')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
+                        <span class="text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 </button>
 
                 <button type="button" @click="handleOpen()"
-                    class="rounded-lg bg-white px-3 py-2 text-gray-900 duration-300 border border-gray-300 hover:text-gray-800 hover:bg-gray-100">
+                    class="rounded-lg bg-white dark:bg-gray-900 px-3 py-2 text-gray-900 dark:text-white duration-300 border border-gray-300 dark:border-gray-600 hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white">
                     <span>Cancel</span>
                 </button>
             </div>

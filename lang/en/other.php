@@ -21,4 +21,7 @@ return [
     'additional' => 'Additional',
     'edit' => 'Edit',
     'home_page' => 'Home page',
+    'total_price' => 'Total price',
+    'pay_now' => 'Pay now',
+    'enroll_now_for_free' => 'Enroll now for free',
 ];

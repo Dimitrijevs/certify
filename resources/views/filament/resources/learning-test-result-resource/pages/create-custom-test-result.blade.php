@@ -16,7 +16,7 @@
                     </div>
                 </x-slot>
 
-                <ul class="{{ $this->view_test ? 'border-b border-gray-100 pb-1' : '' }}">
+                <ul class="{{ $this->view_test ? 'border-b border-gray-100 dark:border-gray-700 pb-2' : '' }}">
                     @foreach ($this->getQuestions() as $index => $question)
                         @if ($this->transition_enabled)
                             <a class="group"
@@ -135,13 +135,13 @@
                     </div>
 
                     <div class="mt-2">
-                        <h3 class="text-base font-semibold mb-1">{{ __('employee.label') }}
+                        <h3 class="text-base font-semibold mb-2">{{ __('employee.label') }}
                         </h3>
                         @if (Auth::user()->can('update_user'))
                             <a class="group"
                                 href="{{ route('filament.app.resources.employees.edit', ['record' => $this->result->user_id]) }}">
                         @endif
-                        <div class="flex items-center gap-2 pe-3">
+                        <div class="flex items-center gap-3 pe-3">
                             @if (is_null($this->result->user->avatar))
                                 <div
                                     class="rounded-full overflow-hidden h-9 w-9 flex items-center justify-center group-hover:opacity-80 border border-gray-200 dark:border-gray-700">
@@ -178,8 +178,8 @@
                         <p class="px-1">{{ __('learning/learningTestResult.custom.question_details') }}</p>
 
                         <div class="flex">
-                            <div class="ml-2 px-2 py-1 text-black border border-gray-200 rounded-md flex opacity-70">
-                                <x-tabler-award class="text-gray-950 mr-1" />
+                            <div class="ml-2 px-2 py-1 text-black dark:text-white border border-gray-200 rounded-md flex opacity-70">
+                                <x-tabler-award class="mr-1" />
                                 <span class="">
                                     @if ($this->view_test)
                                         @if ($this->getUserAnswer($this->position))
@@ -219,8 +219,8 @@
                             @foreach ($this->getAnswers() as $index => $answer)
                                 @if ($this->view_test)
                                     @if ($answer->is_correct || ($this->user_answer == $answer->answer && $answer->is_correct))
-                                        <div class="mb-2 border-2 rounded-lg border-teal-500">
-                                            <label class="relative rounded-lg p-5 flex bg-white">
+                                        <div class="mb-2 border-2 rounded-lg border-green-500">
+                                            <label class="relative rounded-lg p-5 flex bg-white dark:bg-gray-800">
                                                 <input type="radio" wire:model="user_answer"
                                                     value="{{ $answer->answer }}" class="sr-only">
                                                 <span class="flex-shrink-0 me-4">
@@ -234,14 +234,14 @@
                                                 <span class="flex items-center">
                                                     <span class="flex flex-col text-lg">
                                                         <span
-                                                            class="font-medium text-gray-900">{{ $answer->answer }}</span>
+                                                            class="font-medium text-gray-900 dark:text-white">{{ $answer->answer }}</span>
                                                     </span>
                                                 </span>
                                             </label>
                                         </div>
                                     @elseif ($this->user_answer == $answer->answer && !$answer->is_correct)
                                         <div class="mb-2 border-2 rounded-lg border-rose-500">
-                                            <label class="relative rounded-lg p-5 flex bg-white">
+                                            <label class="relative rounded-lg p-5 flex bg-white dark:bg-gray-800">
                                                 <input type="radio" wire:model="user_answer"
                                                     value="{{ $answer->answer }}" class="sr-only">
                                                 <span class="flex-shrink-0 me-4">
