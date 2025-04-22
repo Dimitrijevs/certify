@@ -45,6 +45,11 @@ class LearningCategorySeeder extends Seeder
                 'image_name' => '01J4V3NGZZJJF93KAK21D64C5B.jpg',
                 'image_path' => null,
             ],
+            [
+                'directory_id' => '7',
+                'image_name' => 'math.jpg',
+                'image_path' => null,
+            ]
         ];
 
         $users = User::all();
@@ -184,7 +189,7 @@ class LearningCategorySeeder extends Seeder
                 'name' => 'Matemātika',
                 'language_id' => 1,
                 'categories' => json_encode(["1", "15"]),
-                'thumbnail' => null,
+                'thumbnail' => $images[5]['image_path'],
                 'description' => 'Matemātika ir zinātne, kas pēta skaitļus, to attiecības un īpašības. Tā ir būtiska daudzās dzīves jomās, piemēram, dabaszinātnēs, inženierijā, ekonomikā un informātikā.',
                 'is_active' => 1,
                 'is_public' => 1,
