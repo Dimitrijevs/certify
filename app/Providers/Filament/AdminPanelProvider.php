@@ -7,8 +7,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
+use Illuminate\Support\Facades\Blade;
 use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
@@ -40,22 +42,15 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
             ->userMenuItems([
-                'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit'),
-                'landing-page' => MenuItem::make()->url('/')
-                    ->icon('tabler-home')
-                    ->label('Home Page')
+                'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit')
             ])
             ->navigationItems([
-                NavigationItem::make('create_customer_question')
-                    ->label('Add Support Request')
-                    ->url(function () {
-                        return '/app/customer-questions/create';
-                    })
-                    ->visible(function () {
-                        return Auth::user()->role_id > 2;
-                    })
-                    ->group('Additional')
+                //
             ])
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_PROFILE_AFTER,
+                fn(): string => Blade::render('@livewire(\'link-to-homepage\')'),
+            )
             ->plugins([
                 BreezyCore::make()
                     ->myProfile()

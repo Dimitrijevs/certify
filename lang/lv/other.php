@@ -20,4 +20,5 @@ return [
     'edit_record' => 'Rediģēt ierakstu',
     'additional' => 'Papildus',
     'edit' => 'Rediģēt',
+    'home_page' => 'Sākumlapa',
 ];

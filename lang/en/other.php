@@ -20,4 +20,5 @@ return [
     'edit_record' => 'Edit record',
     'additional' => 'Additional',
     'edit' => 'Edit',
+    'home_page' => 'Home page',
 ];

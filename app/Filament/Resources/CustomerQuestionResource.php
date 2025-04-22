@@ -27,6 +27,16 @@ class CustomerQuestionResource extends Resource
 
     protected static ?string $navigationGroup = 'Additional';
 
+    public static function getLabel(): string
+    {
+        return __('question.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('question.label_plural');
+    }
+
     public static function canCreate(): bool
     {
         return true;
@@ -57,7 +67,7 @@ class CustomerQuestionResource extends Resource
                 'lg' => 12
             ])
             ->schema([
-                Section::make('Support Request General Information')
+                Section::make(__('question.support_request_general_information'))
                     ->columns([
                         'default' => 12,
                         'sm' => 12,
@@ -75,7 +85,7 @@ class CustomerQuestionResource extends Resource
                             ->default(Auth::id()),
                             
                         TextInput::make('title')
-                            ->label('Title')
+                            ->label(__('question.title'))
                             ->minLength(3)
                             ->columnSpan([
                                 'default' => 12,
@@ -85,7 +95,7 @@ class CustomerQuestionResource extends Resource
                             ])
                             ->required(),
                         Textarea::make('description')
-                            ->label('Description')
+                            ->label(__('question.description'))
                             ->rows(4)
                             ->minLength(10)
                             ->columnSpan([
@@ -104,7 +114,7 @@ class CustomerQuestionResource extends Resource
         return $table
             ->columns([
                 AvatarWithDetails::make('title')
-                    ->label('Request')
+                    ->label(__('question.request'))
                     ->title(function ($record) {
                         return $record->title;
                     })
@@ -120,7 +130,7 @@ class CustomerQuestionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable(),
                 AvatarWithDetails::make('user.name')
-                    ->label('User')
+                    ->label(__('question.user'))
                     ->title(function ($record) {
                         return $record->user->name;
                     })
@@ -138,7 +148,7 @@ class CustomerQuestionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('is_answered')
-                    ->label('Answered')
+                    ->label(__('question.answered'))
                     ->searchable()
                     ->sortable()
                     ->boolean()
@@ -148,11 +158,11 @@ class CustomerQuestionResource extends Resource
             ->filters([
                 TernaryFilter::make('is_answered')
                     ->native(false)
-                    ->label('Answered'),
+                    ->label(__('question.answered')),
             ])
             ->actions([
                 Action::make('mark_as_answered')
-                    ->label('Mark as answered')
+                    ->label(__('question.mark_as_answered'))
                     ->color('success')
                     ->icon('tabler-circle-check')
                     ->visible(function ($record) {
@@ -165,12 +175,12 @@ class CustomerQuestionResource extends Resource
                         ]);
 
                         Notification::make()
-                            ->title('Request succesfully updated!')
+                            ->title(__('question.request_successfully_updated'))
                             ->success()
                             ->send();
                     }),
                 Action::make('mark_as_unanswered')
-                    ->label('Mark as unanswered')
+                    ->label(__('question.mark_as_unanswered'))
                     ->color('danger')
                     ->icon('tabler-circle-x')
                     ->visible(function ($record) {
@@ -183,7 +193,7 @@ class CustomerQuestionResource extends Resource
                         ]);
 
                         Notification::make()
-                            ->title('Request succesfully updated!')
+                            ->title(__('question.request_successfully_updated'))
                             ->success()
                             ->send();
                     }),
