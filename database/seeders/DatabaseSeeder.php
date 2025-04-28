@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             UserPurchaseSeeder::class,
             LearningTestResultSeeder::class,
             CertificateSeeder::class,
+            UserActivitySeeder::class,
         ]);
     }
 }
