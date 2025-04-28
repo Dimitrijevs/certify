@@ -7,6 +7,7 @@ use Filament\Tables;
 use App\Models\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Livewire\Attributes\On;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
@@ -17,19 +18,26 @@ use App\Tables\Columns\AvatarWithDetails;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Filament\Notifications\Actions\Action as NotificationAction;
 
 class StudentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'students';
 
+    #[On('update-students-relation-manager')]
+    public function refresh()
+    {
+        // Refresh logic here
+    }
+
     public static function getTitle(EloquentModel $ownerRecord, string $pageClass): string
     {
-        return 'Workers';
+        return __('institution.workers');
     }
 
     public function canEdit(Model $record): bool
     {
-        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4;
+        return Auth::user()->role_id < 3;
     }
 
     public function form(Form $form): Form
@@ -43,9 +51,10 @@ class StudentsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('group.name')
             ->columns([
                 AvatarWithDetails::make('name')
-                    ->label('Worker')
+                    ->label(__('worker.worker'))
                     ->title(function ($record) {
                         return $record->name;
                     })
@@ -96,67 +105,193 @@ class StudentsRelationManager extends RelationManager
                             'md' => 12,
                             'lg' => 12,
                         ])->schema([
-                            Select::make('user_id')
-                                ->live()
-                                ->label('Worker')
-                                ->options(function () {
-                                    return User::where('role_id', 4)
-                                        ->where('school_id', null)
-                                        ->where('role_id', 4)
-                                        ->pluck('name', 'id');
-                                })
-                                ->columnSpan([
-                                    'default' => 12,
-                                    'sm' => 12,
-                                    'md' => 12,
-                                    'lg' => 12,
+                                    Select::make('user_id')
+                                        ->live()
+                                        ->label(__('worker.worker'))
+                                        ->options(function () {
+                                            return User::where('role_id', 4)
+                                                ->where('school_id', null)
+                                                ->pluck('name', 'id');
+                                        })
+                                        ->columnSpan([
+                                            'default' => 12,
+                                            'sm' => 12,
+                                            'md' => 12,
+                                            'lg' => 12,
+                                        ])
+                                        ->preload()
+                                        ->required()
+                                        ->searchable(),
+                                    Select::make('group_id')
+                                        ->label(__('worker.group'))
+                                        ->options(function () {
+                                            return Group::where('school_id', $this->getOwnerRecord()->id)
+                                                ->pluck('name', 'id');
+                                        })
+                                        ->visible(function ($get) {
+                                            return $get('user_id') !== null;
+                                        })
+                                        ->columnSpan([
+                                            'default' => 12,
+                                            'sm' => 12,
+                                            'md' => 12,
+                                            'lg' => 12,
+                                        ])
+                                        ->preload()
+                                        ->required()
+                                        ->searchable(),
                                 ])
-                                ->preload()
-                                ->required()
-                                ->searchable(),
-                            Select::make('group_id')
-                                ->label('Group')
-                                ->options(function () {
-                                    return Group::where('school_id', $this->getOwnerRecord()->id)
-                                        ->pluck('name', 'id');
-                                })
-                                ->visible(function ($get) {
-                                    return $get('user_id') !== null;
-                                })
-                                ->columnSpan([
-                                    'default' => 12,
-                                    'sm' => 12,
-                                    'md' => 12,
-                                    'lg' => 12,
-                                ])
-                                ->preload()
-                                ->required()
-                                ->searchable(),
-                        ])
                     ])
-                    ->after(function (array $data) {
-                        $user = User::find($data['user_id']);
-                        $user->school_id = $this->getOwnerRecord()->id;
-                        $user->group_id = $data['group_id'];
-                        $user->save();
+                    ->mutateFormDataUsing(function (array $data) {
+                        $recipient = User::find($data['user_id']);
 
                         Notification::make()
-                            ->title('Worker Added Successfully')
+                            ->info()
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
+                            ->actions([
+                                NotificationAction::make('accept')
+                                    ->url(route('accept-invite', [
+                                        'institution' => $this->getOwnerRecord()->id,
+                                        'group' => $data['group_id'],
+                                        'sender' => Auth::user()->id,
+                                    ]))
+                                    ->button()
+                                    ->color('primary')
+                                    ->icon('tabler-check'),
+                                NotificationAction::make('decline')
+                                    ->url(route('reject-invite', [
+                                        'institution' => $this->getOwnerRecord()->id,
+                                        'group' => $data['group_id'],
+                                        'sender' => Auth::user()->id,
+                                    ]))
+                                    ->button()
+                                    ->color('danger')
+                                    ->icon('tabler-x'),
+                            ])
+                            ->sendToDatabase($recipient);
+
+                        Notification::make()
+                            ->title(__('worker.invite_sent'))
                             ->success()
                             ->send();
+
+                        return $data;
                     })
-                    ->label('Add Worker'),
+                    ->label(__('worker.add_new_worker')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->url(function ($record) {
-                        return '/app/users/' . $record->id . '/edit';
+                    ->modalHeading(__('worker.edit_worker'))
+                    ->form(function ($record) {
+                        return [
+                            Grid::make([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ])->schema([
+                                        Select::make('id')
+                                            ->live()
+                                            ->label(__('worker.worker'))
+                                            ->options(function () {
+                                                return User::where('role_id', 4)
+                                                    ->where('school_id', $this->getOwnerRecord()->id)
+                                                    ->pluck('name', 'id') ?? [];
+                                            })
+                                            ->afterStateUpdated(function ($state, callable $set) {
+                                                $set('group_id', null);
+                                            })
+                                            ->default($record ? $record->id : null)
+                                            ->columnSpan([
+                                                'default' => 12,
+                                                'sm' => 12,
+                                                'md' => 12,
+                                                'lg' => 12,
+                                            ])
+                                            ->preload()
+                                            ->required()
+                                            ->searchable(),
+                                        Select::make('group_id')
+                                            ->label(__('worker.group'))
+                                            ->options(function () {
+                                                return Group::where('school_id', $this->getOwnerRecord()->id)
+                                                    ->pluck('name', 'id') ?? []; // Add null check
+                                            })
+                                            ->visible(function ($get) {
+                                                return $get('id') !== null;
+                                            })
+                                            ->default($record && $record->group_id ? $record->group_id : null) // Add null check
+                                            ->columnSpan([
+                                                'default' => 12,
+                                                'sm' => 12,
+                                                'md' => 12,
+                                                'lg' => 12,
+                                            ])
+                                            ->preload()
+                                            ->required()
+                                            ->searchable(),
+                                    ])
+                        ];
+                    })
+                    ->using(function (array $data) {
+                        $recipient = User::find($data['id']);
+
+                        Notification::make()
+                            ->info()
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
+                            ->actions([
+                                NotificationAction::make('accept')
+                                    ->url(route('accept-invite', [
+                                        'institution' => $this->getOwnerRecord()->id,
+                                        'group' => $data['group_id'],
+                                        'sender' => Auth::user()->id,
+                                    ]))
+                                    ->close()
+                                    ->button()
+                                    ->color('primary')
+                                    ->icon('tabler-check'),
+                                NotificationAction::make('decline')
+                                    ->url(route('reject-invite', [
+                                        'institution' => $this->getOwnerRecord()->id,
+                                        'group' => $data['group_id'],
+                                        'sender' => Auth::user()->id,
+                                    ]))
+                                    ->close()
+                                    ->button()
+                                    ->color('danger')
+                                    ->icon('tabler-x'),
+                            ])
+                            ->sendToDatabase($recipient);
+
+                        Notification::make()
+                            ->title(__('worker.invite_sent'))
+                            ->success()
+                            ->send();
                     }),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function ($record) {
+                        $record = User::find($record->id);
+                        $record->school_id = null;
+                        $record->group_id = null;
+                        $record->save();
+
+                        Notification::make()
+                            ->title(__('worker.worker_removed'))
+                            ->success()
+                            ->send();
+
+                        Notification::make()
+                            ->info()
+                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.removed_you_from_the_institution') . ' ' . $this->getOwnerRecord()->name)
+                            ->sendToDatabase($record);
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading(__('worker.remove_worker'))
+                    ->modalDescription(__('worker.are_you_sure_you_want_to_remove_this_worker'))
+                    ->color('danger')
+                    ->icon('tabler-trash')
+                    ->label(__('Delete')),
             ])
-            // ->recordUrl(function ($record) {
-            //     return '/app/users/' . $record->id . '/edit';
-            // })
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

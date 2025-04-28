@@ -19,6 +19,8 @@ return [
         'username' => 'Username',
         'created_at' => 'Created At',
         'avatar' => 'Avatar',
+        'country' => 'Country',
+        'edit_user' => 'Edit User',
     ],
     'tooltips' => [
         'password_hint' => 'Leave empty if reset not needed.',

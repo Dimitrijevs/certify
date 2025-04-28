@@ -11,7 +11,6 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Rules\MatchOldPassword;
 use Filament\Resources\Resource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
@@ -26,6 +25,7 @@ use Filament\Tables\Filters\SelectFilter;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Forms\Components\Group as FilaGroup;
 use App\Forms\Components\CertificateRequirementForm;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
 class UserResource extends Resource
 {
@@ -42,16 +42,6 @@ class UserResource extends Resource
     {
         return __('participants.label_plural');
     }
-
-    // public static function canViewAny(): bool
-    // {
-    //     return Auth::user()->role_id < 4;
-    // }
-
-    // public static function canView(Model $record): bool
-    // {
-    //     return true;
-    // }
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -91,9 +81,9 @@ class UserResource extends Resource
                                 ->label(__('participants.full_name'))
                                 ->columnSpan([
                                     'default' => 12,
-                                    'sm' => 6,
-                                    'md' => 6,
-                                    'lg' => 6,
+                                    'sm' => 12,
+                                    'md' => 12,
+                                    'lg' => 12,
                                 ])
                                 ->required(),
                             TextInput::make('email')
@@ -117,6 +107,17 @@ class UserResource extends Resource
                                     'md' => 6,
                                     'lg' => 6,
                                 ]),
+                            Country::make('country')
+                                ->label(__('user.fields.country'))
+                                ->required()
+                                ->preload()
+                                ->searchable()
+                                ->columnSpan([
+                                    'default' => 12,
+                                    'sm' => 6,
+                                    'md' => 6,
+                                    'lg' => 6,
+                                ]),
                             Select::make('role_id')
                                 ->label(__('participants.role'))
                                 ->options(Role::where('id', '>', 1)->get()->pluck('name', 'id'))
@@ -132,14 +133,18 @@ class UserResource extends Resource
                                 ]),
                             Select::make('school_id')
                                 ->label(__('institution.label'))
-                                ->live()
-                                ->options(School::all()->pluck('name', 'id'))
+                                ->live(debounce: 500)
+                                ->options(function () {
+                                    if (Auth::user()->role_id < 3) {
+                                        return School::all()->pluck('name', 'id');
+                                    } else if (Auth::user()->school_id && Auth::user()->role_id > 2) {
+                                        return School::where('id', Auth::user()->school_id)->pluck('name', 'id');
+                                    }
+
+                                    return null;
+                                })
                                 ->searchable()
                                 ->preload()
-                                ->visible(function () {
-                                    return Auth::user()->role_id < 3;
-                                })
-                                ->disabled()
                                 ->columnSpan([
                                     'default' => 12,
                                     'sm' => 6,
@@ -147,16 +152,17 @@ class UserResource extends Resource
                                     'lg' => 6,
                                 ]),
                             Select::make('group_id')
+                                ->live(debounce: 500)
                                 ->label(__('participants.group'))
-                                ->options(function ($get) {
-                                    if ($get('school_id')) {
+                                ->options(function ($get, $state) {
+                                    if ($get('school_id') && Auth::user()->role_id < 3) {
                                         return Group::where('school_id', $get('school_id'))->pluck('name', 'id');
+                                    } else if (Auth::user()->group_id && Auth::user()->role_id > 2) {
+                                        return Group::where('id', Auth::user()->group_id)->pluck('name', 'id');
                                     }
+
+                                    return null;
                                 })
-                                ->visible(function () {
-                                    return Auth::user()->role_id < 3;
-                                })
-                                ->disabled()
                                 ->searchable()
                                 ->preload()
                                 ->columnSpan([
@@ -451,7 +457,7 @@ class UserResource extends Resource
                     ->label(__('participants.group'))
                     ->options(
                         Group::all()->mapWithKeys(function ($group) {
-                            return [$group->id => $group->year . ' ' . $group->group];
+                            return [$group->id => $group->name . ' (' . $group->school?->name . ')'];
                         })
                     )
                     ->searchable()
@@ -467,9 +473,7 @@ class UserResource extends Resource
                 DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // ...
             ]);
     }
 

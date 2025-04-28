@@ -11,12 +11,14 @@ return [
     ],
     'fields' => [
         'user' => 'Пользователь',
-        'test' => 'Пройденный тест',
         'valid_untill' => 'Действителен до',
         'title' => 'Название',
         'certificate_type' => 'Тип сертификата',
         'certificate' => 'Сертификат',
         'description' => 'Описание',
+        'test' => 'Тест',
+        'completed_test' => 'Пройденный тест',
+        'certificate_created_automatically' => 'Сертификат создан автоматически',
     ],
     'custom' => [
         'edit_certificate'=> 'Редактировать сертификат',

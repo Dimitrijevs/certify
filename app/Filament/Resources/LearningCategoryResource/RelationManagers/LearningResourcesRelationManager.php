@@ -23,6 +23,7 @@ use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Filament\Resources\LearningCategoryResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
 use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
@@ -69,6 +70,8 @@ class LearningResourcesRelationManager extends RelationManager
                 Toggle::make('is_active')
                     ->label(__('learning/learningResource.fields.active'))
                     ->inline(False)
+                    ->onIcon('tabler-check')
+                    ->offIcon('tabler-x')
                     ->columnSpan([
                         'default' => 3,
                         'sm' => 2,
@@ -86,8 +89,12 @@ class LearningResourcesRelationManager extends RelationManager
                         'codeBlock',
                     ]),
                 TextInput::make('video_url')
+                    ->live()
                     ->label(__('learning/learningResource.fields.video_url'))
                     ->nullable()
+                    ->afterStateUpdated(function ($set) {
+                        $set('video_type', null);
+                    })
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 6,
@@ -100,7 +107,9 @@ class LearningResourcesRelationManager extends RelationManager
                         'video/youtube' => 'Youtube',
                         'video/vimeo' => 'Vimeo',
                     ])
-                    ->nullable()
+                    ->visible(fn($get) => $get('video_url') !== null && $get('video_url') !== '')
+                    ->required()
+                    ->native(false)
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 6,
@@ -198,6 +207,11 @@ class LearningResourcesRelationManager extends RelationManager
                     ->label(__('learning/learningResource.form.create')),
             ])
             ->actions([
+                ViewAction::make()
+                    ->icon('tabler-eye')
+                    ->url(function ($record) {
+                        return ViewCustomLearningResource::getUrl(['record' => $record->id]);
+                    }),
                 EditAction::make()
                     ->modalHeading(__('learning/learningResource.custom.edit_resource')),
                 DeleteAction::make(),

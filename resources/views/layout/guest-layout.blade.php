@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ asset('css/swiper/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/custom/animate.css') }}">
 
-    <title>certifyNow</title>
+    <title>certify</title>
 </head>
 
 <body>

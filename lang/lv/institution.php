@@ -19,4 +19,5 @@ return [
     'assigned_certificates' => 'Piešķirtie sertifikāti',
     'no_group' => 'Nav grupas',
     'student' => 'Mācēklis',
+    'workers' => 'Darbinieki',
 ];

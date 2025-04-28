@@ -8,6 +8,6 @@
             <a href="#getting-started" class="text-gray-800 hover:text-gray-600 dark:text-cyan-100 dark:hover:text-cyan-200">Why choose Us!</a>
             <a href="#faq" class="text-gray-800 hover:text-gray-600 dark:text-cyan-100 dark:hover:text-cyan-200">Frequently Asked Questiona</a>
         </nav>
-        <p class="text-gray-800 text-center dark:text-cyan-200 items-center mt-14 text-2xl">&copy; {{ now()->year }} certifyNow, Inc. All rights reserved.</p>
+        <p class="text-gray-800 text-center dark:text-cyan-200 items-center mt-14 text-2xl">&copy; {{ now()->year }} certify, Inc. All rights reserved.</p>
     </div>
 </footer>

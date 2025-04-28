@@ -19,4 +19,9 @@ return [
     'create_new_record' => 'Izveidot jaunu ierakstu',
     'edit_record' => 'Rediģēt ierakstu',
     'additional' => 'Papildus',
+    'edit' => 'Rediģēt',
+    'home_page' => 'Sākumlapa',
+    'total_price' => 'Kopējā cena',
+    'pay_now' => 'Maksāt tagad',    
+    'enroll_now_for_free' => 'Pieteikties tagad bez maksas',
 ];

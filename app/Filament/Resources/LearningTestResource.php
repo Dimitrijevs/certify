@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Category;
+use App\Models\Currency;
+use App\Models\Language;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningTest;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -22,6 +27,7 @@ use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
@@ -40,36 +46,19 @@ class LearningTestResource extends Resource
 
     protected static ?string $navigationGroup = 'Learning';
 
-    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    // public static function getNavigationGroup(): ?string
-    // {
-    //     return __('learning/learningCategory.group_label');
-    // }
-
     public static function getLabel(): string
     {
-        return 'Test';
+        return __('learning/learningTest.fields.test');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'Tests';
+        return __('learning/learningTest.fields.tests');
     }
 
     public static function canView(Model $record): bool
     {
         return true;
-    }
-
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id < 3;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -110,7 +99,7 @@ class LearningTestResource extends Resource
                     ->schema([
                         Hidden::make('created_by')
                             ->default(Auth::id()),
-                            
+
                         TextInput::make('name')
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
@@ -142,8 +131,8 @@ class LearningTestResource extends Resource
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false),
-                        Toggle::make('is_public')
-                            ->label('Available for everyone')
+                        Toggle::make('available_for_everyone')
+                            ->label(__('learning/learningTest.fields.available_for_everyone'))
                             ->columnSpan([
                                 'default' => 7,
                                 'sm' => 4,
@@ -199,7 +188,8 @@ class LearningTestResource extends Resource
                             ->required()
                             ->suffixIcon('tabler-award'),
                         TextInput::make('time_limit')
-                            ->label('Time limit (minutes)')
+                            ->label(__('learning/learningTest.fields.time_limit_minutes'))
+                            ->live()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -258,7 +248,7 @@ class LearningTestResource extends Resource
                                         'lg' => 12,
                                     ])
                                     ->suffixIcon('tabler-clock')
-                                    ->tooltip('Cooldown in minutes between attempts')
+                                    ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
                                     ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')
@@ -279,40 +269,91 @@ class LearningTestResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('price')
-                            ->label('Price')
+                            ->label(__('learning/learningTest.fields.price'))
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
                             ])
                             ->numeric()
                             ->minValue(0),
                         TextInput::make('discount')
-                            ->label('Discount')
+                            ->label(__('learning/learningTest.fields.discount'))
+                            ->live()
+                            ->prefixIcon('tabler-percentage')
+                            ->disabled(function ($get) {
+                                return $get('price') == 0;
+                            })
                             ->columnSpan([
-                                'default' => 8,
+                                'default' => 12,
                                 'sm' => 3,
                                 'md' => 3,
-                                'lg' => 4,
+                                'lg' => 3,
                             ])
                             ->numeric()
-                            ->suffixIcon('tabler-percentage')
                             ->minValue(0)
                             ->maxValue(100),
-                        Toggle::make('is_public')
-                            ->label('Public')
+                        Select::make('currency_id')
+                            ->label(__('learning/learningTest.fields.currency'))
+                            ->preload()
+                            ->live()
+                            ->searchable()
+                            ->required()
                             ->columnSpan([
-                                'default' => 4,
+                                'default' => 12,
                                 'sm' => 3,
                                 'md' => 3,
-                                'lg' => 2,
+                                'lg' => 3,
                             ])
-                            ->default(true)
-                            ->onIcon('tabler-circle-percentage')
-                            ->offIcon('tabler-circle-dashed-percentage')
-                            ->inline(false),
+                            ->options(function () {
+                                return Currency::all()
+                                    ->mapWithKeys(function ($currency) {
+                                        return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                                    });
+                            })
+                            ->suffix(function ($get, $state) {
+                                $discount = $get('discount');
+
+                                if ($discount > 0) {
+                                    $price = $get('price');
+                                    $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
+                                }
+                            }),
+                        Select::make('language_id')
+                            ->label(__('learning/learningTest.fields.language'))
+                            ->options(function () {
+                                return Language::all()
+                                    ->mapWithKeys(function ($lang) {
+                                        return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                                    });
+                            })
+                            ->prefixIcon('tabler-globe')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ]),
+                        Select::make('categories')
+                            ->label(__('learning/learningTest.fields.categories'))
+                            ->options(Category::all()->pluck('name', 'id'))
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
+                            ]),
                         RichEditor::make('description')
                             ->label(__('learning/learningTest.fields.description'))
                             ->columnSpan(12)
@@ -350,11 +391,18 @@ class LearningTestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([6, 18, 30, 60, 99])
+            ->defaultPaginationPageOption(30)
             ->columns([
                 Stack::make([
-                    CustomImageColumn::make('thumbnail'),
+                    CustomImageColumn::make('thumbnail')
+                        ->categories(function ($record) {
+                            return $record->categories;
+                        })
+                        ->languageName(function ($record) {
+                            return $record->language->name;
+                        }),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),
@@ -362,7 +410,6 @@ class LearningTestResource extends Resource
                         ->words(13)
                         ->markdown(),
                     TextColumn::make('price')
-                        ->label('Price')
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
@@ -370,7 +417,7 @@ class LearningTestResource extends Resource
                             } else if ($record->price > 0 && $record->discount == 0) {
                                 return $record->price . ' €';
                             } else {
-                                return 'Free';
+                                return __('learning/learningTest.fields.free');
                             }
                         })
                         ->color(function ($record) {
@@ -387,13 +434,6 @@ class LearningTestResource extends Resource
                 ]),
             ])
             ->defaultSort('id', 'desc')
-            ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id > 2) {
-                    return $query->where('is_active', true);
-                }
-
-                return $query;
-            })
             ->contentGrid([
                 'default' => 1,
                 'md' => 2,
@@ -402,39 +442,152 @@ class LearningTestResource extends Resource
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('Active')
-                    ->hidden(function () {
-                        if (Auth::user()->role_id) {
-                            return Auth::user()->role_id === 3 ? true : false;
+                    ->label(__('learning/learningTest.fields.active'))
+                    ->columnSpan(1)
+                    ->native(false)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                TernaryFilter::make('is_public')
+                    ->label(__('learning/learningTest.fields.public'))
+                    ->native(false)
+                    ->columnSpan(1)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                SelectFilter::make('language_id')
+                    ->label(__('learning/learningTest.fields.language'))
+                    ->columnSpan(1)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return Language::all()
+                            ->mapWithKeys(function ($lang) {
+                                return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                            });
+                    }),
+                Filter::make('category')
+                    ->form([
+                        Select::make('category_ids')
+                            ->label(__('learning/learningTest.fields.categories'))
+                            ->preload()
+                            ->searchable()
+                            ->multiple()
+                            ->options(function () {
+                                return Category::all()->pluck('name', 'id');
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['category_ids'],
+                            function (Builder $query, $categoryIds) {
+                                return $query->where(function (Builder $query) use ($categoryIds) {
+                                    foreach ($categoryIds as $categoryId) {
+                                        $query->orWhereJsonContains('categories', $categoryId);
+                                    }
+                                });
+                            }
+                        );
+                    }),
+                Filter::make('is_free')
+                    ->columnSpan(2)
+                    ->columns(2)
+                    ->form([
+                        Select::make('is_free')
+                            ->live()
+                            ->options([
+                                true => __('learning/learningTest.fields.free'),
+                                false => __('learning/learningTest.fields.paid'),
+                            ])
+                            ->columnSpan(2)
+                            ->label('Price')
+                            ->native(false),
+                        TextInput::make('price_from')
+                            ->label(__('learning/learningTest.fields.price_from'))
+                            ->numeric()
+                            ->live()
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->columnSpan(1)
+                            ->minValue(0),
+                        TextInput::make('price_to')
+                            ->label(__('learning/learningTest.fields.price_to'))
+                            ->numeric()
+                            ->live()
+                            ->columnSpan(1)
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->minValue(0),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!isset($data['is_free'])) {
+                            return $query;
                         }
 
-                        return true;
+                        if ($data['is_free'] == true) {
+                            return $query->where(function ($query) {
+                                $query->where('price', 0)
+                                    ->orWhereNull('price');
+                            });
+                        } else {
+                            // Base query for paid items
+                            $query->where('price', '>', 0);
+
+                            // Apply price range filters if set, considering discount
+                            if (!empty($data['price_from'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '>=', $data['price_from'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
+                                });
+                            }
+
+                            if (!empty($data['price_to'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '<=', $data['price_to'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
+                                });
+                            }
+
+                            // If both from and to are set, we already applied the constraints above
+                            return $query;
+                        }
                     }),
             ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->actions([
                 //
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id == 1) {
-                    return $query; // Admin sees all tests
-                } elseif (Auth::user()->role_id >= 2) {
-                    // Start with active tests requirement
-                    $query->where('is_active', true);
-                    
-                    // Create a nested where condition for public OR same school
-                    $query->where(function ($subquery) {
-                        // Public tests
-                        $subquery->where('is_public', true);
-                        
-                        // OR tests created by users from the same school
+                if (Auth::user()->role_id > 2) {
+                    // Basic requirements: must be active and public
+                    $query->where('is_active', true)
+                        ->where('is_public', true);
+
+                    // Then add conditions for either available_for_everyone OR same school_id
+                    $query->where(function ($subQuery) {
+                        // Either available for everyone
+                        $subQuery->where('available_for_everyone', true);
+
+                        // OR created by someone from the same school (if user has a school)
                         if (Auth::user()->school_id) {
-                            $subquery->orWhereHas('createdBy', function ($userQuery) {
+                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
                                 $userQuery->where('school_id', Auth::user()->school_id);
                             });
                         }
                     });
+
+                    return $query;
                 }
-                
+
                 return $query;
             })
             ->bulkActions([

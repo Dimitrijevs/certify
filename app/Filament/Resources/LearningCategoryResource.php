@@ -2,36 +2,38 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms\Set;
+use App\Models\Category;
+use App\Models\Currency;
+use App\Models\Language;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningCategory;
-use App\Models\LearningResource;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Tables\Filters\Filter;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
-use App\Models\LearningUserStudyRecord;
 use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningCategoryResource\Pages;
+use App\Filament\Resources\LearningCategoryResource\Pages\CourseWelocomePage;
 use App\Filament\Resources\LearningCategoryResource\Pages\CustomEditResource;
-use App\Filament\Resources\LearningCategoryResource\Pages\EditLearningCategory;
-use App\Filament\Resources\LearningCategoryResource\Pages\ListLearningCategories;
 use App\Filament\Resources\LearningCategoryResource\Pages\ViewCustomLearningResource;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\ActivitiesRelationManager;
 use App\Filament\Resources\LearningCategoryResource\RelationManagers\LearningResourcesRelationManager;
@@ -55,16 +57,6 @@ class LearningCategoryResource extends Resource
     public static function canView(Model $record): bool
     {
         return true;
-    }
-
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id < 3;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -100,8 +92,121 @@ class LearningCategoryResource extends Resource
                         'lg' => 12,
                     ])
                     ->schema([
+                        Hidden::make('created_by')
+                            ->default(Auth::id()),
+
                         TextInput::make('name')
                             ->label(__('learning/learningCategory.fields.name'))
+                            ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 8,
+                            ]),
+                        Toggle::make('is_active')
+                            ->label(__('learning/learningCategory.fields.active'))
+                            ->columnSpan([
+                                'default' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        Toggle::make('available_for_everyone')
+                            ->label(__('learning/learningCategory.fields.available_for_everyone'))
+                            ->columnSpan([
+                                'default' => 6,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 2,
+                            ])
+                            ->default(true)
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false),
+                        TextInput::make('price')
+                            ->label(__('learning/learningCategory.fields.price'))
+                            ->live()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ])
+                            ->numeric()
+                            ->minValue(0),
+                        TextInput::make('discount')
+                            ->label(__('learning/learningCategory.fields.discount'))
+                            ->live()
+                            ->prefixIcon('tabler-percentage')
+                            ->disabled(function ($get) {
+                                return $get('price') == 0;
+                            })
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ])
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100),
+                        Select::make('currency_id')
+                            ->label(__('learning/learningCategory.fields.currency'))
+                            ->preload()
+                            ->live()
+                            ->searchable()
+                            ->required()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ])
+                            ->options(function () {
+                                return Currency::all()
+                                    ->mapWithKeys(function ($currency) {
+                                        return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                                    });
+                            })
+                            ->suffix(function ($get, $state) {
+                                $discount = $get('discount');
+
+                                if ($discount > 0) {
+                                    $price = $get('price');
+                                    $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
+                                }
+                            }),
+                        Select::make('language_id')
+                            ->label(__('learning/learningCategory.fields.language'))
+                            ->options(function () {
+                                return Language::all()
+                                    ->mapWithKeys(function ($lang) {
+                                        return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                                    });
+                            })
+                            ->prefixIcon('tabler-globe')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 3,
+                                'md' => 3,
+                                'lg' => 3,
+                            ]),
+                        Select::make('categories')
+                            ->label(__('learning/learningCategory.fields.categories'))
+                            ->options(Category::all()->pluck('name', 'id'))
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
                             ->required()
                             ->columnSpan([
                                 'default' => 12,
@@ -124,41 +229,6 @@ class LearningCategoryResource extends Resource
                                 'md' => 12,
                                 'lg' => 12,
                             ]),
-                        TextInput::make('price')
-                            ->label('Price')
-                            ->live()
-                            ->columnSpan([
-                                'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
-                            ])
-                            ->numeric()
-                            ->minValue(0),
-                        TextInput::make('discount')
-                            ->label('Discount')
-                            ->columnSpan([
-                                'default' => 8,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 4,
-                            ])
-                            ->numeric()
-                            ->suffixIcon('tabler-percentage')
-                            ->minValue(0)
-                            ->maxValue(100),
-                        Toggle::make('is_public')
-                            ->label('Public')
-                            ->columnSpan([
-                                'default' => 4,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 2,
-                            ])
-                            ->default(true)
-                            ->onIcon('tabler-circle-percentage')
-                            ->offIcon('tabler-circle-dashed-percentage')
-                            ->inline(false),
                         RichEditor::make('description')
                             ->label(__('learning/learningCategory.fields.description'))
                             ->nullable()
@@ -204,11 +274,18 @@ class LearningCategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([6, 18, 30, 60, 99])
+            ->defaultPaginationPageOption(30)
             ->columns([
                 Stack::make([
-                    CustomImageColumn::make('thumbnail'),
+                    CustomImageColumn::make('thumbnail')
+                        ->categories(function ($record) {
+                            return $record->categories;
+                        })
+                        ->languageName(function ($record) {
+                            return $record->language->name;
+                        }),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),
@@ -216,7 +293,6 @@ class LearningCategoryResource extends Resource
                         ->words(15)
                         ->markdown(),
                     TextColumn::make('price')
-                        ->label('Price')
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
@@ -224,7 +300,7 @@ class LearningCategoryResource extends Resource
                             } else if ($record->price > 0 && $record->discount == 0) {
                                 return $record->price . ' €';
                             } else {
-                                return 'Free';
+                                return __('learning/learningCategory.fields.free');
                             }
                         })
                         ->color(function ($record) {
@@ -242,7 +318,24 @@ class LearningCategoryResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    return $query->where('is_active', true);
+                    // Basic requirements: must be active and public
+                    $query->where('is_active', true)
+                        ->where('is_public', true);
+
+                    // Then add conditions for either available_for_everyone OR same school_id
+                    $query->where(function ($subQuery) {
+                        // Either available for everyone
+                        $subQuery->where('available_for_everyone', true);
+
+                        // OR created by someone from the same school (if user has a school)
+                        if (Auth::user()->school_id) {
+                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
+                                $userQuery->where('school_id', Auth::user()->school_id);
+                            });
+                        }
+                    });
+
+                    return $query;
                 }
 
                 return $query;
@@ -255,15 +348,128 @@ class LearningCategoryResource extends Resource
             ])
             ->filters([
                 TernaryFilter::make('is_active')
-                    ->label('Active')
-                    ->hidden(function () {
-                        if (!is_null(Auth::user()->role_id)) {
-                            return Auth::user()->role_id === 3 ? true : false;
+                    ->label(__('learning/learningCategory.fields.active'))
+                    ->columnSpan(1)
+                    ->native(false)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                TernaryFilter::make('is_public')
+                    ->label(__('learning/learningCategory.fields.public'))
+                    ->native(false)
+                    ->columnSpan(1)
+                    ->visible(function () {
+                        return Auth::user()->role_id < 3;
+                    }),
+                SelectFilter::make('language_id')
+                    ->label(__('learning/learningCategory.fields.language'))
+                    ->columnSpan(1)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return Language::all()
+                            ->mapWithKeys(function ($lang) {
+                                return [$lang->id => $lang->name . ' (' . $lang->iso2 . ', ' . $lang->iso3 . ')'];
+                            });
+                    }),
+                Filter::make('category')
+                    ->form([
+                        Select::make('category_ids')
+                            ->label(__('learning/learningCategory.fields.category'))
+                            ->preload()
+                            ->searchable()
+                            ->multiple()
+                            ->options(function () {
+                                return Category::all()->pluck('name', 'id');
+                            }),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['category_ids'],
+                            function (Builder $query, $categoryIds) {
+                                return $query->where(function (Builder $query) use ($categoryIds) {
+                                    foreach ($categoryIds as $categoryId) {
+                                        $query->orWhereJsonContains('categories', $categoryId);
+                                    }
+                                });
+                            }
+                        );
+                    }),
+                Filter::make('is_free')
+                    ->columnSpan(2)
+                    ->columns(2)
+                    ->form([
+                        Select::make('is_free')
+                            ->label(__('learning/learningCategory.fields.price'))
+                            ->live()
+                            ->options([
+                                true => __('learning/learningCategory.fields.free'),
+                                false => __('learning/learningCategory.fields.paid'),
+                            ])
+                            ->columnSpan(2)
+                            ->native(false),
+                        TextInput::make('price_from')
+                            ->label(__('learning/learningCategory.fields.price_from'))
+                            ->numeric()
+                            ->live()
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->columnSpan(1)
+                            ->minValue(0),
+                        TextInput::make('price_to')
+                            ->label(__('learning/learningCategory.fields.price_to'))
+                            ->numeric()
+                            ->live()
+                            ->columnSpan(1)
+                            ->visible(function ($get) {
+                                $isFree = $get('is_free');
+                                return $isFree !== null && $isFree == false;
+                            })
+                            ->minValue(0),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!isset($data['is_free'])) {
+                            return $query;
                         }
 
-                        return true;
+                        if ($data['is_free'] == true) {
+                            return $query->where(function ($query) {
+                                $query->where('price', 0)
+                                    ->orWhereNull('price');
+                            });
+                        } else {
+                            // Base query for paid items
+                            $query->where('price', '>', 0);
+
+                            // Apply price range filters if set, considering discount
+                            if (!empty($data['price_from'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '>=', $data['price_from'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
+                                });
+                            }
+
+                            if (!empty($data['price_to'])) {
+                                $query->where(function ($query) use ($data) {
+                                    // Either the original price meets the criteria
+                                    $query->where('price', '<=', $data['price_to'])
+                                        // OR the discounted price meets the criteria
+                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
+                                });
+                            }
+
+                            // If both from and to are set, we already applied the constraints above
+            
+                            return $query;
+                        }
                     }),
             ])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->defaultSort('id', 'desc')
             ->actions([
                 //
@@ -273,45 +479,9 @@ class LearningCategoryResource extends Resource
             ])
             ->recordUrl(
                 function (Model $record): ?string {
-                    $resources = LearningResource::where('category_id', $record->id)->where('is_active', true)->get(['id', 'name']);
-
-                    $activities = [];
-
-                    foreach ($resources as $resource) {
-                        $is_seen = LearningUserStudyRecord::where('user_id', Auth::id())
-                            ->where('resource_id', $resource->id)
-                            ->exists();
-
-                        $activity = new \stdClass();
-                        $activity->id = $resource->id;
-                        $activity->name = $resource->name;
-                        $activity->is_seen = $is_seen;
-
-                        $activities[] = $activity;
-                    }
-
-                    if (count($activities) == 0) {
-
-                        if (Auth::user()->role_id !== 3) {
-                            return EditLearningCategory::getUrl([
-                                'record' => $record->id,
-                            ], isAbsolute: false);
-                        } else {
-                            return ListLearningCategories::getUrl(isAbsolute: false);
-                        }
-                    } else {
-                        foreach ($activities as $activity) {
-                            if ($activity->is_seen == false) {
-                                return ViewCustomLearningResource::getUrl([
-                                    'record' => $activity->id,
-                                ], isAbsolute: false);
-                            }
-                        }
-
-                        return ViewCustomLearningResource::getUrl([
-                            'record' => $activities[0]->id,
-                        ], isAbsolute: false);
-                    }
+                    return CourseWelocomePage::getUrl([
+                        'record' => $record->id,
+                    ], isAbsolute: false);
                 },
             );
     }
@@ -329,6 +499,8 @@ class LearningCategoryResource extends Resource
             'index' => Pages\ListLearningCategories::route('/'),
             'create' => Pages\CreateLearningCategory::route('/create'),
             'edit' => Pages\EditLearningCategory::route('/{record}/edit'),
+
+            'course-welcome-page' => Pages\CourseWelocomePage::route('/{record}/welcome'),
 
             // for resource relation mamanger
             'resource' => ViewCustomLearningResource::route('/resource/{record}'),

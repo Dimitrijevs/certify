@@ -12,13 +12,11 @@ class LearningCertificate extends Model
 
     protected $fillable = [
         'user_id',
-        'type_id',
         'completed_test_id',
         'test_id',
         'name',
         'description',
         'valid_to',
-        'thumbnail',
         'admin_id',
     ];
 

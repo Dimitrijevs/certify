@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LearningCategoryResource\Pages;
 
+use App\Models\UserPurchase;
 use Filament\Actions\Action;
 use App\Models\LearningCategory;
 use App\Models\LearningResource;
@@ -9,21 +10,44 @@ use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LearningUserStudyRecord;
 use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Notification;
 use App\Filament\Resources\LearningCategoryResource;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewCustomLearningResource extends Page
 {
     use InteractsWithRecord;
-    
+
     protected static string $resource = LearningCategoryResource::class;
 
     public $resources;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record)
     {
         $this->record = LearningResource::findOrFail($record);
+        
+        if (!$this->checkPurchase()) {
+            Notification::make()
+                ->title('Access Denied')
+                ->body('You do not have access to this resource.')
+                ->danger()
+                ->send();
+
+            return redirect()->route('filament.app.resources.learning-categories.course-welcome-page', [
+                'record' => $this->record->category_id,
+            ]);
+        }
+
         $this->resources = LearningResource::where('category_id', $this->record->category_id)->get();
+    }
+
+    public function checkPurchase()
+    {
+        $purchase = UserPurchase::where('user_id', Auth::id())
+            ->where('course_id', $this->record->category_id)
+            ->exists();
+
+        return $purchase;
     }
 
     public function getTitle(): string
@@ -132,9 +156,10 @@ class ViewCustomLearningResource extends Page
 
         $completed = 0;
         foreach ($resources as $resource) {
-            if (LearningUserStudyRecord::where('user_id', $user)
-                ->where('resource_id', $resource->id)
-                ->exists()
+            if (
+                LearningUserStudyRecord::where('user_id', $user)
+                    ->where('resource_id', $resource->id)
+                    ->exists()
             ) {
                 $completed += 1;
             }

@@ -19,4 +19,9 @@ return [
     'create_new_record' => 'Create new record',
     'edit_record' => 'Edit record',
     'additional' => 'Additional',
+    'edit' => 'Edit',
+    'home_page' => 'Home page',
+    'total_price' => 'Total price',
+    'pay_now' => 'Pay now',
+    'enroll_now_for_free' => 'Enroll now for free',
 ];

@@ -7,8 +7,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
+use Illuminate\Support\Facades\Blade;
 use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
@@ -35,12 +37,20 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->font('Playfair Display')
             ->registration(Register::class)
+            ->databaseNotifications()
             ->sidebarFullyCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/app/theme.css')
             ->topNavigation()
             ->userMenuItems([
                 'profile' => MenuItem::make()->url(fn(): string => '/app/users/' . Auth::id() . '/edit')
             ])
+            ->navigationItems([
+                //
+            ])
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_PROFILE_AFTER,
+                fn(): string => Blade::render('@livewire(\'link-to-homepage\')'),
+            )
             ->plugins([
                 BreezyCore::make()
                     ->myProfile()
@@ -50,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->colors([
                 'primary' => '#3B81F6',
+                'cyan' => '#05B6D3',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

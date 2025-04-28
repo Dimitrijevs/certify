@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningTest;
+use App\Models\UserPurchase;
 use Filament\Resources\Resource;
 use App\Models\LearningTestResult;
 use App\Models\LearningCertificate;
@@ -18,6 +19,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use App\Tables\Columns\CustomCertificate;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -108,40 +110,31 @@ class LearningCertificateResource extends Resource
                             ->preload()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 6,
-                                'md' => 6,
-                                'lg' => 6,
+                                'sm' => 12,
+                                'md' => 12,
+                                'lg' => 12,
                             ]),
                         Select::make('test_id')
-                            ->label(__('learning/learningCertificate.custom.requirement'))
+                            ->label(__('learning/learningCertificate.fields.test'))
                             ->live()
-                            ->relationship('test', 'name', function ($query) {
-                                $query->orderBy('id');
+                            ->options(function ($get) {
+                                if ($get('user_id')) {
+                                    $userPurchases = UserPurchase::where('user_id', $get('user_id'))
+                                        ->whereNotNull('test_id')
+                                        ->pluck('test_id')
+                                        ->toArray();
+
+                                    return LearningTest::whereIn('id', $userPurchases)->pluck('name', 'id');
+                                }
+
+                                return null;
                             })
                             ->afterStateUpdated(function ($get, $set, $state) {
-                                $user_id = $get('user_id');
-
-                                $completedTest = LearningTestResult::where('user_id', $user_id)
-                                    ->where('test_id', $state)
-                                    ->where('is_passed', 1)
-                                    ->first();
-
-                                $set('completed_test_id', $completedTest ? $completedTest->id : null);
-
-                                // Fetch the learning test once
                                 $learning_test = LearningTest::find($state);
 
-                                if (is_null($learning_test)) {
-                                    $set('name', Carbon::now()->year . ' Certificate of Qualification Advancement');
-                                } else {
-                                    $name = $learning_test->name;
-                                    $year = Carbon::now()->year;
-                                    $set('name', "$year $name Course");
-
-                                    // Set certificate type
-                                    $certificate_type = $learning_test->certificate_type_id;
-                                    $set('type_id', $certificate_type);
-                                }
+                                $name = $learning_test->name;
+                                $year = Carbon::now()->year;
+                                $set('name', "$year $name Course");
                             })
                             ->searchable()
                             ->preload()
@@ -152,10 +145,26 @@ class LearningCertificateResource extends Resource
                                 'lg' => 6,
                             ])
                             ->required(),
-                        DatePicker::make('valid_to')
-                            ->label(__('learning/learningCertificate.fields.valid_untill'))
+                        Select::make('completed_test_id')
+                            ->live()
+                            ->label(__('learning/learningCertificate.fields.completed_test'))
                             ->required()
-                            ->after(Carbon::now()->toDateString())
+                            ->native(false)
+                            ->preload()
+                            ->options(function ($get) {
+                                if ($get('user_id') && $get('test_id')) {
+                                    return LearningTestResult::where('user_id', $get('user_id'))
+                                        ->where('is_passed', true)
+                                        ->where('test_id', $get('test_id'))
+                                        ->with('test')
+                                        ->get()
+                                        ->mapWithKeys(function ($item) {
+                                            return [$item->id => $item->test->name . ' (' . $item->created_at->format('H:i d M Y.') . ')'];
+                                        });
+                                }
+
+                                return null;
+                            })
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 6,
@@ -163,6 +172,7 @@ class LearningCertificateResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('name')
+                            ->required()
                             ->label(__('learning/learningCertificate.fields.title'))
                             ->columnSpan([
                                 'default' => 12,
@@ -170,20 +180,16 @@ class LearningCertificateResource extends Resource
                                 'md' => 6,
                                 'lg' => 6,
                             ]),
-
-                        // if the selected test is completed, then the completed_test_id will be set 
-                        Hidden::make('completed_test_id'),
-
-                        FileUpload::make('thumbnail')
-                            ->label(__('learning/learningCertificate.fields.certificate'))
-                            ->disk('public')
-                            ->directory("learning_certificates/$id")
-                            ->acceptedFileTypes(['image/*', 'application/pdf'])
+                        DatePicker::make('valid_to')
+                            ->label(__('learning/learningCertificate.fields.valid_untill'))
+                            ->required()
+                            ->after(Carbon::now()->toDateString())
+                            ->default(Carbon::now()->addYears(2)->toDateString())
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 12,
-                                'md' => 12,
-                                'lg' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                         RichEditor::make('description')
                             ->label(__('learning/learningCertificate.fields.description'))
@@ -210,11 +216,13 @@ class LearningCertificateResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
+            ->paginated([6, 18, 30, 60, 99])
+            ->defaultPaginationPageOption(30)
             ->columns([
                 Stack::make([
                     CustomCertificate::make('thumbnail'),
                     TextColumn::make('name')
-                        ->label('Name')
                         ->searchable()
                         ->weight(FontWeight::Bold)
                         ->size(TextColumnSize::Large),
@@ -229,9 +237,11 @@ class LearningCertificateResource extends Resource
                 'xl' => 3,
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id != 1) {
-                    $query->where('user_id', Auth::id());
+                if (Auth::user()->role_id < 3) {
+                    return $query;
                 }
+
+                return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 SelectFilter::make('user_id')
@@ -251,12 +261,10 @@ class LearningCertificateResource extends Resource
                     ->multiple(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                // ...
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // ...
             ])->recordUrl(
                 fn(Model $record) => viewCustomLearningCertificate::getUrl(['record' => $record->id], isAbsolute: false)
             );

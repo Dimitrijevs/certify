@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SchoolResource\Pages;
 
+use Livewire\Attributes\On;
 use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -16,7 +17,8 @@ class EditSchool extends EditRecord
     {
         return [
             ViewAction::make()
-                ->url('view'),
+                ->url('view')
+                ->icon('tabler-eye'),
             DeleteAction::make()
                 ->icon('tabler-trash'),
         ];
@@ -26,4 +28,10 @@ class EditSchool extends EditRecord
     {
         return __('other.edit_record');
     }
+
+    // #[On('update-school-edit-page')]
+    // public function refresh()
+    // {
+    //     // ...
+    // }
 }

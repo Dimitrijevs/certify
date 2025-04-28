@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('valid_to')->nullable();
-            $table->string('thumbnail')->nullable();
-            $table->integer('admin_id')->onDelete('set null');
+            $table->integer('admin_id')->nullable()->onDelete('set null');
             $table->timestamps();
         });
     }

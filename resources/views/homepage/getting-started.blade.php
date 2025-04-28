@@ -8,15 +8,27 @@
         <div class="swiper-wrapper w-full">
             <div class="swiper-slide">
                 <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
-                    src="{{ asset('landingpage-images/getting-started-1.png') }}" alt="">
+                    src="{{ asset('landingpage-images/slider-1.png') }}" alt="">
             </div>
             <div class="swiper-slide">
                 <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
-                    src="{{ asset('landingpage-images/getting-started-2.png') }}" alt="">
+                    src="{{ asset('landingpage-images/slider-2.png') }}" alt="">
             </div>
             <div class="swiper-slide">
                 <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
-                    src="{{ asset('landingpage-images/getting-started-3.png') }}" alt="">
+                    src="{{ asset('landingpage-images/slider-3.png') }}" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
+                    src="{{ asset('landingpage-images/slider-4.png') }}" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
+                    src="{{ asset('landingpage-images/slider-5.png') }}" alt="">
+            </div>
+            <div class="swiper-slide">
+                <img class="rounded-lg w-full h-[400px] md:h-[600px] object-cover"
+                    src="{{ asset('landingpage-images/slider-6.png') }}" alt="">
             </div>
         </div>
 

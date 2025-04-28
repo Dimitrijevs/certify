@@ -19,10 +19,10 @@ return new class extends Migration
             $table->integer('role_id')->nullable()->default(4);
             $table->integer('school_id')->nullable();
             $table->integer('group_id')->nullable();
+            $table->string('country')->nullable();
             $table->timestamp('email_verified_at')->default(now());
             $table->string('password');
             $table->string('stripe_connect_id')->nullable();
-            $table->boolean('is_creator')->nullable()->default(false); // for getting monetization
             $table->boolean('completed_stripe_onboarding')->nullable()->default(false);
             $table->rememberToken();
             $table->timestamps();

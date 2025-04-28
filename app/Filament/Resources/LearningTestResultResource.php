@@ -14,14 +14,11 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\ActionGroup;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -207,7 +204,11 @@ class LearningTestResultResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->modifyQueryUsing(function (Builder $query) {
-                Auth::id() ? $query->where('user_id', Auth::user()->id) : null;
+                if (Auth::user()->role_id < 3) {
+                    return $query;
+                }
+
+                return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 TernaryFilter::make('is_passed')

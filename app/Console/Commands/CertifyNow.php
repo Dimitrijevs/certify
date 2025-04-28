@@ -12,7 +12,7 @@ class CertifyNow extends Command
      *
      * @var string
      */
-    protected $signature = 'certifyNow:fresh';
+    protected $signature = 'certify:fresh';
 
     /**
      * The console command description.
@@ -30,7 +30,6 @@ class CertifyNow extends Command
             $this->call('migrate:fresh', [
                 '--seeder' => 'DatabaseSeeder',
             ]);
-            $this->info('Viss labi');
         } else {
             $this->error('This command can only be run in a development environment.');
         }

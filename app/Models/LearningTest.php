@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\PdfTemplate;
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LearningTest extends Model
@@ -12,19 +14,29 @@ class LearningTest extends Model
 
     protected $fillable = [
         'category_id',
+        'categories',
+        'available_for_everyone',
         'is_active',
         'thumbnail',
         'name',
+        'language_id',
         'is_public',
         'cooldown',
         'description',
         'min_score',
         'time_limit',
         'is_question_transition_enabled',
+        'layout_id',
+        'price',
+        'discount',
+        'currency_id',
+        'created_by',
+        'aproved_by',
     ];
 
     protected $casts = [
         'category_id' => 'array',
+        'categories' => 'array',
     ];
 
     public function category()
@@ -47,9 +59,24 @@ class LearningTest extends Model
         return $this->hasMany(LearningCertificationRequirement::class, 'test_id');
     }
 
+    public function language()
+    {
+        return $this->belongsTo(Language::class, 'language_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'aproved_by');
     }
 
     protected static function boot()
@@ -64,8 +91,25 @@ class LearningTest extends Model
             if ($test->price = 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-
+            
             $test->saveQuietly();
+
+            $recipients = User::where('role_id', '<', 3)
+                ->get();
+
+            Notification::make()
+                ->title('New Learning Material Created')
+                ->info()
+                ->body('A new learning material has been created: ' . $test->name)
+                ->actions([
+                    Action::make('view')
+                        ->icon('tabler-eye')
+                        ->url(function () use ($test) {
+                            return '/app/learning-tests/' . $test->id . '/edit';
+                        })
+                        ->button(),
+                ])
+                ->sendToDatabase($recipients);
         });
 
         static::updated(function ($test) {

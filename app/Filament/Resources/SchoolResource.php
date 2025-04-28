@@ -20,7 +20,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use App\Filament\Resources\SchoolResource\Pages;
 use Njxqlus\Filament\Components\Forms\RelationManager;
-use App\Filament\Resources\SchoolResource\Pages\CustomGroupPage;
 use App\Filament\Resources\SchoolResource\RelationManagers\GroupsRelationManager;
 use App\Filament\Resources\SchoolResource\RelationManagers\StudentsRelationManager;
 
@@ -52,7 +51,7 @@ class SchoolResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->isCreatedByAuthUser($record);
+        return Auth::user()->id === $record->created_by || Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -242,7 +241,7 @@ class SchoolResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                    Tab::make('Workers')
+                    Tab::make(__('institution.workers'))
                         ->icon('tabler-notebook')
                         ->schema([
                             RelationManager::make()
@@ -333,9 +332,7 @@ class SchoolResource extends Resource
                     }),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // ...
             ]);
     }
 
@@ -352,8 +349,7 @@ class SchoolResource extends Resource
             'index' => Pages\ListSchools::route('/'),
             'create' => Pages\CreateSchool::route('/create'),
             'edit' => Pages\EditSchool::route('/{record}/edit'),
-
-            'edit-group' => CustomGroupPage::route('/{record}/edit-group'),
+            
             'view-insitution' => Pages\InstitutionCustomView::route('/{record}/view'),
         ];
     }

@@ -19,4 +19,5 @@ return [
     'assigned_certificates' => 'Assigned Certificates',
     'no_group' => 'No Group',
     'student' => 'Student',
+    'workers' => 'Workers',
 ];

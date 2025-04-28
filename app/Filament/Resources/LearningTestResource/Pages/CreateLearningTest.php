@@ -13,7 +13,7 @@ class CreateLearningTest extends CreateRecord
 
     public function getTitle(): string | Htmlable
     {
-        return __('learning/learningTest.custom.new_qualification');
+        return __('learning/learningTest.custom.new_test');
     }
 
     protected function getRedirectUrl(): string

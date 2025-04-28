@@ -18,6 +18,8 @@ return [
         'username' => 'Lietotājvārds',
         'created_at' => 'Izveidošanas datums',
         'avatar' => 'Avatars',
+        'country' => 'Valsts',
+        'edit_user' => 'Rediģēt lietotāju',
     ],
     'tooltips' => [
         'password_hint' => 'Atstājiet tukšu, ja atiestatīšana nav nepieciešama.',
