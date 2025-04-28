@@ -248,7 +248,7 @@ class LearningTestResource extends Resource
                                         'lg' => 12,
                                     ])
                                     ->suffixIcon('tabler-clock')
-                                    ->tooltip('Cooldown in minutes between attempts')
+                                    ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
                                     ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')

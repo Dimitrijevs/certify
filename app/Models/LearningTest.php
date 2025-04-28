@@ -91,7 +91,7 @@ class LearningTest extends Model
             if ($test->price = 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-
+            
             $test->saveQuietly();
 
             $recipients = User::where('role_id', '<', 3)

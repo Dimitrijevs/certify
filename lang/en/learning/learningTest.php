@@ -26,6 +26,7 @@ return [
         'thumbnail' => 'Thumbnail',
         'certificate_layout' => 'Certificate layout',
         'cooldown' => 'Cooldown',
+        'cooldown_in_minutes_between_attempts' => 'Cooldown in minutes between attempts',
         'test' => 'Test',
         'tests' => 'Tests',
         'available_for_everyone' => 'Available for Everyone',
@@ -51,6 +52,7 @@ return [
     ],
     'custom' => [
         'test_information' => 'Test information',
+        'new_test' => 'New test',
         'questions' => 'Questions',
         'edit_test' => 'Edit test',
         'min_score' => 'Points',
