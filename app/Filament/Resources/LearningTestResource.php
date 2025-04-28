@@ -374,7 +374,6 @@ class LearningTestResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-
                     Tab::make(__('learning/learningTestRequirements.label_plural'))
                         ->icon('tabler-exclamation-circle')
                         ->schema([
