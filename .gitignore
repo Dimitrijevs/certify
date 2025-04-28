@@ -39,3 +39,6 @@ public/vendor/log-viewer/mix-manifest.json
 public/vendor/log-viewer/img/log-viewer-32.png
 public/vendor/log-viewer/img/log-viewer-64.png
 public/vendor/log-viewer/img/log-viewer-128.png
+public/js/filament/forms/components/select.js
+public/js/filament/widgets/components/stats-overview/stat/chart.js
+public/js/filament/forms/components/tags-input.js

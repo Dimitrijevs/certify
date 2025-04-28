@@ -6,6 +6,7 @@ return [
     'label_plural' => 'Kursi',
     'label' => 'Kurss',
     'category' => 'Kategorija',
+    'edit_course' => 'Rediģēt kursu',
     'form' => [
         'section_title' => 'Kursa vispārējā informācija',
         'edit' => 'Rediģēt',

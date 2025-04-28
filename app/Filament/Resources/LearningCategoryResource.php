@@ -21,6 +21,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use App\Forms\Components\UserStatWidget;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\FileUpload;
@@ -255,10 +256,13 @@ class LearningCategoryResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ])->visible(fn(string $operation): bool => $operation !== 'create'),
-
                     Tab::make(__('learning/learningResourceActivity.label_plural'))
                         ->icon('tabler-user')
                         ->schema([
+                            UserStatWidget::make('user_statistics')
+                                ->label(' ')
+                                ->dehydrated(false)
+                                ->columnSpanFull(),
                             RelationManager::make()
                                 ->manager(ActivitiesRelationManager::class)
                                 ->lazy()

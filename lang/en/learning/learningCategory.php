@@ -6,6 +6,7 @@ return [
     'label_plural' => 'Courses',
     'label' => 'Course',
     'category' => 'Category',
+    'edit_course' => 'Edit Course',
     'form' => [
         'section_title' => 'Course general',
         'edit' => 'Edit',

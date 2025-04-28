@@ -7,21 +7,37 @@ use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\LearningCategoryResource;
 
 class EditLearningCategory extends EditRecord
 {
+    public $widgets = [
+        [
+            'label' => 'Visits',
+            'icon' => 'tabler-eye',
+            'value_type' => 'integer',
+            'value' => 0,
+        ],
+        [
+            'label' => 'Users',
+            'icon' => 'tabler-users-group',
+            'value_type' => 'integer',
+            'value' => 0,
+        ],
+        [
+            'label' => 'Average Time Spent (Minutes)',
+            'icon' => 'tabler-clock',
+            'value_type' => 'time',
+            'value' => 0, // in seconds
+        ]
+    ];
+
     protected static string $resource = LearningCategoryResource::class;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
-
-        $this->authorizeAccess();
-
-        $this->fillForm();
-
-        $this->previousUrl = url()->previous();
 
         if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
@@ -31,6 +47,43 @@ class EditLearningCategory extends EditRecord
 
             $this->redirect($this->previousUrl);
         }
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+
+        $this->calculateViews();
+        $this->calculateUsers();
+        $this->calculateAverageTimeSpent();
+    }
+
+    protected function calculateViews()
+    {
+        $this->widgets[0]['value'] = $this->record->activities()->count();
+    }
+
+    protected function calculateUsers()
+    {
+        $this->widgets[1]['value'] = $this->record->activities()->distinct('user_id')->count();
+    }
+
+    protected function calculateAverageTimeSpent()
+    {
+        $totalTime = $this->record->activities()->sum('time_spent');
+        $userCount = $this->record->activities()->distinct('user_id')->count();
+
+        if ($userCount > 0) {
+            $this->widgets[2]['value'] = round($totalTime / $userCount, 2);
+        } else {
+            $this->widgets[2]['value'] = 0;
+        }
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return __('learning/learningCategory.edit_course');
     }
 
     protected function getHeaderActions(): array
