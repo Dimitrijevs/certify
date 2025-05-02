@@ -24,6 +24,7 @@ class LearningCategory extends Model
         'currency_id',
         'created_by',
         'is_public',
+        'available_for_everyone',
         'aproved_by',
     ];
 

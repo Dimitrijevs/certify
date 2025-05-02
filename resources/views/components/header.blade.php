@@ -91,15 +91,15 @@
         </div>
 
         <ul class="space-y-3 text-md">
-            <li class="paragraph duration-300 hover:scale-105"><a href="#top-section" @click="open = false">Getting
+            <li class="paragraph duration-300 hover:scale-105"><a href="#top-section" @click="editSidebar()">Getting
                     Started!</a></li>
             <li class="paragraph duration-300 hover:scale-105"><a href="#online-learning"
-                    @click="open = false">Advantages of Online Learning</a></li>
-            <li class="paragraph duration-300 hover:scale-105"><a href="#wait" @click="open = false">Why To
+                @click="editSidebar()">Advantages of Online Learning</a></li>
+            <li class="paragraph duration-300 hover:scale-105"><a href="#wait" @click="editSidebar()">Why To
                     Wait?</a></li>
-            <li class="paragraph duration-300 hover:scale-105"><a href="#getting-started" @click="open = false">Why
+            <li class="paragraph duration-300 hover:scale-105"><a href="#getting-started" @click="editSidebar()">Why
                     choose Us!</a></li>
-            <li class="paragraph duration-300 hover:scale-105"><a href="#faq" @click="open = false">Frequently Asked
+            <li class="paragraph duration-300 hover:scale-105"><a href="#faq" @click="editSidebar()">Frequently Asked
                     Questiona</a></li>
         </ul>
     </div>

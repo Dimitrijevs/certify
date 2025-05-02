@@ -81,7 +81,7 @@ class EditLearningCategory extends EditRecord
         }
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return __('learning/learningCategory.edit_course');
     }
@@ -131,6 +131,10 @@ class EditLearningCategory extends EditRecord
                         ->success()
                         ->send();
                 }),
+            Action::make('save')
+                ->label(__('learning/learningTest.form.save_changes'))
+                ->action('save')
+                ->icon('tabler-checkbox'),
             Actions\DeleteAction::make()
                 ->icon('tabler-trash'),
         ];

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('currency_id')->nullable();
             $table->integer('created_by');
             $table->boolean('is_public')->default(false);
-            $table->integer('aproved_by')->nullable();
             $table->boolean('available_for_everyone')->default(false);
+            $table->integer('aproved_by')->nullable();
             $table->timestamps();
         });
     }
