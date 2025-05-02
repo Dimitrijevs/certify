@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -46,8 +47,8 @@ class TimeSpentOnCourse extends ChartWidget
             $startDate = now()->subDays($filterDays);
 
             $studyRecords = LearningUserStudyRecord::where('user_id', $userId)
-                ->whereDate('created_at', '>=', $startDate)
-                ->whereDate('created_at', '<=', $now)
+                ->whereDate('started_at', '>=', $startDate)
+                ->whereDate('started_at', '<=', $now)
                 ->get();
 
             $labels = [];
@@ -66,7 +67,7 @@ class TimeSpentOnCourse extends ChartWidget
                 }
 
                 foreach ($studyRecords as $record) {
-                    $dateKey = $record->created_at->format('M d');
+                    $dateKey = Carbon::parse($record->started_at)->format('M d');
                     if (array_key_exists($dateKey, $timeSpent)) {
                         $timeSpent[$dateKey] += round(($record->time_spent / 60), 2);
                     }
@@ -84,7 +85,7 @@ class TimeSpentOnCourse extends ChartWidget
                 }
 
                 foreach ($studyRecords as $record) {
-                    $monthKey = $record->created_at->format('M Y');
+                    $monthKey = Carbon::parse($record->started_at)->format('M Y');
                     if (array_key_exists($monthKey, $timeSpent)) {
                         $timeSpent[$monthKey] += round(($record->time_spent / 60), 2);
                     }

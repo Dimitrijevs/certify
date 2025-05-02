@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $faker = Faker::create('lv_LV');
         $schools = School::with('groups')->get();
 
-        $iterations = 12;
+        $iterations = 2;
         $sub_iterations = 1117;
 
         $school = $faker->randomElement($schools);
@@ -92,8 +92,6 @@ class UserSeeder extends Seeder
 
         for ($j = 0; $j < $iterations; $j++) {
 
-            $users = [];
-
             for ($i = 0; $i < $sub_iterations; $i++) {
 
                 $faker->boolean(90) ? $role = 4 : $role = 3;
@@ -118,6 +116,8 @@ class UserSeeder extends Seeder
             }
 
             User::insert($users);
+
+            $users = [];
 
             $groups = Group::all();
 
