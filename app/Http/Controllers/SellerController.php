@@ -118,103 +118,88 @@ class SellerController extends Controller
 
     public function purchase($id, Request $request)
     {
-        if ($request->price > 0) {
-            $request->validate([
-                'price' => 'required|numeric|min:0',
-                'currency_id' => 'required|exists:currencies,id',
-            ]);
-        }
-
         $seller = User::findOrFail($id);
+
+        if ($request->test_id) {
+            $product = LearningTest::find($request->test_id);
+
+            $description = __('seller.payment_for_course') . ' ' . $product->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
+        } else {
+            $product = LearningCategory::find($request->course_id);
+
+            $description = __('seller.payment_for_test') . ' ' . $product->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
+        }
 
         if (is_null($seller)) {
             $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
-        if ($request->price > 0) {
+        $price = $this->calculatePrice($product->price, $product->discount);
+
+        if ($price > 0) {
 
             if (!$seller->completed_stripe_onboarding) {
                 Notification::make()
-                    ->title(Auth::user()->name . ' '. __('seller.is_trying_to_purchase_your_product'))
+                    ->title(Auth::user()->name . ' ' . __('seller.is_trying_to_purchase_your_product'))
                     ->body(__('seller.please_complete_stripe_onboarding_process_to_recieve_payements'))
                     ->warning()
                     ->sendToDatabase($seller);
 
-                $this->redirectAndNotify(__('seller.creator_does_not_have_stripe_account_yet'), __('seller.we_are_notifying_the_creator_to_complete_their_stripe_onboarding_process'));
+                return $this->redirectAndNotify(__('seller.creator_does_not_have_stripe_account_yet'), __('seller.we_are_notifying_the_creator_to_complete_their_stripe_onboarding_process'));
             }
 
-            $currency_id = $request->currency_id ?? 38;
+            $currency_id = $product->currency_id ?? 38;
             $currency = Currency::find($currency_id);
 
-            if ($request->course_id) {
-                $course = LearningCategory::find($request->course_id);
-
-                $description = __('seller.payment_for_course') . ' ' . $course->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
-            } else {
-                $test = LearningTest::find($request->test_id);
-
-                $description = __('seller.payment_for_test') . ' ' . $test->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
-            }
-
             try {
-                $this->stripeClient->charges->create([
-                    'amount' => $request->price * 100,
+                $this->stripeClient->paymentIntents->create([
+                    'amount' => $product->price * 100,
                     'currency' => strtolower($currency->code),
-                    'source' => $request->stripeToken,
+                    'payment_method_data' => [
+                        'type' => 'card',
+                        'card' => [
+                            'token' => $request->stripeToken,
+                        ],
+                    ],
+                    'automatic_payment_methods' => [
+                        'enabled' => true,
+                        'allow_redirects' => 'never',
+                    ],
+                    'transfer_data' => [
+                        'destination' => $seller->stripe_connect_id,
+                        'amount' => (int) $price * 100
+                    ],
+                    'confirm' => true,
                     'description' => $description,
                 ]);
             } catch (ApiErrorException $exception) {
-                $this->redirectAndNotify(__('seller.payment_failed'), $exception->getMessage());
-            }
-
-            $fee = $request->price * 100 * 0.1; // 10% fee
-            $sellerMoney = $request->price * 100 - $fee; // seller gets 90%
-
-            try {
-                $this->stripeClient->transfers->create([
-                    'amount' => $sellerMoney,
-                    'currency' => strtolower($currency->code),
-                    'destination' => $seller->stripe_connect_id,
-                    'description' => $description,
-                ]);
-            } catch (ApiErrorException $exception) {
-                $this->redirectAndNotify(__('seller.transfer_failed'), $exception->getMessage());
-            }
-
-            $admins = User::where('role_id', '<', 3)->get();
-            $adminFee = (int) floor($fee / count($admins));
-            foreach ($admins as $admin) {
-                try {
-                    $this->stripeClient->transfers->create([
-                        'amount' => $adminFee,
-                        'currency' => strtolower($currency->code),
-                        'destination' => $admin->stripe_connect_id,
-                        'description' => $description,
-                    ]);
-                } catch (ApiErrorException $exception) {
-                    Notification::make()
-                        ->title(__('seller.transfer_failed'))
-                        ->body($exception->getMessage())
-                        ->danger()
-                        ->sendToDatabase($admin);
-                }
+                return $this->redirectAndNotify(__('seller.payment_failed'), $exception->getMessage());
             }
         }
 
         $userPurchase = new UserPurchase();
         $userPurchase->user_id = Auth::id();
 
-        if ($request->course_id) {
-            $userPurchase->course_id = $request->course_id;
-        } else {
+        if ($request->test_id) {
             $userPurchase->test_id = $request->test_id;
+        } else {
+            $userPurchase->course_id = $request->course_id;
         }
 
         $userPurchase->seller_id = $seller->id;
-        $userPurchase->price = $request->price;
+        $userPurchase->price = $price;
         $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
 
         return $this->redirectAndNotify(__('seller.your_purchase_was_successful'), __('seller.now_you_can_access_the_course'), 'success');
+    }
+
+    public static function calculatePrice($price, $discount = null)
+    {
+        if ($discount) {
+            $price = $price - ($price * $discount / 100);
+        }
+
+        return number_format($price, 2, '.', '');
     }
 }

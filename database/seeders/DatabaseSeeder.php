@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             SchoolSeeder::class,
             GroupSeeder::class,
             UserSeeder::class,
+            StripeTokenSeeder::class,
             PdfTemplateSeeder::class,
             CustomerQuestionSeeder::class,
             CurrencySeeder::class,
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
             LearningTestResultSeeder::class,
             CertificateSeeder::class,
             UserActivitySeeder::class,
+            UserStudyRecordsSeeder::class,
         ]);
     }
 }

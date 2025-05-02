@@ -18,8 +18,8 @@ class UserSeeder extends Seeder
         $faker = Faker::create('lv_LV');
         $schools = School::with('groups')->get();
 
-        $iterations = 10;
-        $sub_iterations = 1000;
+        $iterations = 12;
+        $sub_iterations = 1117;
 
         $school = $faker->randomElement($schools);
         $group = $school->groups->random();

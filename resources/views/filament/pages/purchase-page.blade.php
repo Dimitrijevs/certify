@@ -25,14 +25,10 @@
                         <div id="card-errors" class="text-red-500 text-sm mt-2"></div>
                     </div>
 
-                    <input type="hidden" name="price" value="{{ $price }}">
-
                     @if ($course)
                         <input type="hidden" name="course_id" value="{{ $course->id }}">
-                        <input type="hidden" name="currency_id" value="{{ $course->currency_id }}">
                     @else
                         <input type="hidden" name="test_id" value="{{ $test->id }}">
-                        <input type="hidden" name="currency_id" value="{{ $test->currency_id }}">
                     @endif
 
 
