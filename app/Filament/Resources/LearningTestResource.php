@@ -498,6 +498,12 @@ class LearningTestResource extends Resource
                                 true => __('learning/learningTest.fields.free'),
                                 false => __('learning/learningTest.fields.paid'),
                             ])
+                            ->afterStateUpdated(function ($set, $state) {
+                                if ($state == true) {
+                                    $set('price_from', 0);
+                                    $set('price_to', 0);
+                                }
+                            })
                             ->columnSpan(2)
                             ->label('Price')
                             ->native(false),
@@ -538,21 +544,11 @@ class LearningTestResource extends Resource
 
                             // Apply price range filters if set, considering discount
                             if (!empty($data['price_from'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '>=', $data['price_from'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
                             }
 
                             if (!empty($data['price_to'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '<=', $data['price_to'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
                             }
 
                             // If both from and to are set, we already applied the constraints above
