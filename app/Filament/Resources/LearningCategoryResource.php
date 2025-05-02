@@ -437,6 +437,17 @@ class LearningCategoryResource extends Resource
                             })
                             ->minValue(0),
                     ])
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || !isset($data['is_free']) || $data['is_free'] === null) {
+                            return null;
+                        }
+
+                        if ($data['is_free'] == true) {
+                            return __('learning/learningCategory.fields.free');
+                        }
+
+                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                    })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {
                             return $query;
@@ -463,6 +474,17 @@ class LearningCategoryResource extends Resource
             
                             return $query;
                         }
+                    }),
+                SelectFilter::make('currency_id')
+                    ->label(__('learning/learningTest.fields.currency'))
+                    ->preload()
+                    ->searchable()
+                    ->columnSpan(2)
+                    ->options(function () {
+                        return Currency::all()
+                            ->mapWithKeys(function ($currency) {
+                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
                     }),
             ])
             ->filtersFormColumns(2)
