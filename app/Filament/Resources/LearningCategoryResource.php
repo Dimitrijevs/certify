@@ -349,6 +349,36 @@ class LearningCategoryResource extends Resource
                 'xl' => 3,
             ])
             ->filters([
+                Filter::make('my_courses')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Toggle::make('my_courses')
+                            ->label('My Courses')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false)
+                            ->columnSpan(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_courses']) {
+                            return $query;
+                        }
+
+                        return $query->where(function (Builder $query) {
+                            $query->whereHas('purchases', function (Builder $subQuery) {
+                                $subQuery->where('user_id', Auth::id());
+                            })->orWhere('created_by', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_courses'] === null || $data['my_courses'] == false) {
+                            return null;
+                        }
+
+                        return 'My Courses';
+                    }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningCategory.fields.active'))
                     ->columnSpan(1)
@@ -396,6 +426,17 @@ class LearningCategoryResource extends Resource
                                 });
                             }
                         );
+                    }),
+                SelectFilter::make('currency_id')
+                    ->label(__('learning/learningTest.fields.currency'))
+                    ->preload()
+                    ->searchable()
+                    ->columnSpan(1)
+                    ->options(function () {
+                        return Currency::all()
+                            ->mapWithKeys(function ($currency) {
+                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
                     }),
                 Filter::make('is_free')
                     ->columnSpan(2)
@@ -474,17 +515,6 @@ class LearningCategoryResource extends Resource
             
                             return $query;
                         }
-                    }),
-                SelectFilter::make('currency_id')
-                    ->label(__('learning/learningTest.fields.currency'))
-                    ->preload()
-                    ->searchable()
-                    ->columnSpan(2)
-                    ->options(function () {
-                        return Currency::all()
-                            ->mapWithKeys(function ($currency) {
-                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
-                            });
                     }),
             ])
             ->filtersFormColumns(2)

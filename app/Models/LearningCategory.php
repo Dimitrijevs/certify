@@ -62,6 +62,11 @@ class LearningCategory extends Model
         return $this->belongsTo(Currency::class);
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(UserPurchase::class, 'course_id');
+    }
+
     protected static function boot()
     {
         parent::boot();

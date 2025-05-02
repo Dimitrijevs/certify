@@ -79,6 +79,11 @@ class LearningTest extends Model
         return $this->belongsTo(User::class, 'aproved_by');
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(UserPurchase::class, 'test_id');
+    }
+
     protected static function boot()
     {
         parent::boot();

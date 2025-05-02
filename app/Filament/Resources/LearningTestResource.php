@@ -440,6 +440,36 @@ class LearningTestResource extends Resource
                 'xl' => 3,
             ])
             ->filters([
+                Filter::make('my_tests')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Toggle::make('my_tests')
+                            ->label('My Tests')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false)
+                            ->columnSpan(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_tests']) {
+                            return $query;
+                        }
+
+                        return $query->where(function (Builder $query) {
+                            $query->whereHas('purchases', function (Builder $subQuery) {
+                                $subQuery->where('user_id', Auth::id());
+                            })->orWhere('created_by', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_tests'] === null || $data['my_tests'] == false) {
+                            return null;
+                        }
+
+                        return 'My Tests';
+                    }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningTest.fields.active'))
                     ->columnSpan(1)
@@ -487,6 +517,17 @@ class LearningTestResource extends Resource
                                 });
                             }
                         );
+                    }),
+                SelectFilter::make('currency_id')
+                    ->label(__('learning/learningTest.fields.currency'))
+                    ->preload()
+                    ->searchable()
+                    ->columnSpan(1)
+                    ->options(function () {
+                        return Currency::all()
+                            ->mapWithKeys(function ($currency) {
+                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
                     }),
                 Filter::make('is_free')
                     ->columnSpan(2)
@@ -565,17 +606,6 @@ class LearningTestResource extends Resource
                             // If both from and to are set, we already applied the constraints above
                             return $query;
                         }
-                    }),
-                SelectFilter::make('currency_id')
-                    ->label(__('learning/learningTest.fields.currency'))
-                    ->preload()
-                    ->searchable()
-                    ->columnSpan(2)
-                    ->options(function () {
-                        return Currency::all()
-                            ->mapWithKeys(function ($currency) {
-                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
-                            });
                     }),
             ])
             ->filtersFormColumns(2)
