@@ -31,16 +31,36 @@ class DetailsRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
+            ->columns([
+                'default' => 12,
+                'sm' => 12,
+                'md' => 12,
+                'lg' => 12,
+            ])
             ->schema([
                 TextInput::make('user_answer')
+                    ->label('User answer')
+                    ->columnSpan([
+                        'default' => 12,
+                        'sm' => 6,
+                        'md' => 6,
+                        'lg' => 6,
+                    ])
                     ->required(),
                 TextInput::make('points')
+                    ->label('Points')
                     ->required()
                     ->live()
                     ->rules(function (?Model $record) {
                         $totalPoints = $record->question->points;
                         return ['integer', 'max:' . $totalPoints];
                     })
+                    ->columnSpan([
+                        'default' => 12,
+                        'sm' => 6,
+                        'md' => 6,
+                        'lg' => 6,
+                    ])
                     ->suffix(function (?Model $record, $get) {
                         if ($get('points') === null) {
                             $pointsRecieved = 0;
@@ -63,12 +83,7 @@ class DetailsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('user_answer')
             ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('question.question_title')
                     ->label('Question')
                     ->searchable()
@@ -101,11 +116,7 @@ class DetailsRelationManager extends RelationManager
             ])
             ->actions([
                 ActionGroup::make([
-                    DeleteAction::make()
-                        ->color('gray')
-                        ->after(function (Component $livewire, Model $record) {
-                            $livewire->dispatch('refreshTestResult', points: $record->points);
-                        }),
+                    //
                 ])->label('')
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size(ActionSize::Small)

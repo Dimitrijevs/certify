@@ -47,7 +47,11 @@ class LearningTestResult extends Model
         parent::boot();
 
         static::updated(function ($testResult) {
-            if ($testResult->is_passed) {
+            
+            $originalIsPassed = $testResult->getOriginal('is_passed');
+            $newIsPassed = $testResult->is_passed;
+
+            if ($originalIsPassed === false && $newIsPassed === true) {
                 $newCertificate = new LearningCertificate();
                 $newCertificate->user_id = $testResult->user_id;
                 $newCertificate->completed_test_id = $testResult->id;   
