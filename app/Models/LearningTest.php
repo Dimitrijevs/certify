@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\PdfTemplate;
-use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LearningTest extends Model

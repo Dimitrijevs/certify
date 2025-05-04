@@ -125,7 +125,6 @@ class LearningCategoryResource extends Resource
                                 'md' => 3,
                                 'lg' => 2,
                             ])
-                            ->default(true)
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false),
@@ -139,13 +138,13 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0),
+                            ->minValue(1),
                         TextInput::make('discount')
                             ->label(__('learning/learningCategory.fields.discount'))
                             ->live()
                             ->prefixIcon('tabler-percentage')
                             ->disabled(function ($get) {
-                                return $get('price') == 0;
+                                return $get('price') == 0 || $get('price') == null;
                             })
                             ->columnSpan([
                                 'default' => 12,
@@ -154,14 +153,16 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0)
+                            ->minValue(1)
                             ->maxValue(100),
                         Select::make('currency_id')
                             ->label(__('learning/learningCategory.fields.currency'))
                             ->preload()
                             ->live()
+                            ->disabled(function ($get) {
+                                return $get('price') == 0 || $get('price') == null;
+                            })
                             ->searchable()
-                            ->required()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 3,
@@ -320,22 +321,21 @@ class LearningCategoryResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    // Basic requirements: must be active and public
-                    $query->where('is_active', true)
-                        ->where('is_public', true);
+                    $query
+                        ->where(function ($q) {
+                            $q->where('is_active', true)
+                                ->where('is_public', true)
+                                ->where(function ($subQuery) {
+                                    $subQuery->where('available_for_everyone', true);
 
-                    // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function ($subQuery) {
-                        // Either available for everyone
-                        $subQuery->where('available_for_everyone', true);
-
-                        // OR created by someone from the same school (if user has a school)
-                        if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                $userQuery->where('school_id', Auth::user()->school_id);
-                            });
-                        }
-                    });
+                                    if (Auth::user()->school_id) {
+                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
+                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        });
+                                    }
+                                });
+                        })
+                        ->orWhere('created_by', Auth::id());
 
                     return $query;
                 }
