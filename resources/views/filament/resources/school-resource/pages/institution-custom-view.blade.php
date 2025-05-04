@@ -10,14 +10,16 @@
         </div>
     @endif
 
-    <div class="">
-        <a href="{{ $record->website }}"
-            class="mx-auto md:mx-0 hover:text-gray-600 duration-300 w-fit items-center flex justify-center rounded-lg shadow-sm border border-gray-200 bg-white hover:bg-gray-200 text-gray-900 px-3 py-2"
-            target="_blank">
-            <x-tabler-globe class="me-2" />
-            <span>{{ __('institution.website') }}</span>
-        </a>
-    </div>
+    @if ($record->website)
+        <div class="">
+            <a href="{{ $record->website }}"
+                class="mx-auto md:mx-0 hover:text-gray-600 duration-300 w-fit items-center flex justify-center rounded-lg shadow-sm border border-gray-200 bg-white hover:bg-gray-200 text-gray-900 px-3 py-2"
+                target="_blank">
+                <x-tabler-globe class="me-2" />
+                <span>{{ __('institution.website') }}</span>
+            </a>
+        </div>
+    @endif
 
     <div class="pt-16 pb-8 sm:pt-20 sm:pb-8">
         <div class="mx-auto max-w-7xl px-6 md:px-8">

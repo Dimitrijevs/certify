@@ -121,18 +121,6 @@ class UserSeeder extends Seeder
             $users = [];
         }
 
-        $groups = Group::all();
-
-        foreach ($groups as $group) {
-            $users = User::where('role_id', 3)
-                ->where('school_id', $group->school_id)
-                ->pluck('id')
-                ->toArray();
-
-            $group->teacher_id = $faker->randomElement($users);
-            $group->saveQuietly();
-        }
-
         $schools = School::all();
 
         foreach ($schools as $school) {
