@@ -15,6 +15,8 @@ class InvitationController extends Controller
     {
         $user = User::find(Auth::id());
 
+        $is_teacher = $request->is_teacher;
+
         if ($user->school_id && $user->school_id != $institution->id) {
             $receiver = User::find($user->school->created_by);
 
@@ -27,19 +29,38 @@ class InvitationController extends Controller
 
         $user->school_id = $institution->id;
         $user->group_id = $group->id;
+
+        if ($is_teacher) {
+            $user->role_id = 3;
+
+            $title = 'You had accepted the invitation to join the group as a teacher';
+            $description = 'You have successfully accepted the invitation to join the group as a teacher';
+
+            $ownerTitle = 'New Teacher Joined';
+            $ownerDescription = 'User ' . $user->name . ' has joined the group: ' . $group->name . ' as a teacher';
+        } else {
+            $user->role_id = 4;
+
+            $title = 'You had accepted the invitation to join the group as a student.';
+            $description = 'You have successfully accepted the invitation to join the group as a student';
+
+            $ownerTitle = 'New Student Joined';
+            $ownerDescription = 'User ' . $user->name . ' has joined the group: ' . $group->name . ' as a student';
+        }
+
         $user->save();
 
         Notification::make()
-            ->title('Invitation Accepted')
-            ->body('You have successfully accepted the invitation to join the group.')
+            ->title($title)
+            ->body($description)
             ->success()
             ->send();
 
         $institutionCreator = User::find($institution->created_by);
 
         Notification::make()
-            ->title('New Member Joined')
-            ->body('User ' . $user->name . ' has joined the group: ' . $group->name)
+            ->title($ownerTitle)
+            ->body($ownerDescription)
             ->success()
             ->sendToDatabase($institutionCreator);
 
@@ -49,18 +70,33 @@ class InvitationController extends Controller
     public function rejectInvite(Request $request, School $institution, Group $group)
     {
         $user = User::find(Auth::id());
+        $isTeacher = $request->is_teacher;
+
+        if ($isTeacher) {
+            $title = 'Invitation Rejected (Teacher)';
+            $body = 'You have successfully rejected the invitation to join the group as a teacher.';
+            $ownerBody = 'User ' . $user->name . ' has rejected the invitation to join the group: '
+                . $group->name . ' as a teacher.';
+        } else {
+            $title = 'Invitation Rejected (Student)';
+            $body = 'You have successfully rejected the invitation to join the group as a student.';
+            $ownerBody = 'User ' . $user->name . ' has rejected the invitation to join the group: '
+                . $group->name . ' as a student.';
+        }
+
+        $reciever = User::find($institution->created_by);
 
         Notification::make()
-            ->title('Invitation Rejected')
-            ->body('You have successfully rejected the invitation to join the group.')
+            ->title($title)
+            ->body($body)
             ->success()
             ->send();
 
         Notification::make()
             ->title('Invitation Rejected')
-            ->body('User ' . $user->name . ' has rejected the invitation to join the group: ' . $group->name)
+            ->body($ownerBody)
             ->success()
-            ->sendToDatabase($institution->created_by);
+            ->sendToDatabase($reciever);
 
         return redirect()->back();
     }
