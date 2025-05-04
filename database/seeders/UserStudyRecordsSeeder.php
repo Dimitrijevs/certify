@@ -37,7 +37,7 @@ class UserStudyRecordsSeeder extends Seeder
                                 ->subMinutes(rand(0, 59))
                                 ->subSeconds(rand(0, 59));
 
-                            $completedAt = (clone $startedAt)->addSeconds(rand(5, 600));
+                            $completedAt = (clone $startedAt)->addSeconds(rand(20, 900));
 
                             $timeSpent = abs($completedAt->diffInSeconds($startedAt));
 
