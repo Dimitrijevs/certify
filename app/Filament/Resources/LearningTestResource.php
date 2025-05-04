@@ -282,7 +282,7 @@ class LearningTestResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(1),
+                            ->minValue(0),
                         TextInput::make('discount')
                             ->label(__('learning/learningTest.fields.discount'))
                             ->live()
@@ -297,7 +297,7 @@ class LearningTestResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(1)
+                            ->minValue(0)
                             ->maxValue(100),
                         Select::make('currency_id')
                             ->label(__('learning/learningTest.fields.currency'))

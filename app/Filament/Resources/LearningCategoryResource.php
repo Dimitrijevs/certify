@@ -138,7 +138,7 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(1),
+                            ->minValue(0),
                         TextInput::make('discount')
                             ->label(__('learning/learningCategory.fields.discount'))
                             ->live()
@@ -153,7 +153,7 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(1)
+                            ->minValue(0)
                             ->maxValue(100),
                         Select::make('currency_id')
                             ->label(__('learning/learningCategory.fields.currency'))
