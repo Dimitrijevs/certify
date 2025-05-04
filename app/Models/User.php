@@ -88,6 +88,11 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
             ->where('entity_type', 'student');
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(UserPurchase::class);
+    }
+
     public function certificates()
     {
         return $this->hasMany(LearningCertificate::class);

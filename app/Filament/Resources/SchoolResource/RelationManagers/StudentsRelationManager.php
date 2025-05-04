@@ -9,9 +9,10 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Livewire\Attributes\On;
 use Filament\Forms\Components\Grid;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use App\Tables\Columns\AvatarWithDetails;
@@ -85,6 +86,11 @@ class StudentsRelationManager extends RelationManager
                     ->avatarType('icon')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('role_id')
+                    ->label('Teacher')
+                    ->formatStateUsing(function ($state) {
+                        return $state === 3 ? 'Teacher' : 'Student';
+                    }),
             ])
             ->filters([
                 SelectFilter::make('group_id')
@@ -132,29 +138,54 @@ class StudentsRelationManager extends RelationManager
                                             return $get('user_id') !== null;
                                         })
                                         ->columnSpan([
-                                            'default' => 12,
-                                            'sm' => 12,
-                                            'md' => 12,
-                                            'lg' => 12,
+                                            'default' => 8,
+                                            'sm' => 9,
+                                            'md' => 9,
+                                            'lg' => 10,
                                         ])
                                         ->preload()
                                         ->required()
                                         ->searchable(),
+                                    Toggle::make('is_teacher')
+                                        ->label('Teacher')
+                                        ->inline(false)
+                                        ->columnSpan([
+                                            'default' => 4,
+                                            'sm' => 3,
+                                            'md' => 3,
+                                            'lg' => 2,
+                                        ])
+                                        ->visible(function ($get) {
+                                            return $get('user_id');
+                                        })
+                                        ->onIcon('tabler-check')
+                                        ->offIcon('tabler-x'),
+
                                 ])
                     ])
                     ->mutateFormDataUsing(function (array $data) {
                         $recipient = User::find($data['user_id']);
 
+                        $group = Group::find($data['group_id']);
+
+                        if ($data['is_teacher']) {
+                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a teacher to the group ' . $group->name;
+                        } else {
+                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a student to the group ' . $group->name;
+                        }
+
                         Notification::make()
                             ->info()
-                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
+                            ->title($title)
                             ->actions([
                                 NotificationAction::make('accept')
                                     ->url(route('accept-invite', [
                                         'institution' => $this->getOwnerRecord()->id,
                                         'group' => $data['group_id'],
+                                        'is_teacher' => $data['is_teacher'],
                                         'sender' => Auth::user()->id,
                                     ]))
+                                    ->close()
                                     ->button()
                                     ->color('primary')
                                     ->icon('tabler-check'),
@@ -162,8 +193,10 @@ class StudentsRelationManager extends RelationManager
                                     ->url(route('reject-invite', [
                                         'institution' => $this->getOwnerRecord()->id,
                                         'group' => $data['group_id'],
+                                        'is_teacher' => $data['is_teacher'],
                                         'sender' => Auth::user()->id,
                                     ]))
+                                    ->close()
                                     ->button()
                                     ->color('danger')
                                     ->icon('tabler-x'),
@@ -194,7 +227,7 @@ class StudentsRelationManager extends RelationManager
                                             ->live()
                                             ->label(__('worker.worker'))
                                             ->options(function () {
-                                                return User::where('role_id', 4)
+                                                return User::whereIn('role_id', [3, 4])
                                                     ->where('school_id', $this->getOwnerRecord()->id)
                                                     ->pluck('name', 'id') ?? [];
                                             })
@@ -208,6 +241,7 @@ class StudentsRelationManager extends RelationManager
                                                 'md' => 12,
                                                 'lg' => 12,
                                             ])
+                                            ->disabled()
                                             ->preload()
                                             ->required()
                                             ->searchable(),
@@ -222,57 +256,89 @@ class StudentsRelationManager extends RelationManager
                                             })
                                             ->default($record && $record->group_id ? $record->group_id : null) // Add null check
                                             ->columnSpan([
-                                                'default' => 12,
-                                                'sm' => 12,
-                                                'md' => 12,
-                                                'lg' => 12,
+                                                'default' => 8,
+                                                'sm' => 9,
+                                                'md' => 9,
+                                                'lg' => 10,
                                             ])
                                             ->preload()
                                             ->required()
                                             ->searchable(),
+                                        Toggle::make('is_teacher')
+                                            ->label('Teacher')
+                                            ->inline(false)
+                                            ->columnSpan([
+                                                'default' => 4,
+                                                'sm' => 3,
+                                                'md' => 3,
+                                                'lg' => 2,
+                                            ])
+                                            ->afterStateHydrated(function ($set, $record) {
+                                                $set('is_teacher', $record->role_id === 3);
+                                            })
+                                            ->visible(function ($get) {
+                                                return $get('id');
+                                            })
+                                            ->onIcon('tabler-check')
+                                            ->offIcon('tabler-x'),
                                     ])
                         ];
                     })
-                    ->using(function (array $data) {
-                        $recipient = User::find($data['id']);
+                    ->using(function (array $data, $record) {
 
-                        Notification::make()
-                            ->info()
-                            ->title(__('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name)
-                            ->actions([
-                                NotificationAction::make('accept')
-                                    ->url(route('accept-invite', [
-                                        'institution' => $this->getOwnerRecord()->id,
-                                        'group' => $data['group_id'],
-                                        'sender' => Auth::user()->id,
-                                    ]))
-                                    ->close()
-                                    ->button()
-                                    ->color('primary')
-                                    ->icon('tabler-check'),
-                                NotificationAction::make('decline')
-                                    ->url(route('reject-invite', [
-                                        'institution' => $this->getOwnerRecord()->id,
-                                        'group' => $data['group_id'],
-                                        'sender' => Auth::user()->id,
-                                    ]))
-                                    ->close()
-                                    ->button()
-                                    ->color('danger')
-                                    ->icon('tabler-x'),
-                            ])
-                            ->sendToDatabase($recipient);
+                        if ($record->group_id != $data['group_id'] || $record->role_id != ($data['is_teacher'] ? 3 : 4)) {
 
-                        Notification::make()
-                            ->title(__('worker.invite_sent'))
-                            ->success()
-                            ->send();
+                            $recipient = User::find($record->id);
+
+                            $group = Group::find($data['group_id']);
+
+                            if ($data['is_teacher']) {
+                                $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a teacher to the group ' . $group->name;
+                            } else {
+                                $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a student to the group ' . $group->name;
+                            }
+
+                            Notification::make()
+                                ->info()
+                                ->title($title)
+                                ->actions([
+                                    NotificationAction::make('accept')
+                                        ->url(route('accept-invite', [
+                                            'institution' => $this->getOwnerRecord()->id,
+                                            'group' => $data['group_id'],
+                                            'is_teacher' => $data['is_teacher'],
+                                            'sender' => Auth::user()->id,
+                                        ]))
+                                        ->close()
+                                        ->button()
+                                        ->color('primary')
+                                        ->icon('tabler-check'),
+                                    NotificationAction::make('decline')
+                                        ->url(route('reject-invite', [
+                                            'institution' => $this->getOwnerRecord()->id,
+                                            'group' => $data['group_id'],
+                                            'is_teacher' => $data['is_teacher'],
+                                            'sender' => Auth::user()->id,
+                                        ]))
+                                        ->close()
+                                        ->button()
+                                        ->color('danger')
+                                        ->icon('tabler-x'),
+                                ])
+                                ->sendToDatabase($recipient);
+
+                            Notification::make()
+                                ->title('Worker Invite Resent')
+                                ->success()
+                                ->send();
+                        }
                     }),
                 Tables\Actions\DeleteAction::make()
                     ->action(function ($record) {
                         $record = User::find($record->id);
                         $record->school_id = null;
                         $record->group_id = null;
+                        $record->role_id = 4;
                         $record->save();
 
                         Notification::make()

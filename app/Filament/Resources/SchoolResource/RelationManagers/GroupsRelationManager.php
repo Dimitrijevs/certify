@@ -40,22 +40,10 @@ class GroupsRelationManager extends RelationManager
                     ->label(__('group.name'))
                     ->columnSpan([
                         'default' => 12,
-                        'sm' => 6,
-                        'md' => 6,
-                        'lg' => 6,
+                        'sm' => 12,
+                        'md' => 12,
+                        'lg' => 12,
                     ])
-                    ->required(),
-                Select::make('teacher_id')
-                    ->label(__('group.superviser'))
-                    ->preload()
-                    ->searchable()
-                    ->columnSpan([
-                        'default' => 12,
-                        'sm' => 6,
-                        'md' => 6,
-                        'lg' => 6,
-                    ])
-                    ->options(User::where('school_id', $this->getOwnerRecord()->id)->get()->pluck('name', 'id')->toArray())
                     ->required(),
                 Textarea::make('description')
                     ->label(__('group.description'))
@@ -86,21 +74,6 @@ class GroupsRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
-                AvatarWithDetails::make('teacher_id')
-                    ->label(__('group.superviser'))
-                    ->title(function ($record) {
-                        return $record->teacher->name;
-                    })
-                    ->description(function ($record) {
-                        return $record->teacher->email;
-                    })
-                    ->avatar(function ($record) {
-                        return $record->avatar;
-                    })
-                    ->avatarType('image')
-                    ->toggleable(isToggledHiddenByDefault: false)
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('students')
                     ->label(__('group.workers_count'))
                     ->sortable()
@@ -112,11 +85,7 @@ class GroupsRelationManager extends RelationManager
                     }),
             ])
             ->filters([
-                SelectFilter::make('teacher_id')
-                    ->label(__('group.superviser'))
-                    ->options(User::where('school_id', $this->getOwnerRecord()->id)->get()->pluck('name', 'id')->toArray())
-                    ->searchable()
-                    ->preload(),
+                //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\PdfTemplate;
-use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LearningTest extends Model
@@ -77,6 +77,11 @@ class LearningTest extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'aproved_by');
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(UserPurchase::class, 'test_id');
     }
 
     protected static function boot()

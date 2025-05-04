@@ -19,8 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind the custom LogoutResponse implementation
-        $this->app->singleton(LogoutResponse::class, CustomLogoutResponse::class);
+        //
     }
 
     /**

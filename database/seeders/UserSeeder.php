@@ -18,11 +18,13 @@ class UserSeeder extends Seeder
         $faker = Faker::create('lv_LV');
         $schools = School::with('groups')->get();
 
-        $iterations = 10;
-        $sub_iterations = 1000;
+        $iterations = 3;
+        $sub_iterations = 937;
 
         $school = $faker->randomElement($schools);
         $group = $school->groups->random();
+
+        $password = bcrypt('demopass');
 
         $users = [
             [
@@ -32,7 +34,7 @@ class UserSeeder extends Seeder
                 'country' => 'LV',
                 'group_id' => null,
                 'school_id' => null,
-                'password' => bcrypt('demopass'),
+                'password' => $password,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -43,7 +45,7 @@ class UserSeeder extends Seeder
                 'country' => 'LV',
                 'group_id' => null,
                 'school_id' => null,
-                'password' => bcrypt('demopass'),
+                'password' => $password,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -54,7 +56,7 @@ class UserSeeder extends Seeder
                 'country' => 'LV',
                 'group_id' => $group->id,
                 'school_id' => $school->id,
-                'password' => bcrypt('demopass'),
+                'password' => $password,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -65,13 +67,15 @@ class UserSeeder extends Seeder
                 'group_id' => $group->id,
                 'country' => 'LV',
                 'school_id' => $school->id,
-                'password' => bcrypt('demopass'),
+                'password' => $password,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
 
         User::insert($users);
+
+        $users = [];
 
         // Latvia
         // Lithuania
@@ -85,14 +89,9 @@ class UserSeeder extends Seeder
         // Great Britain
         $countries = ['LV', 'LT', 'EE', 'FI', 'SE', 'NO', 'DK', 'PL', 'DE', 'GB'];
 
-        // total users = 100000
         $usersCreated = 0;
 
-        $password = bcrypt('demopass');
-
         for ($j = 0; $j < $iterations; $j++) {
-
-            $users = [];
 
             for ($i = 0; $i < $sub_iterations; $i++) {
 
@@ -100,7 +99,7 @@ class UserSeeder extends Seeder
 
                 $school = $faker->boolean(10) ? $faker->randomElement($schools) : null;
 
-                $group = $school ?->groups->random() ?? null;
+                $group = $school?->groups->random() ?? null;
 
                 $users[] = [
                     'name' => $faker->name,
@@ -119,32 +118,29 @@ class UserSeeder extends Seeder
 
             User::insert($users);
 
-            $groups = Group::all();
+            $users = [];
+        }
 
-            foreach ($groups as $group) {
-                $users = User::where('role_id', 3)
-                    ->where('school_id', $group->school_id)
-                    ->pluck('id')
-                    ->toArray();
+        $schools = School::all();
 
-                $group->teacher_id = $faker->randomElement($users);
-                $group->save();
-            }
+        foreach ($schools as $school) {
+            $users = User::whereIn('role_id', [3, 2])
+                ->where('school_id', $school->id)
+                ->pluck('id')
+                ->toArray();
 
-            $schools = School::all();
-            foreach ($schools as $school) {
-                $users = User::whereIn('role_id', [3, 2])
-                    ->where('school_id', $school->id)
-                    ->pluck('id')
-                    ->toArray();
-
-                if ($users) {
-                    $school->created_by = $faker->randomElement($users);
-                    $school->save();
-                }
+            if ($users) {
+                $school->created_by = $faker->randomElement($users);
+                $school->saveQuietly();
             }
         }
 
         $this->command->info("\n");
+
+        // stripe account
+        $superAdmin = User::find(1);
+        $superAdmin->stripe_connect_id = 'acct_1RKRS0AcD63pWHcd';
+        $superAdmin->completed_stripe_onboarding = 1;
+        $superAdmin->saveQuietly();
     }
 }

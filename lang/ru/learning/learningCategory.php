@@ -6,6 +6,7 @@ return [
     'label_plural' => 'Курсы',
     'label' => 'Курс',
     'category' => 'Категория',
+    'edit_course' => 'Редактировать курс',
     'form' => [
         'section_title' => 'Общие данные курса',
         'edit' => 'Редактировать',

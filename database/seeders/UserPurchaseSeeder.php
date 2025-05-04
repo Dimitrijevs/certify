@@ -37,9 +37,17 @@ class UserPurchaseSeeder extends Seeder
             $purchases = [];
 
             foreach ($users as $user) {
-                $is_purchase = $faker->boolean(40);
-                $course_purchase = $faker->boolean();
+                if ($user->id == 4) {
 
+                    $is_purchase = true;
+                    $course_purchase = true;
+
+                } else {
+
+                    $is_purchase = $faker->boolean(40);
+                    $course_purchase = $faker->boolean();
+                }
+                
                 if ($is_purchase && $course_purchase) {
                     $course = $faker->randomElement($courses);
 

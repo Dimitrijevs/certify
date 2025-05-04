@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Carbon\Carbon;
+use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LearningTest;
@@ -19,10 +20,8 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use App\Tables\Columns\CustomCertificate;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
@@ -58,12 +57,12 @@ class LearningCertificateResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 3 || $record->user->group_id == Auth::user()->group_id;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 3 || $record->user->group_id == Auth::user()->group_id;
     }
 
     public static function form(Form $form): Form
@@ -241,21 +240,38 @@ class LearningCertificateResource extends Resource
                     return $query;
                 }
 
+                if (Auth::user()->role_id == 3) {
+                    return $query->whereHas('user', function (Builder $query) {
+                        return $query->where('group_id', Auth::user()->group_id);
+                    });
+                }
+
                 return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 SelectFilter::make('user_id')
                     ->label(__('user.label'))
-                    ->relationship('user', 'name')
+                    ->options(function () {
+                        if (Auth::user()->role_id < 3) {
+                            return User::whereNotIn('role_id', [1, 2])
+                                ->pluck('name', 'id');
+                        }
+
+                        return User::whereNotIn('role_id', [1, 2])
+                            ->where('group_id', Auth::user()->group_id)
+                            ->pluck('name', 'id');
+                    })
                     ->searchable()
                     ->visible(function () {
                         return Auth::user()->role_id < 4;
                     })
-                    ->preload()
-                    ->multiple(),
+                    ->preload(),
                 SelectFilter::make('test_id')
                     ->label(__('learning/learningTest.label'))
-                    ->relationship('test', 'name')
+                    ->options(function () {
+                        return LearningTest::all()
+                            ->pluck('name', 'id');
+                    })
                     ->searchable()
                     ->preload()
                     ->multiple(),

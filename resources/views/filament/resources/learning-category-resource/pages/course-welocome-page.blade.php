@@ -11,13 +11,21 @@
                         {{ __('welcome-course.available_resources') }}
                     @endslot
 
-                    @slot('description')
-                        @foreach ($this->availableResources() as $resource)
+                    @if ($this->availableResources()->count() > 0)
+                        @slot('description')
+                            @foreach ($this->availableResources() as $resource)
+                                <x-welcome-page-list-item>
+                                    {{ $resource->name }}
+                                </x-welcome-page-list-item>
+                            @endforeach
+                        @endslot
+                    @else
+                        @slot('description')
                             <x-welcome-page-list-item>
-                                {{ $resource->name }}
+                                Resources in development
                             </x-welcome-page-list-item>
-                        @endforeach
-                    @endslot
+                        @endslot
+                    @endif
                 </x-welcome-page-list>
 
                 @if ($this->getCategories())
@@ -91,7 +99,7 @@
                         {{ __('welcome-course.enroll_now_for_free') }}
                     </x-cyan-button>
                 </form>
-            @else
+            @elseif ($this->getFirstResourceId())
                 <a
                     href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $this->getFirstResourceId()]) }}">
                     <x-cyan-button>

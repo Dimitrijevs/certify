@@ -53,12 +53,12 @@ class LearningTestResultResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 3 || $record->user->group_id == Auth::user()->group_id;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 3 || $record->user->group_id == Auth::user()->group_id;
     }
 
     public static function form(Form $form): Form
@@ -98,6 +98,8 @@ class LearningTestResultResource extends Resource
                             ]),
                         Toggle::make('is_passed')
                             ->label('Passed')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->columnSpan([
                                 'default' => 3,
                                 'sm' => 2,
@@ -203,15 +205,23 @@ class LearningTestResultResource extends Resource
                     ->default(false)
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
+            ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id < 3) {
                     return $query;
+                }
+
+                if (Auth::user()->role_id == 3) {
+                    return $query->whereHas('user', function (Builder $query) {
+                        return $query->where('group_id', Auth::user()->group_id);
+                    });
                 }
 
                 return $query->where('user_id', Auth::user()->id);
             })
             ->filters([
                 TernaryFilter::make('is_passed')
+                    ->native(false)
                     ->label(__('learning/learningTestResult.custom.passed')),
             ])
             ->actions([

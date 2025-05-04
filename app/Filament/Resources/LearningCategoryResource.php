@@ -21,6 +21,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use App\Forms\Components\UserStatWidget;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\CustomImageColumn;
 use Filament\Forms\Components\FileUpload;
@@ -124,7 +125,6 @@ class LearningCategoryResource extends Resource
                                 'md' => 3,
                                 'lg' => 2,
                             ])
-                            ->default(true)
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false),
@@ -138,13 +138,13 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0),
+                            ->minValue(1),
                         TextInput::make('discount')
                             ->label(__('learning/learningCategory.fields.discount'))
                             ->live()
                             ->prefixIcon('tabler-percentage')
                             ->disabled(function ($get) {
-                                return $get('price') == 0;
+                                return $get('price') == 0 || $get('price') == null;
                             })
                             ->columnSpan([
                                 'default' => 12,
@@ -153,14 +153,16 @@ class LearningCategoryResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0)
+                            ->minValue(1)
                             ->maxValue(100),
                         Select::make('currency_id')
                             ->label(__('learning/learningCategory.fields.currency'))
                             ->preload()
                             ->live()
+                            ->disabled(function ($get) {
+                                return $get('price') == 0 || $get('price') == null;
+                            })
                             ->searchable()
-                            ->required()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 3,
@@ -255,10 +257,13 @@ class LearningCategoryResource extends Resource
                                 ->lazy()
                                 ->columnSpanFull()
                         ])->visible(fn(string $operation): bool => $operation !== 'create'),
-
                     Tab::make(__('learning/learningResourceActivity.label_plural'))
                         ->icon('tabler-user')
                         ->schema([
+                            UserStatWidget::make('user_statistics')
+                                ->label(' ')
+                                ->dehydrated(false)
+                                ->columnSpanFull(),
                             RelationManager::make()
                                 ->manager(ActivitiesRelationManager::class)
                                 ->lazy()
@@ -268,8 +273,6 @@ class LearningCategoryResource extends Resource
                     ->persistTabInQueryString(),
             ]);
     }
-
-
 
     public static function table(Table $table): Table
     {
@@ -318,22 +321,21 @@ class LearningCategoryResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    // Basic requirements: must be active and public
-                    $query->where('is_active', true)
-                        ->where('is_public', true);
+                    $query
+                        ->where(function ($q) {
+                            $q->where('is_active', true)
+                                ->where('is_public', true)
+                                ->where(function ($subQuery) {
+                                    $subQuery->where('available_for_everyone', true);
 
-                    // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function ($subQuery) {
-                        // Either available for everyone
-                        $subQuery->where('available_for_everyone', true);
-
-                        // OR created by someone from the same school (if user has a school)
-                        if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                $userQuery->where('school_id', Auth::user()->school_id);
-                            });
-                        }
-                    });
+                                    if (Auth::user()->school_id) {
+                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
+                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        });
+                                    }
+                                });
+                        })
+                        ->orWhere('created_by', Auth::id());
 
                     return $query;
                 }
@@ -347,6 +349,36 @@ class LearningCategoryResource extends Resource
                 'xl' => 3,
             ])
             ->filters([
+                Filter::make('my_courses')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Toggle::make('my_courses')
+                            ->label('My Courses')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false)
+                            ->columnSpan(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_courses']) {
+                            return $query;
+                        }
+
+                        return $query->where(function (Builder $query) {
+                            $query->whereHas('purchases', function (Builder $subQuery) {
+                                $subQuery->where('user_id', Auth::id());
+                            })->orWhere('created_by', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_courses'] === null || $data['my_courses'] == false) {
+                            return null;
+                        }
+
+                        return 'My Courses';
+                    }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningCategory.fields.active'))
                     ->columnSpan(1)
@@ -395,6 +427,17 @@ class LearningCategoryResource extends Resource
                             }
                         );
                     }),
+                SelectFilter::make('currency_id')
+                    ->label(__('learning/learningTest.fields.currency'))
+                    ->preload()
+                    ->searchable()
+                    ->columnSpan(1)
+                    ->options(function () {
+                        return Currency::all()
+                            ->mapWithKeys(function ($currency) {
+                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
+                    }),
                 Filter::make('is_free')
                     ->columnSpan(2)
                     ->columns(2)
@@ -406,6 +449,12 @@ class LearningCategoryResource extends Resource
                                 true => __('learning/learningCategory.fields.free'),
                                 false => __('learning/learningCategory.fields.paid'),
                             ])
+                            ->afterStateUpdated(function ($set, $state) {
+                                if ($state == true) {
+                                    $set('price_from', null);
+                                    $set('price_to', null);
+                                }
+                            })
                             ->columnSpan(2)
                             ->native(false),
                         TextInput::make('price_from')
@@ -429,6 +478,17 @@ class LearningCategoryResource extends Resource
                             })
                             ->minValue(0),
                     ])
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || !isset($data['is_free']) || $data['is_free'] === null) {
+                            return null;
+                        }
+
+                        if ($data['is_free'] == true) {
+                            return __('learning/learningCategory.fields.free');
+                        }
+
+                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                    })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {
                             return $query;
@@ -440,26 +500,15 @@ class LearningCategoryResource extends Resource
                                     ->orWhereNull('price');
                             });
                         } else {
-                            // Base query for paid items
                             $query->where('price', '>', 0);
 
                             // Apply price range filters if set, considering discount
                             if (!empty($data['price_from'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '>=', $data['price_from'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
                             }
 
                             if (!empty($data['price_to'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '<=', $data['price_to'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
                             }
 
                             // If both from and to are set, we already applied the constraints above

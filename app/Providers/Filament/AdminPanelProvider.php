@@ -11,7 +11,6 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Pages\Auth\Register;
 use Illuminate\Support\Facades\Blade;
-use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
@@ -35,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
+            ->favicon(asset('other/favicon.ico'))
             ->font('Playfair Display')
             ->registration(Register::class)
             ->databaseNotifications()

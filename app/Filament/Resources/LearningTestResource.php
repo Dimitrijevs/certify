@@ -117,6 +117,7 @@ class LearningTestResource extends Resource
                                 'md' => 4,
                                 'lg' => 2,
                             ])
+                            ->default(true)
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false),
@@ -145,6 +146,9 @@ class LearningTestResource extends Resource
                         TextInput::make('min_score')
                             ->label(__('learning/learningTest.fields.fault_points'))
                             ->live()
+                            ->disabled(function ($operation) {
+                                return $operation === 'create';
+                            })
                             ->default(0)
                             ->columnSpan([
                                 'default' => 12,
@@ -278,13 +282,13 @@ class LearningTestResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0),
+                            ->minValue(1),
                         TextInput::make('discount')
                             ->label(__('learning/learningTest.fields.discount'))
                             ->live()
                             ->prefixIcon('tabler-percentage')
                             ->disabled(function ($get) {
-                                return $get('price') == 0;
+                                return $get('price') == 0 || $get('price') == null;
                             })
                             ->columnSpan([
                                 'default' => 12,
@@ -293,14 +297,16 @@ class LearningTestResource extends Resource
                                 'lg' => 3,
                             ])
                             ->numeric()
-                            ->minValue(0)
+                            ->minValue(1)
                             ->maxValue(100),
                         Select::make('currency_id')
                             ->label(__('learning/learningTest.fields.currency'))
                             ->preload()
                             ->live()
                             ->searchable()
-                            ->required()
+                            ->disabled(function ($get) {
+                                return $get('price') == 0 || $get('price') == null;
+                            })
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 3,
@@ -440,6 +446,36 @@ class LearningTestResource extends Resource
                 'xl' => 3,
             ])
             ->filters([
+                Filter::make('my_tests')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Toggle::make('my_tests')
+                            ->label('My Tests')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false)
+                            ->columnSpan(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_tests']) {
+                            return $query;
+                        }
+
+                        return $query->where(function (Builder $query) {
+                            $query->whereHas('purchases', function (Builder $subQuery) {
+                                $subQuery->where('user_id', Auth::id());
+                            })->orWhere('created_by', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_tests'] === null || $data['my_tests'] == false) {
+                            return null;
+                        }
+
+                        return 'My Tests';
+                    }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningTest.fields.active'))
                     ->columnSpan(1)
@@ -488,6 +524,17 @@ class LearningTestResource extends Resource
                             }
                         );
                     }),
+                SelectFilter::make('currency_id')
+                    ->label(__('learning/learningTest.fields.currency'))
+                    ->preload()
+                    ->searchable()
+                    ->columnSpan(1)
+                    ->options(function () {
+                        return Currency::all()
+                            ->mapWithKeys(function ($currency) {
+                                return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
+                    }),
                 Filter::make('is_free')
                     ->columnSpan(2)
                     ->columns(2)
@@ -498,6 +545,12 @@ class LearningTestResource extends Resource
                                 true => __('learning/learningTest.fields.free'),
                                 false => __('learning/learningTest.fields.paid'),
                             ])
+                            ->afterStateUpdated(function ($set, $state) {
+                                if ($state == true) {
+                                    $set('price_from', 0);
+                                    $set('price_to', 0);
+                                }
+                            })
                             ->columnSpan(2)
                             ->label('Price')
                             ->native(false),
@@ -522,6 +575,17 @@ class LearningTestResource extends Resource
                             })
                             ->minValue(0),
                     ])
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || !isset($data['is_free']) || $data['is_free'] === null) {
+                            return null;
+                        }
+
+                        if ($data['is_free'] == true) {
+                            return __('learning/learningCategory.fields.free');
+                        }
+
+                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                    })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {
                             return $query;
@@ -538,21 +602,11 @@ class LearningTestResource extends Resource
 
                             // Apply price range filters if set, considering discount
                             if (!empty($data['price_from'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '>=', $data['price_from'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) >= ?', [$data['price_from']]);
                             }
 
                             if (!empty($data['price_to'])) {
-                                $query->where(function ($query) use ($data) {
-                                    // Either the original price meets the criteria
-                                    $query->where('price', '<=', $data['price_to'])
-                                        // OR the discounted price meets the criteria
-                                        ->orWhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
-                                });
+                                $query->WhereRaw('(price - (price * discount / 100)) <= ?', [$data['price_to']]);
                             }
 
                             // If both from and to are set, we already applied the constraints above
@@ -567,22 +621,21 @@ class LearningTestResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    // Basic requirements: must be active and public
-                    $query->where('is_active', true)
-                        ->where('is_public', true);
+                    $query
+                        ->where(function ($q) {
+                            $q->where('is_active', true)
+                                ->where('is_public', true)
+                                ->where(function ($subQuery) {
+                                    $subQuery->where('available_for_everyone', true);
 
-                    // Then add conditions for either available_for_everyone OR same school_id
-                    $query->where(function ($subQuery) {
-                        // Either available for everyone
-                        $subQuery->where('available_for_everyone', true);
-
-                        // OR created by someone from the same school (if user has a school)
-                        if (Auth::user()->school_id) {
-                            $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                $userQuery->where('school_id', Auth::user()->school_id);
-                            });
-                        }
-                    });
+                                    if (Auth::user()->school_id) {
+                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
+                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        });
+                                    }
+                                });
+                        })
+                        ->orWhere('created_by', Auth::id());
 
                     return $query;
                 }

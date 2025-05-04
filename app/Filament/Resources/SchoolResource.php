@@ -159,7 +159,6 @@ class SchoolResource extends Resource
                         TextInput::make('website')
                             ->label(__('institution.website'))
                             ->prefixIcon('tabler-globe')
-                            ->required()
                             ->columnSpan([
                                 'default' => 12,
                                 'sm' => 12,
@@ -311,6 +310,7 @@ class SchoolResource extends Resource
                     ->url(function ($record) {
                         return $record->website;
                     })
+                    ->default('Not Set')
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->badge()
                     ->color('primary')

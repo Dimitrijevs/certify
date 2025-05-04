@@ -24,6 +24,7 @@ class LearningCategory extends Model
         'currency_id',
         'created_by',
         'is_public',
+        'available_for_everyone',
         'aproved_by',
     ];
 
@@ -59,6 +60,11 @@ class LearningCategory extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(UserPurchase::class, 'course_id');
     }
 
     protected static function boot()

@@ -40,7 +40,7 @@ class School extends Model
 
     public function students()
     {
-        return $this->hasMany(User::class)->where('role_id', 4);
+        return $this->hasMany(User::class)->whereIn('role_id', [3, 4]);
     }
 
     public function teachers()

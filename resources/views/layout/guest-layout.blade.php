@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <link rel="icon" type="image/png" href="{{ asset('other/favicon.ico') }}" />
+
     @filamentStyles
 
     @vite('resources/css/app.css')
 
     <link rel="stylesheet" href="{{ asset('css/swiper/swiper-bundle.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/custom/animate.css') }}">
 
     <title>certify</title>
 </head>
@@ -29,13 +30,12 @@
     @livewire('notifications')
 
     @filamentScripts
+    @livewireScripts
 
-    @vite('resources/js/app.js')
-
-    <script src="{{ asset('js/alpine/alpine.min.js') }}"></script>
     <script src="{{ asset('js/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('js/swiper/slider.js') }}"></script>
-    <script src="{{ asset('js/custom/animate.js') }}"></script>
+
+    @vite('resources/js/app.js')
 </body>
 
 </html>

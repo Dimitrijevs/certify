@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LearningCertificateController;
@@ -11,12 +11,7 @@ Route::get('/', function () {
     return view('pages.landingpage');
 })->name('landingpage');
 
-// user logout
-Route::get('/user-logout', function () {
-    Auth::logout();
-
-    return redirect()->route('filament.app.auth.login');
-})->name('user-logout');    
+Route::post('/app/logout', [LogoutController::class, 'logout'])->name('filament.app.auth.logout');
 
 // certificate pdfs
 Route::get('/learning-resources/{learningResource}/pdf', [LearningCertificateController::class, 'index'])
