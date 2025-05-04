@@ -27,13 +27,13 @@
             </button>
         </div>
 
-        <form wire:submit="save" class="w-full flex flex-col gap-2">
+        <form wire:submit="save" class="w-full flex flex-col gap-4">
             <div class="space-y-4">
                 <div class="w-full">
                     <label class="mb-2 heading">Title</label>
                     <x-required-sign />
                     <input type="text" name="title" wire:model="title"
-                        class="w-full rounded-lg border-gray-300 max-h-[36px] dark:bg-gray-800 dark:text-white">
+                        class="w-full rounded-lg border-gray-300 max-h-[36px] dark:bg-gray-800 dark:border-gray-500 dark:text-white">
                     @error('title')
                         <span class="text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
                     @enderror
@@ -43,7 +43,7 @@
                     <label class="mb-2 heading">Description</label>
                     <x-required-sign />
                     <textarea name="description" wire:model="description" id="" rows="4"
-                        class="w-full rounded-lg border-gray-300 dark:bg-gray-800 dark:text-white"></textarea>
+                        class="w-full rounded-lg border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-500"></textarea>
                     @error('description')
                         <span class="text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
                     @enderror

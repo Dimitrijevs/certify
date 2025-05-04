@@ -1,4 +1,4 @@
-<nav class="fixed w-full backdrop-blur-sm left-0 right-0 z-50 py-6" x-data="{
+<nav class="fixed w-full backdrop-blur-sm left-0 right-0 z-10 py-6" x-data="{
     open: false,
     isDark: false,
     changeTheme() {
