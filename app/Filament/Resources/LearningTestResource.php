@@ -382,13 +382,22 @@ class LearningTestResource extends Resource
                         ]),
                     Tab::make(__('learning/learningTestRequirements.label_plural'))
                         ->icon('tabler-exclamation-circle')
+                        ->visible(function () {
+                            if (Auth::user()->role_id < 3) {
+                                return true;
+                            }
+                            
+                            return Auth::user()->school_id;
+                        })
                         ->schema([
                             RelationManager::make()
                                 ->manager(RequirementsRelationManager::class)
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                ])->visible(function (string $operation) {
+                    return $operation == 'edit';
+                })
                     ->persistTabInQueryString(),
             ]);
     }

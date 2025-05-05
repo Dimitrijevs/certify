@@ -8,8 +8,8 @@
 
                         @if (!$this->view_test && $this->record->time_limit)
                             <p
-                                class="ml-2 px-2 py-1 text-black border border-gray-200 dark:border-gray-600 rounded-md flex items-center opacity-70">
-                                <x-tabler-clock class="text-gray-950 dark:text-gray-400 mr-1" />
+                                class="ml-2 px-2 py-1 text-gray-950 dark:text-white items-center border border-gray-200 dark:border-gray-600 rounded-md flex opacity-70">
+                                <x-tabler-clock class="mr-1" />
                                 <span id="time-left">{{ $this->getInitialTimeLeft() }}</span>
                             </p>
                         @endif
