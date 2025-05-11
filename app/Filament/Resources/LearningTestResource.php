@@ -386,7 +386,7 @@ class LearningTestResource extends Resource
                             if (Auth::user()->role_id < 3) {
                                 return true;
                             }
-                            
+
                             return Auth::user()->school_id;
                         })
                         ->schema([
@@ -472,11 +472,7 @@ class LearningTestResource extends Resource
                             return $query;
                         }
 
-                        return $query->where(function (Builder $query) {
-                            $query->whereHas('purchases', function (Builder $subQuery) {
-                                $subQuery->where('user_id', Auth::id());
-                            })->orWhere('created_by', Auth::id());
-                        });
+                        return $query->where('created_by', Auth::id());
                     })
                     ->indicateUsing(function (array $data): ?string {
                         if (empty($data) || $data['my_tests'] === null || $data['my_tests'] == false) {
@@ -484,6 +480,34 @@ class LearningTestResource extends Resource
                         }
 
                         return 'My Tests';
+                    }),
+                Filter::make('my_purchased_tests')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Toggle::make('my_purchased_tests')
+                            ->label('My Purchased Tests')
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
+                            ->inline(false)
+                            ->columnSpan(1),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_purchased_tests']) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('purchases', function (Builder $subQuery) {
+                            $subQuery->where('user_id', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_purchased_tests'] === null || $data['my_purchased_tests'] == false) {
+                            return null;
+                        }
+
+                        return 'My Purchased Tests';
                     }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningTest.fields.active'))
@@ -537,7 +561,7 @@ class LearningTestResource extends Resource
                     ->label(__('learning/learningTest.fields.currency'))
                     ->preload()
                     ->searchable()
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->options(function () {
                         return Currency::all()
                             ->mapWithKeys(function ($currency) {
