@@ -69,7 +69,7 @@
                 </x-welcome-page-list>
             </div>
 
-            @if (!$this->checkUserPurchase() && $this->getTotalPrice() > 0)
+            @if (!$this->checkUserPurchase() && $this->getTotalPrice() > 0 && !$record->created_by == Auth::id())
                 <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
                     @csrf
 
