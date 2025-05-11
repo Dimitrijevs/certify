@@ -19,6 +19,17 @@ class EditUser extends EditRecord
 
     public string $place = 'edit';
 
+    public function mount(int|string $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -50,7 +61,7 @@ class EditUser extends EditRecord
         return __('user.fields.edit_user');
     }
 
-    #[On('update-user-edit-page')] 
+    #[On('update-user-edit-page')]
     public function refresh()
     {
         // ...
