@@ -13,5 +13,5 @@
             when?</p>
     </div>
 
-    <img class="filter brightness-125" src="{{ asset('landingpage-images/action.png') }}" alt="">
+    <img class="mx-auto w-5/6 filter brightness-125" src="{{ asset('landingpage-images/action.png') }}" alt="">
 </div>

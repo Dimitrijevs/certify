@@ -4,12 +4,9 @@ namespace App\Providers;
 
 use Stripe\StripeClient;
 use Filament\Tables\Table;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\ServiceProvider;
-use App\Http\Responses\CustomLogoutResponse;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Http\Responses\Auth\LogoutResponse;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
