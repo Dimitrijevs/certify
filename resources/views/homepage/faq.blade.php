@@ -4,7 +4,8 @@
             <div class="lg:col-span-5">
                 <h2 class="text-4xl heading font-semibold">Frequently asked
                     questions</h2>
-                @livewire('user-support-form')
+                <p class="mt-2 paragraph">If you didn't find an answer to your question, you can reach out
+                    to us through the Customer Requests section. Our team is ready to help.</p>
             </div>
             <div class="mt-10 lg:col-span-7 lg:mt-0">
                 <dl class="space-y-10">
