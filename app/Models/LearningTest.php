@@ -93,7 +93,7 @@ class LearningTest extends Model
                 $test->price = 0;
             }
 
-            if ($test->price = 0 && $test->discount > 0) {
+            if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
             
@@ -103,9 +103,9 @@ class LearningTest extends Model
                 ->get();
 
             Notification::make()
-                ->title('New Learning Material Created')
+                ->title(__('learning/learningTest.new_learning_material_created'))
                 ->info()
-                ->body('A new learning material has been created: ' . $test->name)
+                ->body(__('learning/learningTest.a_new_learning_material_has_been_created') . ': ' . $test->name)
                 ->actions([
                     Action::make('view')
                         ->icon('tabler-eye')
@@ -122,10 +122,10 @@ class LearningTest extends Model
                 $test->price = 0;
             }
 
-            if ($test->price = 0 && $test->discount > 0) {
+            if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-            
+       
             $test->saveQuietly();
         });
     }

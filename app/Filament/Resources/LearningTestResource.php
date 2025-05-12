@@ -276,9 +276,9 @@ class LearningTestResource extends Resource
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->numeric()
                             ->minValue(0),
@@ -291,9 +291,9 @@ class LearningTestResource extends Resource
                             })
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->numeric()
                             ->minValue(0)
@@ -308,9 +308,9 @@ class LearningTestResource extends Resource
                             })
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->options(function () {
                                 return Currency::all()
@@ -324,6 +324,10 @@ class LearningTestResource extends Resource
                                 if ($discount > 0) {
                                     $price = $get('price');
                                     $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    if ($price == 0 || $price == null) {
+                                        return __('learning/learningTest.fields.free');
+                                    }
 
                                     return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
                                 }
@@ -342,9 +346,9 @@ class LearningTestResource extends Resource
                             ->searchable()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                         Select::make('categories')
                             ->label(__('learning/learningTest.fields.categories'))
@@ -426,9 +430,9 @@ class LearningTestResource extends Resource
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
-                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                                return $record->price . ' ' . $record->currency?->symbol . ' - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' ' . $record->currency?->symbol;
                             } else if ($record->price > 0 && $record->discount == 0) {
-                                return $record->price . ' €';
+                                return $record->price . ' ' . $record->currency?->symbol;
                             } else {
                                 return __('learning/learningTest.fields.free');
                             }
