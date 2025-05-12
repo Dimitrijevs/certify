@@ -75,4 +75,5 @@ return [
     'paid_to' => 'Paid, To',
     'new_learning_material_created' => 'New learning material created',
     'a_new_learning_material_has_been_created' => 'A new learning material has been created',
+    'view' => 'View',
 ];

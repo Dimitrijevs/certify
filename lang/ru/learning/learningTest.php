@@ -76,4 +76,5 @@ return [
     'paid_to' => 'Платно, до',
     'new_learning_material_created' => 'Создан новый учебный материал',
     'a_new_learning_material_has_been_created' => 'Создан новый учебный материал',
+    'view' => 'Просмотр',
 ];

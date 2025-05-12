@@ -96,7 +96,7 @@ class LearningTest extends Model
             if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-            
+
             $test->saveQuietly();
 
             $recipients = User::where('role_id', '<', 3)
@@ -108,6 +108,7 @@ class LearningTest extends Model
                 ->body(__('learning/learningTest.a_new_learning_material_has_been_created') . ': ' . $test->name)
                 ->actions([
                     Action::make('view')
+                        ->label(__('learning/learningTest.view'))
                         ->icon('tabler-eye')
                         ->url(function () use ($test) {
                             return '/app/learning-tests/' . $test->id . '/edit';
@@ -125,7 +126,7 @@ class LearningTest extends Model
             if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-       
+
             $test->saveQuietly();
         });
     }

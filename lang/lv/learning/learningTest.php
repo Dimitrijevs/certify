@@ -76,4 +76,5 @@ return [
     'paid_to' => 'Maksāts līdz',
     'new_learning_material_created' => 'Izveidots jauns mācību materiāls',
     'a_new_learning_material_has_been_created' => 'Ir izveidots jauns mācību materiāls',
+    'view' => 'Skatīt',
 ];
