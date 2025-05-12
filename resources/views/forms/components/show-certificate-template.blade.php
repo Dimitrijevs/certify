@@ -1,6 +1,6 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div x-data="{ state: $wire.$entangle('{{ $getStatePath() }}') }" x-data="{ state: $wire.$entangle('{{ $getStatePath() }}') }">
-        <div class="grid grid-cols-2 gap-4 h-[320px]">
+        <div class="grid grid-cols-2 gap-4 h-[260px]">
             <div @click="state = 1"
                 class="col-span-1 overflow-hidden flex items-center justify-center cursor-pointer hover:opacity-80 duration-150">
                 <img src="{{ asset('images/logos/bg-certificate.png') }}" alt="certificate layout 1"

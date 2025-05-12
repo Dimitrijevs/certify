@@ -105,7 +105,7 @@ class LearningTestResource extends Resource
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 8,
+                                'default' => 12,
                                 'sm' => 12,
                                 'md' => 12,
                                 'lg' => 6,
@@ -113,7 +113,7 @@ class LearningTestResource extends Resource
                         Toggle::make('is_active')
                             ->label(__('learning/learningTest.fields.active'))
                             ->columnSpan([
-                                'default' => 4,
+                                'default' => 6,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
@@ -125,7 +125,7 @@ class LearningTestResource extends Resource
                         Toggle::make('is_question_transition_enabled')
                             ->label(__('learning/learningTest.fields.free_navigation'))
                             ->columnSpan([
-                                'default' => 5,
+                                'default' => 6,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
@@ -136,7 +136,7 @@ class LearningTestResource extends Resource
                         Toggle::make('available_for_everyone')
                             ->label(__('learning/learningTest.fields.available_for_everyone'))
                             ->columnSpan([
-                                'default' => 7,
+                                'default' => 12,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
