@@ -35,4 +35,8 @@ return [
         'home' => 'Sākums',
         'overall_progress' => 'Kopējais progresss',
     ],
+    'my_courses' => 'Mani kursi',
+    'my_purchased_courses' => 'Mani iegādātie kursi',
+    'paid_from' => 'Maksas, no',
+    'paid_to' => 'Maksas, līdz',
 ];

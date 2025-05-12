@@ -69,4 +69,9 @@ return [
         'test' => 'Тест',
         'certificate' => 'Сертификат',
     ],
+    'my_tests' => 'Мои тесты',
+    'my_purchased_tests' => 'Мои купленные тесты',
+    'price' => 'Цена',
+    'paid_from' => 'Платно, от',
+    'paid_to' => 'Платно, до',
 ];

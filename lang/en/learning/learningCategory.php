@@ -35,4 +35,8 @@ return [
         'home' => 'Home',
         'overall_progress' => 'Overall progress',
     ],
+    'my_courses' => 'My courses',
+    'my_purchased_courses' => 'My purchased courses',
+    'paid_from' => 'Paid, from',
+    'paid_to' => 'Paid, to',
 ];

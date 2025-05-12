@@ -69,4 +69,9 @@ return [
         'test' => 'Tests',
         'certificate' => 'Sertifikāts',
     ],
+    'my_tests' => 'Mani testi',
+    'my_purchased_tests' => 'Mani iegādātie testi',
+    'price' => 'Cena',
+    'paid_from' => 'Maksāts no',
+    'paid_to' => 'Maksāts līdz',
 ];

@@ -68,4 +68,9 @@ return [
         'test' => 'Test',
         'certificate' => 'Certificate',
     ],
+    'my_tests' => 'My Tests',
+    'my_purchased_tests' => 'My Purchased Tests',
+    'price' => 'Price',
+    'paid_from' => 'Paid, From',
+    'paid_to' => 'Paid, To',
 ];

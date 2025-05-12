@@ -30,6 +30,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Forms\Components\ShowCertificateTemplate;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningTestResource\Pages\ViewCustomTest;
@@ -188,6 +189,7 @@ class LearningTestResource extends Resource
 
                                 return null;
                             })
+                            ->numeric()
                             ->default(0)
                             ->required()
                             ->suffixIcon('tabler-award'),
@@ -204,6 +206,31 @@ class LearningTestResource extends Resource
                             ->placeholder('30')
                             ->minValue(5)
                             ->numeric(),
+                        Select::make('category_id')
+                            ->label(__('learning/learningCategory.label_plural'))
+                            ->relationship('category', 'name', function (Builder $query) {
+                                return $query->where('is_active', true);
+                            })
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ]),
+                        TextInput::make('cooldown')
+                            ->label(__('learning/learningTest.fields.cooldown'))
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->suffixIcon('tabler-clock')
+                            ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
+                            ->rules(['integer', 'min:0']),
                         Group::make()
                             ->columnSpan([
                                 'default' => 12,
@@ -218,42 +245,25 @@ class LearningTestResource extends Resource
                                 'lg' => 12,
                             ])
                             ->schema([
-                                Select::make('category_id')
-                                    ->label(__('learning/learningCategory.label_plural'))
-                                    ->relationship('category', 'name', function (Builder $query) {
-                                        return $query->where('is_active', true);
-                                    })
-                                    ->multiple()
-                                    ->searchable()
-                                    ->preload()
+                                // Select::make('layout_id')
+                                //     ->label(__('learning/learningTest.fields.certificate_layout'))
+                                //     ->searchable()
+                                //     ->preload()
+                                //     ->relationship('layout', 'name')
+                                //     ->columnSpan([
+                                //         'default' => 12,
+                                //         'sm' => 12,
+                                //         'md' => 12,
+                                //         'lg' => 12,
+                                //     ]),
+                                ShowCertificateTemplate::make('layout_id')
+                                    ->label(__('learning/learningTest.fields.certificate_template'))
                                     ->columnSpan([
                                         'default' => 12,
                                         'sm' => 12,
                                         'md' => 12,
                                         'lg' => 12,
                                     ]),
-                                Select::make('layout_id')
-                                    ->label(__('learning/learningTest.fields.certificate_layout'))
-                                    ->searchable()
-                                    ->preload()
-                                    ->relationship('layout', 'name')
-                                    ->columnSpan([
-                                        'default' => 12,
-                                        'sm' => 12,
-                                        'md' => 12,
-                                        'lg' => 12,
-                                    ]),
-                                TextInput::make('cooldown')
-                                    ->label(__('learning/learningTest.fields.cooldown'))
-                                    ->columnSpan([
-                                        'default' => 12,
-                                        'sm' => 12,
-                                        'md' => 12,
-                                        'lg' => 12,
-                                    ])
-                                    ->suffixIcon('tabler-clock')
-                                    ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
-                                    ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningTest.fields.thumbnail'))
@@ -460,7 +470,7 @@ class LearningTestResource extends Resource
                     ->columnSpan(1)
                     ->form([
                         Toggle::make('my_tests')
-                            ->label('My Tests')
+                            ->label(__('learning/learningTest.my_tests'))
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false)
@@ -479,14 +489,14 @@ class LearningTestResource extends Resource
                             return null;
                         }
 
-                        return 'My Tests';
+                        return __('learning/learningTest.my_tests');
                     }),
                 Filter::make('my_purchased_tests')
                     ->columns(1)
                     ->columnSpan(1)
                     ->form([
                         Toggle::make('my_purchased_tests')
-                            ->label('My Purchased Tests')
+                            ->label(__('learning/learningTest.my_purchased_tests'))
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false)
@@ -507,7 +517,7 @@ class LearningTestResource extends Resource
                             return null;
                         }
 
-                        return 'My Purchased Tests';
+                        return __('learning/learningTest.my_purchased_tests');
                     }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningTest.fields.active'))
@@ -585,7 +595,7 @@ class LearningTestResource extends Resource
                                 }
                             })
                             ->columnSpan(2)
-                            ->label('Price')
+                            ->label(__('learning/learningTest.price'))
                             ->native(false),
                         TextInput::make('price_from')
                             ->label(__('learning/learningTest.fields.price_from'))
@@ -617,7 +627,7 @@ class LearningTestResource extends Resource
                             return __('learning/learningCategory.fields.free');
                         }
 
-                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                        return __('learning/learningTest.paid_from') . ': ' . $data['price_from'] . ' ' . __('learning/learningTest.paid_to') . ': ' . $data['price_to'];
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {

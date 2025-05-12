@@ -354,7 +354,7 @@ class LearningCategoryResource extends Resource
                     ->columnSpan(2)
                     ->form([
                         Toggle::make('my_courses')
-                            ->label('My Courses')
+                            ->label(__('learning/learningCategory.my_courses'))
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false)
@@ -373,14 +373,14 @@ class LearningCategoryResource extends Resource
                             return null;
                         }
 
-                        return 'My Courses';
+                        return __('learning/learningCategory.my_courses');
                     }),
                 Filter::make('my_purchased_courses')
                     ->columns(1)
                     ->columnSpan(2)
                     ->form([
                         Toggle::make('my_purchased_courses')
-                            ->label('My Purchased Courses')
+                            ->label(__('learning/learningCategory.my_purchased_courses'))
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->inline(false)
@@ -401,7 +401,7 @@ class LearningCategoryResource extends Resource
                             return null;
                         }
 
-                        return 'My Purchased Courses';
+                        return __('learning/learningCategory.my_purchased_courses');
                     }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningCategory.fields.active'))
@@ -457,7 +457,7 @@ class LearningCategoryResource extends Resource
                     ->label(__('learning/learningTest.fields.currency'))
                     ->preload()
                     ->searchable()
-                    ->columnSpan(2)
+                    ->columnSpan(4)
                     ->options(function () {
                         return Currency::all()
                             ->mapWithKeys(function ($currency) {
@@ -513,7 +513,7 @@ class LearningCategoryResource extends Resource
                             return __('learning/learningCategory.fields.free');
                         }
 
-                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                        return __('learning/learningCategory.paid_from') . ': ' . $data['price_from'] . ' ' . __('learning/learningCategory.paid_to') . ' : ' . $data['price_to'];
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {

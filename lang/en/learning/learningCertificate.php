@@ -35,5 +35,11 @@ return [
         'valid_until' => 'Valid until',
         'certificate_expired_at' => 'Certificate expired at',
         'no_requirements_found' => 'No requirements found',
-    ]
+    ],
+    'certificate_created' => 'Certificate created',
+    'congratulations_you_ve_earned_a_certificate_for_successfully_completing_the' => 'Congratulations! You\'ve earned a certificate for successfully completing the',
+    'test' => 'Test',
+    'this_certificate_recognizes_that' => 'This certificate recognizes that',
+    'has_successfully_completed_the' => 'has successfully completed the',
+    'description_end' => "assessment. This achievement demonstrates proficiency in the subject matter and commitment to professional development. The skills and knowledge validated by this certificate are valuable assets in today's competitive environment.",
 ];

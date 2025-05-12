@@ -35,4 +35,8 @@ return [
         'home' => 'Главная',
         'overall_progress' => 'Общий прогресс',
     ],
+    'my_courses' => 'Мои курсы',
+    'my_purchased_courses' => 'Мои купленные курсы',
+    'paid_from' => 'Платный, от',
+    'paid_to' => 'Платный, до',
 ];
