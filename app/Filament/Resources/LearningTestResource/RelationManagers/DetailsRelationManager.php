@@ -43,14 +43,16 @@ class DetailsRelationManager extends RelationManager
 
     public function getQuestionName($array)
     {
-        if (!is_null($array)) {
+        if ($array) {
             foreach ($array as $item) {
                 if ($item['is_correct'] == true) {
                     return $item['answer'];
                 }
             }
+
+            return __('learning/learningTestDetails.no_correct_answer');
         } else {
-            return 'N/A';
+            return __('learning/learningTestDetails.no_answers');
         }
     }
 
@@ -291,9 +293,9 @@ class DetailsRelationManager extends RelationManager
                     })
                     ->formatStateUsing(function ($state) {
                         if ($state == "text") {
-                            return 'Text';
+                            return __('learning/learningTestDetails.fields.text');
                         } else if ($state == "select_option") {
-                            return 'Option';
+                            return __('learning/learningTestDetails.fields.one_option');
                         }
                     })
                     ->sortable()

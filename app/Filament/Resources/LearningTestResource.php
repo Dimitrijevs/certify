@@ -245,19 +245,8 @@ class LearningTestResource extends Resource
                                 'lg' => 12,
                             ])
                             ->schema([
-                                // Select::make('layout_id')
-                                //     ->label(__('learning/learningTest.fields.certificate_layout'))
-                                //     ->searchable()
-                                //     ->preload()
-                                //     ->relationship('layout', 'name')
-                                //     ->columnSpan([
-                                //         'default' => 12,
-                                //         'sm' => 12,
-                                //         'md' => 12,
-                                //         'lg' => 12,
-                                //     ]),
                                 ShowCertificateTemplate::make('layout_id')
-                                    ->label(__('learning/learningTest.fields.certificate_template'))
+                                    ->label(__('learning/learningTest.fields.certificate_layout'))
                                     ->columnSpan([
                                         'default' => 12,
                                         'sm' => 12,

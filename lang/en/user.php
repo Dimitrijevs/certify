@@ -25,4 +25,8 @@ return [
     'tooltips' => [
         'password_hint' => 'Leave empty if reset not needed.',
     ],
+    'my_learning' => 'My Learning',
+    'requirements' => 'Requirements',
+    'visit_dashboard' => 'Visit Dashboard',
+    'add_bank_account' => 'Add Bank Account',
 ];

@@ -36,14 +36,14 @@ class EditUser extends EditRecord
             Action::make('add_bank_account')
                 ->label(function () {
                     if (Auth::user()->completed_stripe_onboarding) {
-                        return 'Bank Account Added';
+                        return __('user.visit_dashboard');
                     } else {
-                        return 'Add Bank Account';
+                        return __('user.add_bank_account');
                     }
                 })
                 ->color(function () {
                     if (Auth::user()->completed_stripe_onboarding) {
-                        return 'success';
+                        return 'primary';
                     } else {
                         return 'warning';
                     }

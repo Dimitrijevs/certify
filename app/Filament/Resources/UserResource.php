@@ -192,7 +192,7 @@ class UserResource extends Resource
 
                     Tabs::make('Tabs')
                         ->tabs([
-                            Tab::make('Requirements')
+                            Tab::make(__('user.requirements'))
                                 ->icon('tabler-file-check')
                                 ->visible(function ($operation) {
                                     return Auth::user()->group_id && $operation == 'edit';
@@ -203,13 +203,9 @@ class UserResource extends Resource
                                         ->dehydrated(false)
                                         ->columnSpanFull()
                                 ]),
-                            Tab::make('My Learning')
+                            Tab::make(__('user.my_learning'))
                                 ->icon('tabler-book')
                                 ->schema([
-                                    // ShowMyLearning::make('my_learning')
-                                    //     ->label(label: '')
-                                    //     ->dehydrated(false)
-                                    //     ->columnSpanFull(),
                                     Livewire::make(ShowMyLearningList::class)
                                         ->label(label: '')
                                         ->dehydrated(false)

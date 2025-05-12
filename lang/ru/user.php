@@ -25,4 +25,8 @@ return [
     'tooltips' => [
         'password_hint' => 'Оставьте пустым, если сброс не требуется.',
     ],
+    'my_learning' => 'Мое обучение',
+    'requirements' => 'Требования',
+    'visit_dashboard' => 'Посетить панель управления',
+    'add_bank_account' => 'Добавить банковский счет',
 ];
