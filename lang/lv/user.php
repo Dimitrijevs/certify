@@ -28,4 +28,5 @@ return [
     'requirements' => 'Prasības',
     'visit_dashboard' => 'Apmeklēt informācijas paneli',
     'add_bank_account' => 'Pievienot bankas kontu',
+    'no_courses_found' => 'Nav atrasti kursi',
 ];

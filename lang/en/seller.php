@@ -19,4 +19,5 @@ return [
     'please_create_a_stripe_account_to_receive_payments' => 'Please create a Stripe account to receive payments',
     'your_purchase_was_successful' => 'Your purchase was successful',
     'now_you_can_access_the_course' => 'Now you can access the course',
+    'now_you_can_access_the_test' => 'Now you can access the test',
 ];

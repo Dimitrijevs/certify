@@ -29,4 +29,5 @@ return [
     'requirements' => 'Требования',
     'visit_dashboard' => 'Посетить панель управления',
     'add_bank_account' => 'Добавить банковский счет',
+    'no_courses_found' => 'Курсы не найдены',
 ];

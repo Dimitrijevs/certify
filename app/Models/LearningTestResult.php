@@ -22,6 +22,10 @@ class LearningTestResult extends Model
         'is_passed',
     ];
 
+    protected $casts = [
+        'finished_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

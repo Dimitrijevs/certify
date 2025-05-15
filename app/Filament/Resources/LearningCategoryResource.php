@@ -321,23 +321,27 @@ class LearningCategoryResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    $query
-                        ->where(function ($q) {
+                    return $query->where(function ($mainQuery) {
+
+                        $mainQuery->where(function ($q) {
                             $q->where('is_active', true)
                                 ->where('is_public', true)
                                 ->where(function ($subQuery) {
                                     $subQuery->where('available_for_everyone', true);
 
                                     if (Auth::user()->school_id) {
-                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        $subQuery->orWhere(function ($schoolQuery) {
+                                            $schoolQuery->where('is_public', true)
+                                                ->whereHas('createdBy', function ($userQuery) {
+                                                    $userQuery->where('school_id', Auth::user()->school_id);
+                                                });
                                         });
                                     }
                                 });
                         })
-                        ->orWhere('created_by', Auth::id());
-
-                    return $query;
+                            // user owns tests
+                            ->orWhere('created_by', Auth::id());
+                    });
                 }
 
                 return $query;
@@ -353,12 +357,13 @@ class LearningCategoryResource extends Resource
                     ->columns(1)
                     ->columnSpan(2)
                     ->form([
-                        Toggle::make('my_courses')
+                        Select::make('my_courses')
                             ->label(__('learning/learningCategory.my_courses'))
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false)
-                            ->columnSpan(1),
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
 
@@ -379,12 +384,13 @@ class LearningCategoryResource extends Resource
                     ->columns(1)
                     ->columnSpan(2)
                     ->form([
-                        Toggle::make('my_purchased_courses')
+                        Select::make('my_purchased_courses')
                             ->label(__('learning/learningCategory.my_purchased_courses'))
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false)
-                            ->columnSpan(1),
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
 

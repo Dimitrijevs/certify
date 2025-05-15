@@ -77,4 +77,8 @@ return [
     'new_learning_material_created' => 'Создан новый учебный материал',
     'a_new_learning_material_has_been_created' => 'Создан новый учебный материал',
     'view' => 'Просмотр',
+    'verify' => 'Подтвердить',
+    'unverify' => 'Отменить подтверждение',
+    'test_verified' => 'Тест подтвержден',
+    'test_unverified' => 'Тест отменен подтверждение',
 ];

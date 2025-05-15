@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $cacheKey = 'stats.widget.' . Auth::id();
+        $cacheKey = 'stats_widget_' . Auth::id() . '_' . app()->getLocale();
 
         $statsData = Cache::remember($cacheKey, 60 * 30, function () {
             if (Auth::user()->role_id < 3) {
@@ -54,16 +54,16 @@ class StatsOverview extends BaseWidget
                 $minutes = floor($timeInSeconds / 60);
                 $seconds = $timeInSeconds % 60;
                 $stat1 = sprintf('%d:%02d', $minutes, $seconds);
-                $stat1Label = 'Total Time Spent';
-                $stat1Description = 'Your total time spent on learning';
+                $stat1Label = __('other.total_time_spent');
+                $stat1Description = __('other.your_total_time_spent_on_learning');
 
                 $stat2 = UserPurchase::where('user_id', Auth::user()->id)->count();
-                $stat2Label = 'Your Purchases';
-                $stat2Description = 'Total number of purchases you made';
+                $stat2Label = __('other.your_purchases');
+                $stat2Description = __('other.total_number_of_purchases_you_made');
 
                 $stat3 = LearningCertificate::where('user_id', Auth::user()->id)->count();
-                $stat3Label = 'Your Certificates';
-                $stat3Description = 'Total number of certificates you received';
+                $stat3Label = __('other.your_certificates');
+                $stat3Description = __('other.total_number_of_certificates_you_received');
             }
 
             return [

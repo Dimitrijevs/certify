@@ -1,7 +1,7 @@
-<div class="flex flex-col max-h-[700px] overflow-y-auto h-full">
+<div class="flex flex-col max-h-[700px] h-full space-y-4">
     @if ($courses->count() > 0)
         @foreach ($courses as $course)
-            <div class="grid grid-cols-12 border-b border-gray-200 dark:border-gray-700 py-2">
+            <div class="grid grid-cols-12 {{ !$loop->last ? 'border-b border-gray-200 dark:border-gray-700' : '' }}">
                 <div class="col-span-4 md:col-span-4">
                     <a href="{{ route('filament.app.resources.learning-categories.course-welcome-page', ['record' => $course->id]) }}"
                         class="group">
@@ -56,12 +56,12 @@
     @else
         <div class="flex items-center justify-center h-full">
             <p class="text-gray-500 dark:text-gray-400">
-                No courses found
+                {{ __('user.no_courses_found') }}
             </p>
         </div>
     @endif
 
-    <div class="mt-4 py-2">
+    @if ($courses->hasPages())
         <x-filament::pagination :paginator="$courses" />
-    </div>
+    @endif
 </div>

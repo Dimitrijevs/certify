@@ -39,4 +39,8 @@ return [
     'my_purchased_courses' => 'Mani iegādātie kursi',
     'paid_from' => 'Maksas, no',
     'paid_to' => 'Maksas, līdz',
+    'verify' => 'Apstiprināt',
+    'unverify' => 'Atcelt apstiprinājumu',
+    'course_verified' => 'Kurss apstiprināts',
+    'course_unverified' => 'Kurss atcelts apstiprinājums',
 ];

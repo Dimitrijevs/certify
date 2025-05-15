@@ -41,6 +41,13 @@ class EditUser extends EditRecord
                         return __('user.add_bank_account');
                     }
                 })
+                ->icon(function () {
+                    if (Auth::user()->completed_stripe_onboarding) {
+                        return 'tabler-check';
+                    } else {
+                        return 'tabler-plus';
+                    }
+                })
                 ->color(function () {
                     if (Auth::user()->completed_stripe_onboarding) {
                         return 'primary';

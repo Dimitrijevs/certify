@@ -77,4 +77,8 @@ return [
     'new_learning_material_created' => 'Izveidots jauns mācību materiāls',
     'a_new_learning_material_has_been_created' => 'Ir izveidots jauns mācību materiāls',
     'view' => 'Skatīt',
+    'verify' => 'Apstiprināt',
+    'unverify' => 'Atcelt apstiprinājumu',
+    'test_verified' => 'Tests apstiprināts',
+    'test_unverified' => 'Tests atcelts apstiprinājums',
 ];

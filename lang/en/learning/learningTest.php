@@ -76,4 +76,8 @@ return [
     'new_learning_material_created' => 'New learning material created',
     'a_new_learning_material_has_been_created' => 'A new learning material has been created',
     'view' => 'View',
+    'verify' => 'Verify',
+    'unverify' => 'Unverify',
+    'test_verified' => 'Test verified',
+    'test_unverified' => 'Test unverified',
 ];

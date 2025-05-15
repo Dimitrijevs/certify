@@ -24,4 +24,12 @@ return [
     'total_price' => 'Общая цена',
     'pay_now' => 'Оплатить сейчас',
     'enroll_now_for_free' => 'Записаться сейчас бесплатно',
+    'yes' => 'Да',
+    'no' => 'Нет',
+    'total_time_spent' => 'Общее время затрачено',
+    'your_total_time_spent_on_learning' => 'Ваше общее время, затраченное на обучение',
+    'your_purchases' => 'Ваши покупки',
+    'total_number_of_purchases_you_made' => 'Общее количество покупок, которые вы сделали',
+    'your_certificates' => 'Ваши сертификаты',
+    'total_number_of_certificates_you_received' => 'Общее количество сертификатов, которые вы получили',
 ];

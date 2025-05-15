@@ -29,4 +29,5 @@ return [
     'requirements' => 'Requirements',
     'visit_dashboard' => 'Visit Dashboard',
     'add_bank_account' => 'Add Bank Account',
+    'no_courses_found' => 'No courses found',
 ];

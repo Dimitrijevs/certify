@@ -1,6 +1,6 @@
 <?php
 
-$latvian = [
+return [
     'seller_not_found' => 'Pārdevējs nav atrasts',
     'seller_was_not_found' => 'Pārdevējs netika atrasts',
     'stripe_onboarding_failed' => 'Stripe reģistrācija neizdevās',
@@ -19,4 +19,5 @@ $latvian = [
     'please_create_a_stripe_account_to_receive_payments' => 'Lūdzu, izveidojiet Stripe kontu, lai saņemtu maksājumus',
     'your_purchase_was_successful' => 'Jūsu pirkums bija veiksmīgs',
     'now_you_can_access_the_course' => 'Tagad jūs varat piekļūt kursam',
+    'now_you_can_access_the_test' => 'Tagad jūs varat piekļūt testam',
 ];

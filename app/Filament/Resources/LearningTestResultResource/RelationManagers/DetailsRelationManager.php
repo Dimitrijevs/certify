@@ -39,7 +39,7 @@ class DetailsRelationManager extends RelationManager
             ])
             ->schema([
                 TextInput::make('user_answer')
-                    ->label('User answer')
+                    ->label(__('learning/learningTestResult.user_answer'))
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 6,
@@ -48,7 +48,7 @@ class DetailsRelationManager extends RelationManager
                     ])
                     ->required(),
                 TextInput::make('points')
-                    ->label('Points')
+                    ->label(__('learning/learningTestResult.points'))
                     ->required()
                     ->live()
                     ->rules(function (?Model $record) {
@@ -74,7 +74,7 @@ class DetailsRelationManager extends RelationManager
 
                         $pointsMax = $record->question->points;
 
-                        return "Recieved points: {$pointsRecieved} / {$pointsMax}";
+                        return __('learning/learningTestResult.recieved_points') . ": {$pointsRecieved} / {$pointsMax}";
                     })
                     ->suffixIcon('tabler-award'),
             ]);
@@ -85,25 +85,27 @@ class DetailsRelationManager extends RelationManager
         return $table
             ->columns([
                 TextColumn::make('question.question_title')
-                    ->label('Question')
+                    ->label(__('learning/learningTestResult.question'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('user_answer')
+                    ->label(__('learning/learningTestResult.user_answer'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('points')
+                    ->label(__('learning/learningTestResult.points'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('question.points')
-                    ->label('Max points')
+                    ->label(__('learning/learningTestResult.max_points'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 ToHumanTime::make('question_time')
-                    ->label('Time')
+                    ->label(__('learning/learningTestResult.time'))
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -112,7 +114,7 @@ class DetailsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // 
             ])
             ->actions([
                 ActionGroup::make([
@@ -124,6 +126,7 @@ class DetailsRelationManager extends RelationManager
                     ->button()
                     ->extraAttributes(['style' => 'padding-right: 0.15rem !important; padding-left: 0.425rem !important;']),
                 EditAction::make()
+                    ->modalHeading(__('learning/learningTestResult.edit_user_answer'))
                     ->label('')
                     ->tooltip(__('learning/learningTestDetails.table.edit_test'))
                     ->color('gray')

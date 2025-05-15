@@ -71,7 +71,7 @@ class LearningTestResultResource extends Resource
                 'lg' => 12,
             ])
             ->schema([
-                Section::make('Completed test result')
+                Section::make(__('learning/learningTestResult.general_information_about_the_completed_test'))
                     ->columnSpan([
                         'default' => 12,
                         'sm' => 12,
@@ -86,7 +86,7 @@ class LearningTestResultResource extends Resource
                     ])
                     ->schema([
                         Select::make('user_id')
-                            ->label('User')
+                            ->label(__('learning/learningTestResult.user'))
                             ->searchable()
                             ->relationship('user', 'name')
                             ->options(User::all()->pluck('name', 'id'))
@@ -97,7 +97,7 @@ class LearningTestResultResource extends Resource
                                 'lg' => 10,
                             ]),
                         Toggle::make('is_passed')
-                            ->label('Passed')
+                            ->label(__('learning/learningTestResult.passed'))
                             ->onIcon('tabler-check')
                             ->offIcon('tabler-x')
                             ->columnSpan([
@@ -108,7 +108,7 @@ class LearningTestResultResource extends Resource
                             ])
                             ->inline(false),
                         Select::make('test_id')
-                            ->label('Test')
+                            ->label(__('learning/learningTestResult.test'))
                             ->searchable()
                             ->relationship('test', 'name')
                             ->options(LearningTest::all()->pluck('name', 'id'))
@@ -119,7 +119,7 @@ class LearningTestResultResource extends Resource
                                 'lg' => 6,
                             ]),
                         TextInput::make('points')
-                            ->label('User score')
+                            ->label(__('learning/learningTestResult.user_score'))
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
@@ -132,7 +132,7 @@ class LearningTestResultResource extends Resource
                                 $minScore = $record->test->min_score;
 
                                 if ($maxPoints) {
-                                    return "Points to pass: $minScore / $maxPoints";
+                                    return __('learning/learningTestResult.points_to_pass') . ": $minScore / $maxPoints";
                                 }
 
                                 return null;
@@ -151,7 +151,7 @@ class LearningTestResultResource extends Resource
         return $table
             ->columns([
                 AvatarWithDetails::make('user.name')
-                    ->label(__('employee.fields.name'))
+                    ->label(__('learning/learningTestResult.user'))
                     ->title(function ($record) {
                         return $record->user->name;
                     })
@@ -167,7 +167,7 @@ class LearningTestResultResource extends Resource
                     ->searchable()
                     ->sortable(),
                 AvatarWithDetails::make('test.name')
-                    ->label('Test')
+                    ->label(__('learning/learningTestResult.test'))
                     ->title(function (Model $record) {
                         return $record->test->name;
                     })
@@ -184,7 +184,12 @@ class LearningTestResultResource extends Resource
                     ->label(__('learning/learningTestResult.custom.finished_at'))
                     ->searchable()
                     ->sortable()
-                    ->default('In progress')
+                    ->formatStateUsing(function (?Model $record) {
+                        return $record->finished_at ? $record->finished_at->format('Y-m-d H:i') : null;
+                    })
+                    ->icon('tabler-clock')
+                    ->iconPosition('after')
+                    ->default(__('learning/learningTestResult.in_progress'))
                     ->toggleable(isToggledHiddenByDefault: false),
                 ToHumanTime::make('total_time')
                     ->label(__('learning/learningTestResult.custom.total_time'))

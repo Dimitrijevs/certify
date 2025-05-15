@@ -24,4 +24,12 @@ return [
     'total_price' => 'Kopējā cena',
     'pay_now' => 'Maksāt tagad',    
     'enroll_now_for_free' => 'Pieteikties tagad bez maksas',
+    'yes' => 'Jā',
+    'no' => 'Nē',
+    'total_time_spent' => 'Kopējais pavadītais laiks',
+    'your_total_time_spent_on_learning' => 'Jūsu kopējais pavadītais laiks mācībām',
+    'your_purchases' => 'Jūsu pirkumi',
+    'total_number_of_purchases_you_made' => 'Kopējais pirkumu skaits, ko veicāt',
+    'your_certificates' => 'Jūsu sertifikāti',
+    'total_number_of_certificates_you_received' => 'Kopējais sertifikātu skaits, ko saņēmāt',
 ];

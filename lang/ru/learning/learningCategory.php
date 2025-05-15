@@ -39,4 +39,8 @@ return [
     'my_purchased_courses' => 'Мои купленные курсы',
     'paid_from' => 'Платный, от',
     'paid_to' => 'Платный, до',
+    'verify' => 'Подтвердить',
+    'unverify' => 'Отменить подтверждение',
+    'course_verified' => 'Курс подтвержден',
+    'course_unverified' => 'Курс отменен подтверждение',
 ];

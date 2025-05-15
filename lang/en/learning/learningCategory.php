@@ -39,4 +39,8 @@ return [
     'my_purchased_courses' => 'My purchased courses',
     'paid_from' => 'Paid, from',
     'paid_to' => 'Paid, to',
+    'verify' => 'Verify',
+    'unverify' => 'Unverify',
+    'course_verified' => 'Course verified',
+    'course_unverified' => 'Course unverified',
 ];
