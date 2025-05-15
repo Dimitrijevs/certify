@@ -50,4 +50,6 @@ return [
     'view_test_result' => 'Skatīt testa rezultātu',
     'edit_user_answer' => 'Rediģēt lietotāja atbildi',
     'in_progress' => 'Procesā',
+    'you_do_not_have_access_to_this_test' => 'Jums nav piekļuves šim testam',
+    'you_need_to_purchase_this_test' => 'Lai piekļūtu šim testam, jums tas ir jānopērk',
 ];

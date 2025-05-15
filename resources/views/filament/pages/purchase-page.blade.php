@@ -2,7 +2,7 @@
     <div class="container mx-auto max-w-5xl px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="col-span-1 flex items-center justify-center">
-                <img src="{{ asset('other/duffy-duck.jpeg') }}" alt="" class="max-w-full rounded-lg shadow">
+                <img src="{{ asset('other/piggy-bank.jpg') }}" alt="" class="max-w-full rounded-lg shadow">
             </div>
 
             <div class="col-span-1 flex items-center">

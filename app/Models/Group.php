@@ -25,6 +25,12 @@ class Group extends Model
         return $this->hasMany(User::class, 'group_id');
     }
 
+    public function instructors()
+    {
+        return $this->hasMany(User::class, 'group_id')
+            ->where('role_id', 3);
+    }
+
     public function certification_requirement()
     {
         return $this->hasMany(LearningCertificationRequirement::class, 'entity_id')

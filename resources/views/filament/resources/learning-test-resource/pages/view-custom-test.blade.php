@@ -175,7 +175,7 @@
                 </div>
 
                 <div class="text-center">
-                    @if ($this->checkUserPurchase())
+                    @if ($this->checkUserPurchase() || Auth::id() == $record->created_by)
                         <x-filament::modal id="start-test">
                             <x-slot name="trigger">
                                 <x-cyan-button>

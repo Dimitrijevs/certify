@@ -50,4 +50,6 @@ return [
     'view_test_result' => 'Просмотреть результат теста',
     'edit_user_answer' => 'Редактировать ответ пользователя',
     'in_progress' => 'В процессе',
+    'you_do_not_have_access_to_this_test' => 'У вас нет доступа к этому тесту',
+    'you_need_to_purchase_this_test' => 'Вам нужно купить этот тест, чтобы получить к нему доступ',
 ];

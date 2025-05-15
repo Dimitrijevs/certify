@@ -69,7 +69,14 @@
                 </x-welcome-page-list>
             </div>
 
-            @if (!$this->checkUserPurchase() && $this->getTotalPrice() > 0 && !$record->created_by == Auth::id())
+            @if ($this->getFirstResourceId() && ($this->checkUserPurchase() || Auth::id() == $record->created_by))
+                <a
+                    href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $this->getFirstResourceId()]) }}">
+                    <x-cyan-button>
+                        {{ __('welcome-course.continue_learning') }}
+                    </x-cyan-button>
+                </a>
+            @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() > 0)
                 <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
                     @csrf
 
@@ -99,13 +106,10 @@
                         {{ __('welcome-course.enroll_now_for_free') }}
                     </x-cyan-button>
                 </form>
-            @elseif ($this->getFirstResourceId())
-                <a
-                    href="{{ route('filament.app.resources.learning-categories.resource', ['record' => $this->getFirstResourceId()]) }}">
-                    <x-cyan-button>
-                        {{ __('welcome-course.continue_learning') }}
-                    </x-cyan-button>
-                </a>
+            @else
+                <x-cyan-button disabled>
+                    {{ __('welcome-course.something_went_wrong') }}
+                </x-cyan-button>
             @endif
         </x-filament::section>
 

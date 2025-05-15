@@ -14,4 +14,5 @@ return [
     'continue_learning' => 'Continue Learning',
     'course_description' => 'Course Description',
     'language' => 'Language',
+    'something_went_wrong' => 'Something went wrong',
 ];

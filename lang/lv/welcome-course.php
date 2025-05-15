@@ -14,4 +14,5 @@ return [
     'continue_learning' => 'Turpināt mācīties',
     'course_description' => 'Kursa apraksts',
     'language' => 'Valoda',
+    'something_went_wrong' => 'Kaut kas nogāja greizi',
 ];
