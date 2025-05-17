@@ -178,7 +178,7 @@ class LearningTestResultResource extends Resource
                     })
                     ->avatarType('image')
                     ->link(function (Model $record) {
-                        return "/learning-tests/$record->test_id/view";
+                        return "/app/learning-tests/$record->test_id/view";
                     })
                     ->searchable()
                     ->sortable(),

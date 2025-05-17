@@ -63,4 +63,32 @@ class School extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    // boot
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($school) {
+            $user = User::find($school->created_by);
+
+            if ($user) {
+                $user->role_id = 3;
+                $user->school_id = $school->id;
+                $user->group_id = null;
+                $user->save();
+            }
+        });
+
+        static::deleted(function ($school) {
+            $user = User::find($school->created_by);
+            
+            if ($user) {
+                $user->role_id = 4;
+                $user->school_id = null;
+                $user->group_id = null;
+                $user->save();
+            }
+        });
+    }
 }

@@ -21,7 +21,6 @@ use Filament\Forms\Components\Livewire;
 use Filament\Forms\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
-use App\Forms\Components\ShowMyLearning;
 use Filament\Forms\Components\TextInput;
 use App\Tables\Columns\AvatarWithDetails;
 use Filament\Forms\Components\FileUpload;
@@ -50,12 +49,12 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->role_id < 4;
+        return Auth::user()->role_id < 3;
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id < 4;
+        return Auth::user()->role_id < 3;
     }
 
     public static function canEdit(Model $record): bool

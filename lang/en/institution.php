@@ -20,4 +20,8 @@ return [
     'no_group' => 'No Group',
     'student' => 'Student',
     'workers' => 'Workers',
+    'role' => 'Role',
+    'instructor' => 'Instructor',
+    'worker' => 'Worker',
+    'worker_invite_resent' => 'Worker invite resent',
 ];

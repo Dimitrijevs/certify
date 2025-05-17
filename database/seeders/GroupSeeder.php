@@ -34,6 +34,16 @@ class GroupSeeder extends Seeder
             'Projektu vadības birojs' => 'Projektu plānošanas un īstenošanas koordinācijas grupa.',
             'Saimniecības nodaļa' => 'Biroja un infrastruktūras uzturēšanas un apsaimniekošanas komanda.',
             'Sabiedrisko attiecību vienība' => 'Uzņēmuma tēla veidošanas un komunikācijas speciālisti.',
+            'Vides pārvaldības grupa' => 'Vides aizsardzības prasību ievērošanas un ilgtspējīgas attīstības veicināšanas speciālisti.',
+            'Apmācību un attīstības nodaļa' => 'Darbinieku prasmju pilnveidošanas un profesionālās izaugsmes programmu īstenošanas komanda.',
+            'Produktu dizaina vienība' => 'Produktu vizuālā un funkcionālā dizaina izstrādes un pilnveidošanas speciālisti.',
+            'Satura veidošanas grupa' => 'Mārketinga un komunikācijas materiālu izstrādes un radošā satura veidošanas profesionāļi.',
+            'Datu analīzes komanda' => 'Biznesa datu apkopošanas, analīzes un lēmumu pieņemšanas atbalsta speciālisti.',
+            'Korporatīvās sociālās atbildības nodaļa' => 'Sociālo projektu un sabiedrības atbalsta iniciatīvu īstenošanas komanda.',
+            'Riska pārvaldības vienība' => 'Biznesa risku identificēšanas, novērtēšanas un mazināšanas stratēģiju izstrādes eksperti.',
+            'Veselības un labklājības komanda' => 'Darbinieku labsajūtas un veselīgas darba vides nodrošināšanas speciālisti.',
+            'Piegādes ķēdes pārvaldības grupa' => 'Materiālu un produktu iepirkumu un plūsmas optimizācijas eksperti.',
+            'Biroja administrācijas nodaļa' => 'Ikdienas administratīvo funkciju nodrošināšanas un biroja darba koordinācijas komanda.',
         ];
 
         $groups = [];
@@ -49,9 +59,11 @@ class GroupSeeder extends Seeder
                     continue;
                 }
 
+                $usedTeams[] = $team;
+
                 $teamName = $team;
                 $teamDescription = $teamTypes[$team];
-    
+
                 $groups[] = [
                     'name' => $teamName,
                     'description' => $teamDescription,

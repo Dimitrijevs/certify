@@ -28,7 +28,7 @@ class StudentsRelationManager extends RelationManager
     #[On('update-students-relation-manager')]
     public function refresh()
     {
-        // Refresh logic here
+        // 
     }
 
     public static function getTitle(EloquentModel $ownerRecord, string $pageClass): string
@@ -38,7 +38,7 @@ class StudentsRelationManager extends RelationManager
 
     public function canEdit(Model $record): bool
     {
-        return Auth::user()->role_id < 3;
+        return Auth::user()->role_id < 4;
     }
 
     public function form(Form $form): Form
@@ -87,9 +87,9 @@ class StudentsRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('role_id')
-                    ->label('Teacher')
+                    ->label(__('institution.role'))
                     ->formatStateUsing(function ($state) {
-                        return $state === 3 ? 'Teacher' : 'Student';
+                        return $state === 3 ? __('institution.instructor') : __('institution.worker');
                     }),
             ])
             ->filters([
@@ -100,6 +100,14 @@ class StudentsRelationManager extends RelationManager
                     ->options(function () {
                         return Group::where('school_id', $this->getOwnerRecord()->id)->pluck('name', 'id');
                     }),
+                SelectFilter::make('role_id')
+                    ->label(__('institution.role'))
+                    ->preload()
+                    ->searchable()
+                    ->options([
+                        3 => __('institution.instructor'),
+                        4 => __('institution.worker'),
+                    ]),
             ])
             ->headerActions([
                 Tables\Actions\Action::make('add_user')
@@ -147,7 +155,7 @@ class StudentsRelationManager extends RelationManager
                                         ->required()
                                         ->searchable(),
                                     Toggle::make('is_teacher')
-                                        ->label('Teacher')
+                                        ->label(__('institution.instructor'))
                                         ->inline(false)
                                         ->columnSpan([
                                             'default' => 4,
@@ -265,7 +273,7 @@ class StudentsRelationManager extends RelationManager
                                             ->required()
                                             ->searchable(),
                                         Toggle::make('is_teacher')
-                                            ->label('Teacher')
+                                            ->label(__('institution.instructor'))
                                             ->inline(false)
                                             ->columnSpan([
                                                 'default' => 4,
@@ -328,7 +336,7 @@ class StudentsRelationManager extends RelationManager
                                 ->sendToDatabase($recipient);
 
                             Notification::make()
-                                ->title('Worker Invite Resent')
+                                ->title(__('institution.worker_invite_resent'))
                                 ->success()
                                 ->send();
                         }
