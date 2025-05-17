@@ -81,4 +81,5 @@ return [
     'unverify' => 'Atcelt apstiprinājumu',
     'test_verified' => 'Tests apstiprināts',
     'test_unverified' => 'Tests atcelts apstiprinājums',
+    'created_by' => 'Izveidojis',
 ];

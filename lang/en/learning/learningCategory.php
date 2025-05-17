@@ -43,4 +43,5 @@ return [
     'unverify' => 'Unverify',
     'course_verified' => 'Course verified',
     'course_unverified' => 'Course unverified',
+    'created_by' => 'Created by',
 ];

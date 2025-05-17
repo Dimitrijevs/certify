@@ -463,11 +463,22 @@ class LearningCategoryResource extends Resource
                     ->label(__('learning/learningTest.fields.currency'))
                     ->preload()
                     ->searchable()
-                    ->columnSpan(4)
+                    ->columnSpan(2)
                     ->options(function () {
                         return Currency::all()
                             ->mapWithKeys(function ($currency) {
                                 return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
+                            });
+                    }),
+                SelectFilter::make('created_by')
+                    ->label(__('learning/learningCategory.created_by'))
+                    ->columnSpan(2)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return LearningCategory::all()
+                            ->mapWithKeys(function ($category) {
+                                return [$category->createdBy->id => $category->createdBy->name];
                             });
                     }),
                 Filter::make('is_free')

@@ -153,12 +153,14 @@ class SellerController extends Controller
                 return $this->redirectAndNotify(__('seller.creator_does_not_have_stripe_account_yet'), __('seller.we_are_notifying_the_creator_to_complete_their_stripe_onboarding_process'));
             }
 
+            $finalPrice = (int) ($price * 100);
+
             $currency_id = $product->currency_id ?? 38;
             $currency = Currency::find($currency_id);
 
             try {
                 $this->stripeClient->paymentIntents->create([
-                    'amount' => $product->price * 100,
+                    'amount' => $finalPrice,
                     'currency' => strtolower($currency->code),
                     'payment_method_data' => [
                         'type' => 'card',
@@ -172,7 +174,7 @@ class SellerController extends Controller
                     ],
                     'transfer_data' => [
                         'destination' => $seller->stripe_connect_id,
-                        'amount' => (int) $price * 100
+                        'amount' => $finalPrice,
                     ],
                     'confirm' => true,
                     'description' => $description,

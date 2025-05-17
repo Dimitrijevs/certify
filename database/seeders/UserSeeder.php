@@ -136,11 +136,5 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info("\n");
-
-        // stripe account
-        $superAdmin = User::find(1);
-        $superAdmin->stripe_connect_id = 'acct_1RKRS0AcD63pWHcd';
-        $superAdmin->completed_stripe_onboarding = 1;
-        $superAdmin->saveQuietly();
     }
 }

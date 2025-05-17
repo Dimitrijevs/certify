@@ -43,4 +43,5 @@ return [
     'unverify' => 'Отменить подтверждение',
     'course_verified' => 'Курс подтвержден',
     'course_unverified' => 'Курс отменен подтверждение',
+    'created_by' => 'Создано',
 ];

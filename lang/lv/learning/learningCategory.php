@@ -43,4 +43,5 @@ return [
     'unverify' => 'Atcelt apstiprinājumu',
     'course_verified' => 'Kurss apstiprināts',
     'course_unverified' => 'Kurss atcelts apstiprinājums',
+    'created_by' => 'Izveidojis',
 ];
