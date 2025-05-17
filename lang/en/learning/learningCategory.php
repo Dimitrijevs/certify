@@ -44,4 +44,5 @@ return [
     'course_verified' => 'Course verified',
     'course_unverified' => 'Course unverified',
     'created_by' => 'Created by',
+    'you_are_not_autorized_to_edit_this_course' => 'You are not authorized to edit this course',
 ];

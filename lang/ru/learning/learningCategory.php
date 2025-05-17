@@ -44,4 +44,5 @@ return [
     'course_verified' => 'Курс подтвержден',
     'course_unverified' => 'Курс отменен подтверждение',
     'created_by' => 'Создано',
+    'you_are_not_autorized_to_edit_this_course' => 'У вас нет прав для редактирования этого курса',
 ];

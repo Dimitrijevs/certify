@@ -44,4 +44,5 @@ return [
     'course_verified' => 'Kurss apstiprināts',
     'course_unverified' => 'Kurss atcelts apstiprinājums',
     'created_by' => 'Izveidojis',
+    'you_are_not_autorized_to_edit_this_course' => 'Jums nav tiesību rediģēt šo kursu',
 ];

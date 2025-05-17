@@ -81,4 +81,5 @@ return [
     'test_verified' => 'Test verified',
     'test_unverified' => 'Test unverified',
     'created_by' => 'Created by',
+    'you_are_not_authorized_to_edit_this_test' => 'You are not authorized to edit this test',
 ];

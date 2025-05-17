@@ -82,4 +82,5 @@ return [
     'test_verified' => 'Tests apstiprināts',
     'test_unverified' => 'Tests atcelts apstiprinājums',
     'created_by' => 'Izveidojis',
+    'you_are_not_authorized_to_edit_this_test' => 'Jums nav tiesību rediģēt šo testu',
 ];

@@ -26,7 +26,7 @@ class EditLearningTest extends EditRecord
 
         if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
-                ->title('You are not authorized to edit this test')
+                ->title(__('learning/learningTest.you_are_not_authorized_to_edit_this_test'))
                 ->danger()
                 ->send();
 

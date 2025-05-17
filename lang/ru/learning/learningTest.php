@@ -82,4 +82,5 @@ return [
     'test_verified' => 'Тест подтвержден',
     'test_unverified' => 'Тест отменен подтверждение',
     'created_by' => 'Создано',
+    'you_are_not_authorized_to_edit_this_test' => 'Вы не авторизованы для редактирования этого теста',
 ];

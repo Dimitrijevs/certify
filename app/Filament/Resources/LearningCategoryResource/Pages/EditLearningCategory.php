@@ -41,7 +41,7 @@ class EditLearningCategory extends EditRecord
 
         if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
-                ->title('You are not authorized to edit this course')
+                ->title(__('learning/learningCategory.you_are_not_autorized_to_edit_this_course'))
                 ->danger()
                 ->send();
 
