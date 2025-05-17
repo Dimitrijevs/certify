@@ -118,9 +118,12 @@ class SellerController extends Controller
 
     public function purchase($id, Request $request)
     {
-        app()->setLocale(session('locale', config('app.locale')));
+        app()->setLocale($request->lang);
         
-        $seller = User::findOrFail($id);
+        $seller = User::find($id);
+        if (is_null($seller)) {
+            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
+        }
 
         if ($request->test_id) {
             $product = LearningTest::find($request->test_id);
@@ -132,8 +135,8 @@ class SellerController extends Controller
             $description = __('seller.payment_for_test') . ' ' . $product->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
         }
 
-        if (is_null($seller)) {
-            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
+        if ($product->created_by != $seller->id) {
+            return $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
         $price = $this->calculatePrice($product->price, $product->discount);
@@ -192,12 +195,12 @@ class SellerController extends Controller
             $body = __('seller.now_you_can_access_the_course');
         }
 
+        $title = __('seller.your_purchase_was_successful');
+
         $userPurchase->seller_id = $seller->id;
         $userPurchase->price = $price;
         $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
-
-        $title = __('seller.your_purchase_was_successful');
 
         return $this->redirectAndNotify($title, $body, 'success');
     }

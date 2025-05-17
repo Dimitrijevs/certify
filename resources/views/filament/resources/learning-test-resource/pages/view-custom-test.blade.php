@@ -175,6 +175,7 @@
                 </div>
 
                 <div class="text-center">
+                    {{-- when auth user bought a test or auth user is a creator --}}
                     @if ($this->checkUserPurchase() || Auth::id() == $record->created_by)
                         <x-filament::modal id="start-test">
                             <x-slot name="trigger">
@@ -228,25 +229,10 @@
                                 @endif
                             </div>
                         </x-filament::modal>
-                    @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() == 0)
-                        <form action="{{ route('complete.purchase', ['id' => $record->created_by]) }}" method="POST">
-                            @csrf
-
-                            <input type="hidden" name="test_id" value="{{ $record->id }}">
-                            <input type="hidden" name="price" value="0">
-
-                            <x-cyan-button>
-                                {{ __('learning/learningTest.fields.enroll_now_for_free') }}
-                            </x-cyan-button>
-                        </form>
-                    @else
-                        <form action="{{ route('filament.app.pages.purchase-page') }}" method="GET">
-                            @csrf
-
-                            <input type="hidden" name="seller_id" value="{{ $record->created_by }}">
-                            <input type="hidden" name="price" value="{{ $this->getTotalPrice() }}">
-                            <input type="hidden" name="test_id" value="{{ $record->id }}">
-
+                    @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() > 0)
+                        {{-- When user not bought and price is greater than 0 --}}
+                        <a
+                            href="{{ route('filament.app.pages.purchase-page.{type?}.{product_id?}', ['type' => 'test', 'product_id' => $record->id]) }}">
                             <x-cyan-button>
                                 @if ($this->getTotalPrice() > 0 && $record->discount > 0)
                                     {{ __('learning/learningTest.fields.buy_now') }} ( {{ $record->price }} -
@@ -259,7 +245,25 @@
                                     {{ $record->currency->symbol }})
                                 @endif
                             </x-cyan-button>
+                        </a>
+                    @elseif (!$this->checkUserPurchase() && $this->getTotalPrice() == 0)
+                        {{-- When user not bought and price is 0 --}}
+                        <form action="{{ route('complete.purchase', $record->created_by) }}" method="POST"
+                            class="w-full">
+                            @csrf
+
+                            <input type="hidden" name="lang" value="{{ $lang }}">
+                            <input type="hidden" name="test_id" value="{{ $record->id }}">
+
+                            <x-cyan-button>
+                                {{ __('welcome-course.enroll_now_for_free') }}
+                            </x-cyan-button>
                         </form>
+                    @else
+                        {{-- When an error occurred --}}
+                        <x-cyan-button disabled>
+                            {{ __('welcome-course.something_went_wrong') }}
+                        </x-cyan-button>
                     @endif
                 </div>
             </x-filament::section>

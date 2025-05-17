@@ -19,11 +19,15 @@ class CourseWelocomePage extends Page
 
     public $purchasesCount = 0;
 
+    public $lang;
+
     public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
 
         $this->purchasesCount = UserPurchase::where('course_id', $this->record->id)->count();
+
+        $this->lang = app()->getLocale();
     }
 
     protected function getCategories()

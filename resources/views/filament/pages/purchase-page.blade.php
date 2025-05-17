@@ -10,6 +10,8 @@
                     class="w-full">
                     @csrf
 
+                    <input type="hidden" name="lang" value="{{ $lang }}">
+
                     @if ($price > 0)
                         <h2 class="text-2xl font-bold mb-6 items-center text-center">{{ __('other.total_price') }}:
                             {{ number_format($price, 2) }} @if ($course)
@@ -31,7 +33,6 @@
                         <input type="hidden" name="test_id" value="{{ $test->id }}">
                     @endif
 
-
                     <x-cyan-button>
                         {{ $price ? __('other.pay_now') : __('other.enroll_now_for_free') }}
                     </x-cyan-button>
@@ -45,9 +46,9 @@
 <script>
     // Initialize Stripe with your publishable key
     const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-    
+
     const elements = stripe.elements({
-        locale: 'en',
+        locale: '{{ app()->getLocale() }}',
     });
 
     // Create the card Element
