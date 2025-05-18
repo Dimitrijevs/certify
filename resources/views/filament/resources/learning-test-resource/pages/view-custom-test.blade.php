@@ -252,7 +252,6 @@
                             class="w-full">
                             @csrf
 
-                            <input type="hidden" name="lang" value="{{ $lang }}">
                             <input type="hidden" name="test_id" value="{{ $record->id }}">
 
                             <x-cyan-button>

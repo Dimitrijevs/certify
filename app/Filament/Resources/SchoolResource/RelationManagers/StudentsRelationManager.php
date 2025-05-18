@@ -177,9 +177,9 @@ class StudentsRelationManager extends RelationManager
                         $group = Group::find($data['group_id']);
 
                         if ($data['is_teacher']) {
-                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a teacher to the group ' . $group->name;
+                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' ' . __('worker.as_a_teacher_to_the_group') . ' ' . $group->name;
                         } else {
-                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' as a student to the group ' . $group->name;
+                            $title = __('worker.institution_owner') . ': ' . $this->getOwnerRecord()->creator->name . ' ' . __('worker.invited_you_to_join_their_institution') . ' ' . $this->getOwnerRecord()->name . ' ' . __('worker.as_a_student_to_the_group') . ' ' . $group->name;
                         }
 
                         Notification::make()
@@ -187,6 +187,7 @@ class StudentsRelationManager extends RelationManager
                             ->title($title)
                             ->actions([
                                 NotificationAction::make('accept')
+                                    ->label(__('other.accept'))
                                     ->url(route('accept-invite', [
                                         'institution' => $this->getOwnerRecord()->id,
                                         'group' => $data['group_id'],
@@ -198,6 +199,7 @@ class StudentsRelationManager extends RelationManager
                                     ->color('primary')
                                     ->icon('tabler-check'),
                                 NotificationAction::make('decline')
+                                    ->label(__('other.decline'))
                                     ->url(route('reject-invite', [
                                         'institution' => $this->getOwnerRecord()->id,
                                         'group' => $data['group_id'],
@@ -311,6 +313,7 @@ class StudentsRelationManager extends RelationManager
                                 ->title($title)
                                 ->actions([
                                     NotificationAction::make('accept')
+                                        ->label(__('other.accept'))
                                         ->url(route('accept-invite', [
                                             'institution' => $this->getOwnerRecord()->id,
                                             'group' => $data['group_id'],
@@ -322,6 +325,7 @@ class StudentsRelationManager extends RelationManager
                                         ->color('primary')
                                         ->icon('tabler-check'),
                                     NotificationAction::make('decline')
+                                        ->label(__('other.decline'))
                                         ->url(route('reject-invite', [
                                             'institution' => $this->getOwnerRecord()->id,
                                             'group' => $data['group_id'],

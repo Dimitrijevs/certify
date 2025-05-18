@@ -10,8 +10,6 @@
                     class="w-full">
                     @csrf
 
-                    <input type="hidden" name="lang" value="{{ $lang }}">
-
                     @if ($price > 0)
                         <h2 class="text-2xl font-bold mb-6 items-center text-center">{{ __('other.total_price') }}:
                             {{ number_format($price, 2) }} @if ($course)

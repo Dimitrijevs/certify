@@ -13,4 +13,6 @@ return [
     'remove_worker' => 'Remove worker',
     'are_you_sure_you_want_to_remove_this_worker' => 'Are you sure you want to remove this worker?',
     'edit_worker' => 'Edit worker',
+    'as_a_teacher_to_the_group' => 'as a teacher to the group',
+    'as_a_student_to_the_group' => 'as a student to the group',
 ];

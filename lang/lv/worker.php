@@ -13,4 +13,6 @@ return [
     'remove_worker' => 'Noņemt darbinieku',
     'are_you_sure_you_want_to_remove_this_worker' => 'Vai esat pārliecināts, ka vēlaties noņemt šo darbinieku?',
     'edit_worker' => 'Rediģēt darbinieku',
+    'as_a_teacher_to_the_group' => 'kā skolotājs grupai',
+    'as_a_student_to_the_group' => 'kā students grupai',
 ];

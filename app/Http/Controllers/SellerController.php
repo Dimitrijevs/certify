@@ -118,8 +118,6 @@ class SellerController extends Controller
 
     public function purchase($id, Request $request)
     {
-        app()->setLocale($request->lang);
-        
         $seller = User::find($id);
         if (is_null($seller)) {
             $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));

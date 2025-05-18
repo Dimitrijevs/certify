@@ -21,15 +21,11 @@ class ViewCustomTest extends Page
 
     public $purchasesCount = 0;
 
-    public $lang;
-
     public function mount(int|string $record): void
     {
         $this->record = LearningTest::findOrFail($record);
 
         $this->purchasesCount = UserPurchase::where('test_id', $this->record->id)->count();
-
-        $this->lang = app()->getLocale();
     }
 
     public function getTitle(): string

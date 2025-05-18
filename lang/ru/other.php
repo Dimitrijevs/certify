@@ -32,4 +32,7 @@ return [
     'total_number_of_purchases_you_made' => 'Общее количество покупок, которые вы сделали',
     'your_certificates' => 'Ваши сертификаты',
     'total_number_of_certificates_you_received' => 'Общее количество сертификатов, которые вы получили',
+    'accept' => 'Принять',
+    'decline' => 'Отклонить',
+    'logged_out_successfully' => 'Вы вышли из системы успешно',
 ];

@@ -32,4 +32,7 @@ return [
     'total_number_of_purchases_you_made' => 'Total number of purchases you made',
     'your_certificates' => 'Your certificates',
     'total_number_of_certificates_you_received' => 'Total number of certificates you received',
+    'accept' => 'Accept',
+    'decline' => 'Decline',
+    'logged_out_successfully' => 'Logged out successfully',
 ];

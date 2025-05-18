@@ -13,4 +13,6 @@ return [
     'remove_worker' => 'Удалить работника',
     'are_you_sure_you_want_to_remove_this_worker' => 'Вы уверены, что хотите удалить этого работника?',
     'edit_worker' => 'Редактировать работника',
+    'as_a_teacher_to_the_group' => 'в качестве учителя группы',
+    'as_a_student_to_the_group' => 'в качестве студента группы',
 ];

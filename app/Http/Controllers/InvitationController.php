@@ -21,8 +21,8 @@ class InvitationController extends Controller
             $receiver = User::find($user->school->created_by);
 
             Notification::make()
-                ->title('User Joined Another Institution')
-                ->body('User ' . $user->name . ' has joined another institution.')
+                ->title(__('invitation.user_joined_another_institution'))
+                ->body(__('invitation.user') . ' ' . $user->name . ' ' . __('invitation.has_joined_another_institution'))
                 ->info()
                 ->sendToDatabase($receiver);
         }
@@ -33,19 +33,19 @@ class InvitationController extends Controller
         if ($is_teacher) {
             $user->role_id = 3;
 
-            $title = 'You had accepted the invitation to join the group as a teacher';
-            $description = 'You have successfully accepted the invitation to join the group as a teacher';
+            $title = __('invitation.you_accepted_invitation_to_join_group_as_teacher');
+            $description = __('invitation.you_have_successfully_accepted_invitation_to_join_group_as_teacher');
 
-            $ownerTitle = 'New Teacher Joined';
-            $ownerDescription = 'User ' . $user->name . ' has joined the group: ' . $group->name . ' as a teacher';
+            $ownerTitle = __('invitation.new_teacher_joined');
+            $ownerDescription = __('invitation.user') . ' ' . $user->name . ' ' . __('invitation.has_joined_the_group') . ': ' . $group->name . ' ' . __('invitation.as_a_teacher');
         } else {
             $user->role_id = 4;
 
-            $title = 'You had accepted the invitation to join the group as a student.';
-            $description = 'You have successfully accepted the invitation to join the group as a student';
+            $title = __('invitation.you_accepted_invitation_to_join_group_as_student');
+            $description = __('invitation.you_have_successfully_accepted_invitation_to_join_group_as_student');
 
-            $ownerTitle = 'New Student Joined';
-            $ownerDescription = 'User ' . $user->name . ' has joined the group: ' . $group->name . ' as a student';
+            $ownerTitle = __('invitation.new_student_joined');
+            $ownerDescription = __('invitation.user') . ' ' . $user->name . ' ' . __('invitation.has_joined_the_group') . ': ' . $group->name . ' ' . __('invitation.as_a_student');
         }
 
         $user->save();
@@ -73,15 +73,15 @@ class InvitationController extends Controller
         $isTeacher = $request->is_teacher;
 
         if ($isTeacher) {
-            $title = 'Invitation Rejected (Teacher)';
-            $body = 'You have successfully rejected the invitation to join the group as a teacher.';
-            $ownerBody = 'User ' . $user->name . ' has rejected the invitation to join the group: '
-                . $group->name . ' as a teacher.';
+            $title = __('invitation.invitation_rejected_teacher');
+            $body = __('invitation.you_rejected_invitation_to_join_group_as_teacher');
+            $ownerBody = __('invitation.user') . ' ' . $user->name . ' ' . __('invitation.has_rejected_the_invitation') . ': '
+                . $group->name . ' ' . __('invitation.as_a_teacher');
         } else {
-            $title = 'Invitation Rejected (Student)';
-            $body = 'You have successfully rejected the invitation to join the group as a student.';
-            $ownerBody = 'User ' . $user->name . ' has rejected the invitation to join the group: '
-                . $group->name . ' as a student.';
+            $title = __('invitation.invitation_rejected_student');
+            $body = __('invitation.you_rejected_invitation_to_join_group_as_student');
+            $ownerBody = __('invitation.user') . ' ' . $user->name . ' ' . __('invitation.has_rejected_the_invitation') . ': '
+                . $group->name . ' ' . __('invitation.as_a_student');
         }
 
         $reciever = User::find($institution->created_by);
@@ -93,7 +93,7 @@ class InvitationController extends Controller
             ->send();
 
         Notification::make()
-            ->title('Invitation Rejected')
+            ->title(__('invitation.invitation_rejected'))
             ->body($ownerBody)
             ->success()
             ->sendToDatabase($reciever);

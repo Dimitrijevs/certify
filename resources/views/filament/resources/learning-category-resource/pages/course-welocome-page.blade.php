@@ -96,8 +96,7 @@
                 {{-- When user not bought and price is 0 --}}
                 <form action="{{ route('complete.purchase', $record->created_by) }}" method="POST" class="w-full">
                     @csrf
-
-                    <input type="hidden" name="lang" value="{{ $lang }}">
+                    
                     <input type="hidden" name="course_id" value="{{ $record->id }}">
 
                     <x-cyan-button>

@@ -32,4 +32,7 @@ return [
     'total_number_of_purchases_you_made' => 'Kopējais pirkumu skaits, ko veicāt',
     'your_certificates' => 'Jūsu sertifikāti',
     'total_number_of_certificates_you_received' => 'Kopējais sertifikātu skaits, ko saņēmāt',
+    'accept' => 'Pieņemt',
+    'decline' => 'Noraidīt',
+    'logged_out_successfully' => 'Veiksmīgi izrakstījies',
 ];

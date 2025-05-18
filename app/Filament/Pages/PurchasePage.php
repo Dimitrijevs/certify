@@ -30,8 +30,6 @@ class PurchasePage extends Page
 
     public $test;
 
-    public $lang;
-
     public function mount(Request $request)
     {
         if ($request->type == 'course') {
@@ -47,8 +45,6 @@ class PurchasePage extends Page
 
             $this->seller = User::find($this->test->created_by);
         }
-
-        $this->lang = app()->getLocale();
     }
 
     public function getTotalPrice($price = 0, $discount = 0): float
