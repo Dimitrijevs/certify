@@ -25,4 +25,6 @@ return [
         'answer_options' => 'Atbilžu varianti',
         'created_at' => 'Izveides datums',
     ],
+    'no_correct_answer' => 'Nav norādīta pareizā atbilde',
+    'no_answers' => 'Nav pieejamas atbildes',
 ];

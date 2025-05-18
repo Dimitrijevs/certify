@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Group;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
@@ -44,14 +45,9 @@ class SchoolResource extends Resource
         return true;
     }
 
-    public static function canCreate(): bool
-    {
-        return Auth::user()->role_id < 4;
-    }
-
     public static function canEdit(Model $record): bool
     {
-        return Auth::user()->id === $record->created_by || Auth::user()->role_id < 3;
+        return Auth::id() == $record->created_by || Auth::user()->role_id < 3;
     }
 
     public static function canDelete(Model $record): bool
@@ -83,6 +79,9 @@ class SchoolResource extends Resource
                         'lg' => 8,
                     ])
                     ->schema([
+                        Hidden::make('created_by')
+                            ->default(Auth::id()),
+                            
                         TextInput::make('name')
                             ->maxLength(200)
                             ->label(__('institution.name'))

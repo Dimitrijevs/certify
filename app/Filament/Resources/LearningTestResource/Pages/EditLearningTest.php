@@ -26,7 +26,7 @@ class EditLearningTest extends EditRecord
 
         if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
-                ->title('You are not authorized to edit this test')
+                ->title(__('learning/learningTest.you_are_not_authorized_to_edit_this_test'))
                 ->danger()
                 ->send();
 
@@ -48,7 +48,7 @@ class EditLearningTest extends EditRecord
                 ->icon('tabler-eye')
                 ->url(LearningTestResource::getUrl('viewTest', ['record' => $this->record->id])),
             Action::make('verify')
-                ->label('Verify')
+                ->label(__('learning/learningTest.verify'))
                 ->visible(function () {
                     if (Auth::user()->role_id < 3 && $this->record->is_public == false) {
                         return true;
@@ -64,12 +64,12 @@ class EditLearningTest extends EditRecord
                     $this->record->saveQuietly();
 
                     return Notification::make()
-                        ->title('Category verified')
+                        ->title(__('learning/learningTest.test_verified'))
                         ->success()
                         ->send();
                 }),
             Action::make('unverify')
-                ->label('Unverify')
+                ->label(__('learning/learningTest.unverify'))
                 ->visible(function () {
                     if (Auth::user()->role_id < 3 && $this->record->is_public == true) {
                         return true;
@@ -85,7 +85,7 @@ class EditLearningTest extends EditRecord
                     $this->record->saveQuietly();
 
                     return Notification::make()
-                        ->title('Category unverified')
+                        ->title(__('learning/learningTest.test_unverified'))
                         ->success()
                         ->send();
                 }),

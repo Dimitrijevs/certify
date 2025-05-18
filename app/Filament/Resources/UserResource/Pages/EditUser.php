@@ -19,20 +19,38 @@ class EditUser extends EditRecord
 
     public string $place = 'edit';
 
+    public function mount(int|string $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+
+        $this->authorizeAccess();
+
+        $this->fillForm();
+
+        $this->previousUrl = url()->previous();
+    }
+
     protected function getHeaderActions(): array
     {
         return [
             Action::make('add_bank_account')
                 ->label(function () {
                     if (Auth::user()->completed_stripe_onboarding) {
-                        return 'Bank Account Added';
+                        return __('user.visit_dashboard');
                     } else {
-                        return 'Add Bank Account';
+                        return __('user.add_bank_account');
+                    }
+                })
+                ->icon(function () {
+                    if (Auth::user()->completed_stripe_onboarding) {
+                        return 'tabler-check';
+                    } else {
+                        return 'tabler-plus';
                     }
                 })
                 ->color(function () {
                     if (Auth::user()->completed_stripe_onboarding) {
-                        return 'success';
+                        return 'primary';
                     } else {
                         return 'warning';
                     }
@@ -50,7 +68,7 @@ class EditUser extends EditRecord
         return __('user.fields.edit_user');
     }
 
-    #[On('update-user-edit-page')] 
+    #[On('update-user-edit-page')]
     public function refresh()
     {
         // ...

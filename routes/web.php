@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\LanguageCheck;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\InvitationController;
@@ -17,20 +18,22 @@ Route::post('/app/logout', [LogoutController::class, 'logout'])->name('filament.
 Route::get('/learning-resources/{learningResource}/pdf', [LearningCertificateController::class, 'index'])
     ->name('learning-resources.pdf');
 
-// stripe, id = seller id
-Route::get('stripe/{id}', [SellerController::class, 'redirectToStripe'])
-    ->name('redirect.stripe');
+Route::middleware(LanguageCheck::class)->group(function () {
+    // stripe, id = seller id
+    Route::get('stripe/{id}', [SellerController::class, 'redirectToStripe'])
+        ->name('redirect.stripe');
 
-Route::get('connect/{token}', [SellerController::class, 'saveStripeAccount'])
-    ->name('save.stripe');
+    Route::get('connect/{token}', [SellerController::class, 'saveStripeAccount'])
+        ->name('save.stripe');
 
-Route::post('purchase/{id}', [SellerController::class, 'purchase'])
-    ->name('complete.purchase');
+    Route::post('purchase/{id}', [SellerController::class, 'purchase'])
+        ->name('complete.purchase');
 
-// accept invite
-Route::get('accept-invite/{institution}/{group}}', [InvitationController::class, 'acceptInvite'])
-    ->name('accept-invite');
+    // accept invite
+    Route::get('accept-invite/{institution}/{group}', [InvitationController::class, 'acceptInvite'])
+        ->name('accept-invite');
 
-// reject invite
-Route::get('reject-invite/{institution}/{group}', [InvitationController::class, 'rejectInvite'])
-    ->name('reject-invite');
+    // reject invite
+    Route::get('reject-invite/{institution}/{group}', [InvitationController::class, 'rejectInvite'])
+        ->name('reject-invite');
+});

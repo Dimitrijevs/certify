@@ -321,23 +321,27 @@ class LearningCategoryResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    $query
-                        ->where(function ($q) {
+                    return $query->where(function ($mainQuery) {
+
+                        $mainQuery->where(function ($q) {
                             $q->where('is_active', true)
                                 ->where('is_public', true)
                                 ->where(function ($subQuery) {
                                     $subQuery->where('available_for_everyone', true);
 
                                     if (Auth::user()->school_id) {
-                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        $subQuery->orWhere(function ($schoolQuery) {
+                                            $schoolQuery->where('is_public', true)
+                                                ->whereHas('createdBy', function ($userQuery) {
+                                                    $userQuery->where('school_id', Auth::user()->school_id);
+                                                });
                                         });
                                     }
                                 });
                         })
-                        ->orWhere('created_by', Auth::id());
-
-                    return $query;
+                            // user owns tests
+                            ->orWhere('created_by', Auth::id());
+                    });
                 }
 
                 return $query;
@@ -351,14 +355,15 @@ class LearningCategoryResource extends Resource
             ->filters([
                 Filter::make('my_courses')
                     ->columns(1)
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->form([
-                        Toggle::make('my_courses')
-                            ->label('My Courses')
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false)
-                            ->columnSpan(1),
+                        Select::make('my_courses')
+                            ->label(__('learning/learningCategory.my_courses'))
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
 
@@ -366,22 +371,47 @@ class LearningCategoryResource extends Resource
                             return $query;
                         }
 
-                        return $query->where(function (Builder $query) {
-                            $query->whereHas('purchases', function (Builder $subQuery) {
-                                $subQuery->where('user_id', Auth::id());
-                            })->orWhere('created_by', Auth::id());
-                        });
+                        return $query->where('created_by', Auth::id());
                     })
                     ->indicateUsing(function (array $data): ?string {
                         if (empty($data) || $data['my_courses'] === null || $data['my_courses'] == false) {
                             return null;
                         }
 
-                        return 'My Courses';
+                        return __('learning/learningCategory.my_courses');
+                    }),
+                Filter::make('my_purchased_courses')
+                    ->columns(1)
+                    ->columnSpan(2)
+                    ->form([
+                        Select::make('my_purchased_courses')
+                            ->label(__('learning/learningCategory.my_purchased_courses'))
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_purchased_courses']) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('purchases', function (Builder $subQuery) {
+                            $subQuery->where('user_id', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_purchased_courses'] === null || $data['my_purchased_courses'] == false) {
+                            return null;
+                        }
+
+                        return __('learning/learningCategory.my_purchased_courses');
                     }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningCategory.fields.active'))
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->native(false)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
@@ -389,13 +419,13 @@ class LearningCategoryResource extends Resource
                 TernaryFilter::make('is_public')
                     ->label(__('learning/learningCategory.fields.public'))
                     ->native(false)
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->visible(function () {
                         return Auth::user()->role_id < 3;
                     }),
                 SelectFilter::make('language_id')
                     ->label(__('learning/learningCategory.fields.language'))
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->preload()
                     ->searchable()
                     ->options(function () {
@@ -405,6 +435,8 @@ class LearningCategoryResource extends Resource
                             });
                     }),
                 Filter::make('category')
+                    ->columnSpan(2)
+                    ->columns(1)
                     ->form([
                         Select::make('category_ids')
                             ->label(__('learning/learningCategory.fields.category'))
@@ -431,15 +463,26 @@ class LearningCategoryResource extends Resource
                     ->label(__('learning/learningTest.fields.currency'))
                     ->preload()
                     ->searchable()
-                    ->columnSpan(1)
+                    ->columnSpan(2)
                     ->options(function () {
                         return Currency::all()
                             ->mapWithKeys(function ($currency) {
                                 return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
                             });
                     }),
-                Filter::make('is_free')
+                SelectFilter::make('created_by')
+                    ->label(__('learning/learningCategory.created_by'))
                     ->columnSpan(2)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return LearningCategory::all()
+                            ->mapWithKeys(function ($category) {
+                                return [$category->createdBy->id => $category->createdBy->name];
+                            });
+                    }),
+                Filter::make('is_free')
+                    ->columnSpan(4)
                     ->columns(2)
                     ->form([
                         Select::make('is_free')
@@ -487,7 +530,7 @@ class LearningCategoryResource extends Resource
                             return __('learning/learningCategory.fields.free');
                         }
 
-                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                        return __('learning/learningCategory.paid_from') . ': ' . $data['price_from'] . ' ' . __('learning/learningCategory.paid_to') . ' : ' . $data['price_to'];
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {
@@ -517,7 +560,7 @@ class LearningCategoryResource extends Resource
                         }
                     }),
             ])
-            ->filtersFormColumns(2)
+            ->filtersFormColumns(4)
             ->filtersFormWidth(MaxWidth::TwoExtraLarge)
             ->defaultSort('id', 'desc')
             ->actions([

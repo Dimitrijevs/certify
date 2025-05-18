@@ -1,15 +1,8 @@
-<div class="ms-4">
-    @if (!is_null($getState()))
-        @if($getState() == $getDefaultState())
-            <span class="text-sm">
-                {{ $getState() }}
-            </span>
-        @else
+<div class="ms-3">
+    @if ($getState())
             <span class="text-sm">
                 {{ gmdate('H:i:s', $getState()) }}
             </span>
-        @endif
-
     @else
         <span class="text-sm">
             N/A

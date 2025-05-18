@@ -41,7 +41,7 @@ class EditLearningCategory extends EditRecord
 
         if ($this->record->created_by != Auth::id() && Auth::user()->role_id > 3) {
             Notification::make()
-                ->title('You are not authorized to edit this course')
+                ->title(__('learning/learningCategory.you_are_not_autorized_to_edit_this_course'))
                 ->danger()
                 ->send();
 
@@ -90,7 +90,7 @@ class EditLearningCategory extends EditRecord
     {
         return [
             Action::make('verify')
-                ->label('Verify')
+                ->label(__('learning/learningCategory.verify'))
                 ->visible(function () {
                     if (Auth::user()->role_id < 3 && $this->record->is_public == false) {
                         return true;
@@ -106,12 +106,12 @@ class EditLearningCategory extends EditRecord
                     $this->record->saveQuietly();
 
                     return Notification::make()
-                        ->title('Category verified')
+                        ->title(__('learning/learningCategory.course_verified'))
                         ->success()
                         ->send();
                 }),
             Action::make('unverify')
-                ->label('Unverify')
+                ->label(__('learning/learningCategory.unverify'))
                 ->visible(function () {
                     if (Auth::user()->role_id < 3 && $this->record->is_public == true) {
                         return true;
@@ -127,7 +127,7 @@ class EditLearningCategory extends EditRecord
                     $this->record->saveQuietly();
 
                     return Notification::make()
-                        ->title('Category unverified')
+                        ->title(__('learning/learningCategory.course_unverified'))
                         ->success()
                         ->send();
                 }),

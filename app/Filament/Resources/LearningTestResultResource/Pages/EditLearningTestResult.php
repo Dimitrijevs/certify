@@ -6,6 +6,7 @@ use Livewire\Attributes\On;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\LearningTestResultResource;
 
 class EditLearningTestResult extends EditRecord
@@ -16,7 +17,7 @@ class EditLearningTestResult extends EditRecord
     {
         return [
             Action::make('view')
-                ->label('View')
+                ->label(__('learning/learningTestResult.view_test_result'))
                 ->color('gray')
                 ->icon('tabler-eye')
                 ->url(LearningTestResultResource::getUrl('do-test', ['record' => $this->record->id, 'question' => 1, 'viewTest' => 1])),
@@ -30,6 +31,11 @@ class EditLearningTestResult extends EditRecord
                 ->action('save')
                 ->icon('tabler-checkbox'),
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('learning/learningTestResult.edit_test_result');;
     }
 
     #[On('refreshTestResult')]

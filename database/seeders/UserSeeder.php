@@ -97,9 +97,17 @@ class UserSeeder extends Seeder
 
                 $faker->boolean(90) ? $role = 4 : $role = 3;
 
-                $school = $faker->boolean(10) ? $faker->randomElement($schools) : null;
+                if ($role == 3) {
 
-                $group = $school?->groups->random() ?? null;
+                    $school = $faker->randomElement($schools);
+                    $group = $school->groups->random();
+
+                } else {
+
+                    $school = $faker->boolean(15) ? $faker->randomElement($schools) : null;
+                    $group = $school?->groups->random() ?? null;
+
+                }
 
                 $users[] = [
                     'name' => $faker->name,
@@ -124,7 +132,7 @@ class UserSeeder extends Seeder
         $schools = School::all();
 
         foreach ($schools as $school) {
-            $users = User::whereIn('role_id', [3, 2])
+            $users = User::where('role_id', 3)
                 ->where('school_id', $school->id)
                 ->pluck('id')
                 ->toArray();
@@ -136,11 +144,5 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info("\n");
-
-        // stripe account
-        $superAdmin = User::find(1);
-        $superAdmin->stripe_connect_id = 'acct_1RKRS0AcD63pWHcd';
-        $superAdmin->completed_stripe_onboarding = 1;
-        $superAdmin->saveQuietly();
     }
 }

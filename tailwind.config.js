@@ -16,6 +16,7 @@ export default {
         "./resources/views/filament/resources/learning-test-resource/pages/*.blade.php",
         "./resources/views/filament/resources/**/pages/*.blade.php",
         "./resources/views/**/*.blade.php",
+        "./resources/views/forms/components/*.blade.php"
     ],
     plugins: [require("@tailwindcss/forms")],
 };

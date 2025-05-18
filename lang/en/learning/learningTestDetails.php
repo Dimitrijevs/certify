@@ -25,4 +25,6 @@ return [
         'answer_options' => 'Answer options',
         'created_at' => 'Created at',
     ],
+    'no_correct_answer' => 'No correct answer specified',
+    'no_answers' => 'No answers available',
 ];

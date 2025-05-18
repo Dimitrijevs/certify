@@ -24,4 +24,9 @@ return [
     'tooltips' => [
         'password_hint' => 'Atstājiet tukšu, ja atiestatīšana nav nepieciešama.',
     ],
+    'my_learning' => 'Mans mācību process',
+    'requirements' => 'Prasības',
+    'visit_dashboard' => 'Apmeklēt informācijas paneli',
+    'add_bank_account' => 'Pievienot bankas kontu',
+    'no_courses_found' => 'Nav atrasti kursi',
 ];

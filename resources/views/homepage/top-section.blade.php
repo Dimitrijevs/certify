@@ -9,7 +9,7 @@
         </div>
 
         <div class="col-span-1 md:col-span-2">
-            <img class="image" src="{{ asset('landingpage-images/top-section.jpg') }}" alt="">
+            <img class="image w-full" src="{{ asset('landingpage-images/top-section.jpg') }}" alt="">
         </div>
     </div>
 </div>

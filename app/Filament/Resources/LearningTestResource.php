@@ -30,6 +30,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Forms\Components\ShowCertificateTemplate;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\LearningTestResource\Pages\ViewCustomTest;
@@ -104,7 +105,7 @@ class LearningTestResource extends Resource
                             ->label(__('learning/learningTest.fields.name'))
                             ->required()
                             ->columnSpan([
-                                'default' => 8,
+                                'default' => 12,
                                 'sm' => 12,
                                 'md' => 12,
                                 'lg' => 6,
@@ -112,7 +113,7 @@ class LearningTestResource extends Resource
                         Toggle::make('is_active')
                             ->label(__('learning/learningTest.fields.active'))
                             ->columnSpan([
-                                'default' => 4,
+                                'default' => 6,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
@@ -124,7 +125,7 @@ class LearningTestResource extends Resource
                         Toggle::make('is_question_transition_enabled')
                             ->label(__('learning/learningTest.fields.free_navigation'))
                             ->columnSpan([
-                                'default' => 5,
+                                'default' => 6,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
@@ -135,7 +136,7 @@ class LearningTestResource extends Resource
                         Toggle::make('available_for_everyone')
                             ->label(__('learning/learningTest.fields.available_for_everyone'))
                             ->columnSpan([
-                                'default' => 7,
+                                'default' => 12,
                                 'sm' => 4,
                                 'md' => 4,
                                 'lg' => 2,
@@ -188,6 +189,7 @@ class LearningTestResource extends Resource
 
                                 return null;
                             })
+                            ->numeric()
                             ->default(0)
                             ->required()
                             ->suffixIcon('tabler-award'),
@@ -204,6 +206,31 @@ class LearningTestResource extends Resource
                             ->placeholder('30')
                             ->minValue(5)
                             ->numeric(),
+                        Select::make('category_id')
+                            ->label(__('learning/learningCategory.label_plural'))
+                            ->relationship('category', 'name', function (Builder $query) {
+                                return $query->where('is_active', true);
+                            })
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ]),
+                        TextInput::make('cooldown')
+                            ->label(__('learning/learningTest.fields.cooldown'))
+                            ->columnSpan([
+                                'default' => 12,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
+                            ])
+                            ->suffixIcon('tabler-clock')
+                            ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
+                            ->rules(['integer', 'min:0']),
                         Group::make()
                             ->columnSpan([
                                 'default' => 12,
@@ -218,42 +245,14 @@ class LearningTestResource extends Resource
                                 'lg' => 12,
                             ])
                             ->schema([
-                                Select::make('category_id')
-                                    ->label(__('learning/learningCategory.label_plural'))
-                                    ->relationship('category', 'name', function (Builder $query) {
-                                        return $query->where('is_active', true);
-                                    })
-                                    ->multiple()
-                                    ->searchable()
-                                    ->preload()
-                                    ->columnSpan([
-                                        'default' => 12,
-                                        'sm' => 12,
-                                        'md' => 12,
-                                        'lg' => 12,
-                                    ]),
-                                Select::make('layout_id')
+                                ShowCertificateTemplate::make('layout_id')
                                     ->label(__('learning/learningTest.fields.certificate_layout'))
-                                    ->searchable()
-                                    ->preload()
-                                    ->relationship('layout', 'name')
                                     ->columnSpan([
                                         'default' => 12,
                                         'sm' => 12,
                                         'md' => 12,
                                         'lg' => 12,
                                     ]),
-                                TextInput::make('cooldown')
-                                    ->label(__('learning/learningTest.fields.cooldown'))
-                                    ->columnSpan([
-                                        'default' => 12,
-                                        'sm' => 12,
-                                        'md' => 12,
-                                        'lg' => 12,
-                                    ])
-                                    ->suffixIcon('tabler-clock')
-                                    ->tooltip(__('learning/learningTest.fields.cooldown_in_minutes_between_attempts'))
-                                    ->rules(['integer', 'min:0']),
                             ]),
                         FileUpload::make('thumbnail')
                             ->label(__('learning/learningTest.fields.thumbnail'))
@@ -277,9 +276,9 @@ class LearningTestResource extends Resource
                             ->live()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->numeric()
                             ->minValue(0),
@@ -292,9 +291,9 @@ class LearningTestResource extends Resource
                             })
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->numeric()
                             ->minValue(0)
@@ -309,9 +308,9 @@ class LearningTestResource extends Resource
                             })
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ])
                             ->options(function () {
                                 return Currency::all()
@@ -325,6 +324,10 @@ class LearningTestResource extends Resource
                                 if ($discount > 0) {
                                     $price = $get('price');
                                     $symbol = Currency::find($state)->symbol ?? '€';
+
+                                    if ($price == 0 || $price == null) {
+                                        return __('learning/learningTest.fields.free');
+                                    }
 
                                     return $price . ' ' . $symbol . ' - ' . $discount . ' % = ' . ($price - ($price * $discount / 100)) . ' ' . $symbol;
                                 }
@@ -343,9 +346,9 @@ class LearningTestResource extends Resource
                             ->searchable()
                             ->columnSpan([
                                 'default' => 12,
-                                'sm' => 3,
-                                'md' => 3,
-                                'lg' => 3,
+                                'sm' => 6,
+                                'md' => 6,
+                                'lg' => 6,
                             ]),
                         Select::make('categories')
                             ->label(__('learning/learningTest.fields.categories'))
@@ -382,13 +385,22 @@ class LearningTestResource extends Resource
                         ]),
                     Tab::make(__('learning/learningTestRequirements.label_plural'))
                         ->icon('tabler-exclamation-circle')
+                        ->visible(function () {
+                            if (Auth::user()->role_id < 3) {
+                                return true;
+                            }
+
+                            return Auth::user()->school_id;
+                        })
                         ->schema([
                             RelationManager::make()
                                 ->manager(RequirementsRelationManager::class)
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),
-                ])->visible(fn(string $operation): bool => $operation !== 'create')
+                ])->visible(function (string $operation) {
+                    return $operation == 'edit';
+                })
                     ->persistTabInQueryString(),
             ]);
     }
@@ -418,9 +430,9 @@ class LearningTestResource extends Resource
                         ->searchable()
                         ->formatStateUsing(function ($record) {
                             if ($record->price > 0 && $record->discount > 0) {
-                                return $record->price . ' € - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' €';
+                                return $record->price . ' ' . $record->currency?->symbol . ' - ' . $record->discount . ' % = ' . ($record->price - ($record->price * $record->discount / 100)) . ' ' . $record->currency?->symbol;
                             } else if ($record->price > 0 && $record->discount == 0) {
-                                return $record->price . ' €';
+                                return $record->price . ' ' . $record->currency?->symbol;
                             } else {
                                 return __('learning/learningTest.fields.free');
                             }
@@ -450,12 +462,13 @@ class LearningTestResource extends Resource
                     ->columns(1)
                     ->columnSpan(1)
                     ->form([
-                        Toggle::make('my_tests')
-                            ->label('My Tests')
-                            ->onIcon('tabler-check')
-                            ->offIcon('tabler-x')
-                            ->inline(false)
-                            ->columnSpan(1),
+                        Select::make('my_tests')
+                            ->label(__('learning/learningTest.my_tests'))
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
 
@@ -463,18 +476,43 @@ class LearningTestResource extends Resource
                             return $query;
                         }
 
-                        return $query->where(function (Builder $query) {
-                            $query->whereHas('purchases', function (Builder $subQuery) {
-                                $subQuery->where('user_id', Auth::id());
-                            })->orWhere('created_by', Auth::id());
-                        });
+                        return $query->where('created_by', Auth::id());
                     })
                     ->indicateUsing(function (array $data): ?string {
                         if (empty($data) || $data['my_tests'] === null || $data['my_tests'] == false) {
                             return null;
                         }
 
-                        return 'My Tests';
+                        return __('learning/learningTest.my_tests');
+                    }),
+                Filter::make('my_purchased_tests')
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->form([
+                        Select::make('my_purchased_tests')
+                            ->label(__('learning/learningTest.my_purchased_tests'))
+                            ->options([
+                                true => __('other.yes'),
+                                false => __('other.no'),
+                            ])
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        if (!$data['my_purchased_tests']) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('purchases', function (Builder $subQuery) {
+                            $subQuery->where('user_id', Auth::id());
+                        });
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data) || $data['my_purchased_tests'] === null || $data['my_purchased_tests'] == false) {
+                            return null;
+                        }
+
+                        return __('learning/learningTest.my_purchased_tests');
                     }),
                 TernaryFilter::make('is_active')
                     ->label(__('learning/learningTest.fields.active'))
@@ -535,6 +573,17 @@ class LearningTestResource extends Resource
                                 return [$currency->id => $currency->name . ' (' . $currency->symbol . ')'];
                             });
                     }),
+                SelectFilter::make('created_by')
+                    ->label(__('learning/learningTest.created_by'))
+                    ->columnSpan(1)
+                    ->preload()
+                    ->searchable()
+                    ->options(function () {
+                        return LearningTest::all()
+                            ->mapWithKeys(function ($category) {
+                                return [$category->createdBy->id => $category->createdBy->name];
+                            });
+                    }),
                 Filter::make('is_free')
                     ->columnSpan(2)
                     ->columns(2)
@@ -552,7 +601,7 @@ class LearningTestResource extends Resource
                                 }
                             })
                             ->columnSpan(2)
-                            ->label('Price')
+                            ->label(__('learning/learningTest.price'))
                             ->native(false),
                         TextInput::make('price_from')
                             ->label(__('learning/learningTest.fields.price_from'))
@@ -584,7 +633,7 @@ class LearningTestResource extends Resource
                             return __('learning/learningCategory.fields.free');
                         }
 
-                        return 'Paid, From: ' . $data['price_from'] . ' To: ' . $data['price_to'];
+                        return __('learning/learningTest.paid_from') . ': ' . $data['price_from'] . ' ' . __('learning/learningTest.paid_to') . ': ' . $data['price_to'];
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         if (!isset($data['is_free'])) {
@@ -621,23 +670,27 @@ class LearningTestResource extends Resource
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
-                    $query
-                        ->where(function ($q) {
+                    return $query->where(function ($mainQuery) {
+
+                        $mainQuery->where(function ($q) {
                             $q->where('is_active', true)
                                 ->where('is_public', true)
                                 ->where(function ($subQuery) {
                                     $subQuery->where('available_for_everyone', true);
 
                                     if (Auth::user()->school_id) {
-                                        $subQuery->orWhereHas('createdBy', function ($userQuery) {
-                                            $userQuery->where('school_id', Auth::user()->school_id);
+                                        $subQuery->orWhere(function ($schoolQuery) {
+                                            $schoolQuery->where('is_public', true)
+                                                ->whereHas('createdBy', function ($userQuery) {
+                                                    $userQuery->where('school_id', Auth::user()->school_id);
+                                                });
                                         });
                                     }
                                 });
                         })
-                        ->orWhere('created_by', Auth::id());
-
-                    return $query;
+                            // user owns tests
+                            ->orWhere('created_by', Auth::id());
+                    });
                 }
 
                 return $query;

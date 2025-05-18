@@ -21,7 +21,7 @@ return [
         'certificate_created_automatically' => 'Сертификат создан автоматически',
     ],
     'custom' => [
-        'edit_certificate'=> 'Редактировать сертификат',
+        'edit_certificate' => 'Редактировать сертификат',
         'requirement' => 'Требование',
         'details_section' => 'Детали сертификата',
         'points' => 'Пункты',
@@ -35,5 +35,11 @@ return [
         'valid_until' => 'Действителен до',
         'certificate_expired_at' => 'Сертификат истекает',
         'no_requirements_found' => 'Требования не найдены',
-    ]
+    ],
+    'certificate_created' => 'Сертификат создан',
+    'congratulations_you_ve_earned_a_certificate_for_successfully_completing_the' => 'Поздравляем! Вы получили сертификат за успешное прохождение',
+    'test' => 'теста',
+    'this_certificate_recognizes_that' => 'Этот сертификат подтверждает, что',
+    'has_successfully_completed_the' => 'успешно завершил',
+    'description_end' => "оценку. Это достижение демонстрирует компетентность в данной предметной области и приверженность профессиональному развитию. Навыки и знания, подтвержденные этим сертификатом, являются ценным активом в современной конкурентной среде.",
 ];

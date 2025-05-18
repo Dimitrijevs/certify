@@ -1,6 +1,6 @@
 <?php
 
-$russian = [
+return [
     'seller_not_found' => 'Продавец не найден',
     'seller_was_not_found' => 'Продавец не был найден',
     'stripe_onboarding_failed' => 'Регистрация в Stripe не удалась',
@@ -19,4 +19,5 @@ $russian = [
     'please_create_a_stripe_account_to_receive_payments' => 'Пожалуйста, создайте аккаунт Stripe, чтобы получать платежи',
     'your_purchase_was_successful' => 'Ваша покупка прошла успешно',
     'now_you_can_access_the_course' => 'Теперь вы можете получить доступ к курсу',
+    'now_you_can_access_the_test' => 'Теперь вы можете получить доступ к тесту',
 ];

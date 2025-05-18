@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\LearningTestResource\RelationManagers;
 
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -14,6 +17,7 @@ use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\LearningCertificationRequirement;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class RequirementsRelationManager extends RelationManager
@@ -53,20 +57,29 @@ class RequirementsRelationManager extends RelationManager
                 Select::make('entity_id')
                     ->live()
                     ->label('Student')
-                    ->relationship('student', 'name', function (Builder $query, $operation) {
-                        if ($operation === 'create') {
-                            $test_id = $this->getOwnerRecord()->id;
-                            $query->whereNotExists(function ($subQuery) use ($test_id) {
-                                $subQuery->select(DB::raw(1))
-                                    ->from('learning_certification_requirements')
-                                    ->whereColumn('learning_certification_requirements.entity_type', DB::raw("'student'"))
-                                    ->whereColumn('learning_certification_requirements.entity_id', 'users.id')
-                                    ->where('learning_certification_requirements.test_id', $test_id)
-                                    ->where('users.role_id', '>', 2);
-                            });
-                        } else {
-                            return $query;
+                    ->options(function ($operation) {
+                        if ($operation == 'create') {
+                            $not_include = LearningCertificationRequirement::where('test_id', $this->getOwnerRecord()->id)
+                                ->where('entity_type', 'student')
+                                ->pluck('entity_id')
+                                ->toArray();
+
+                            $query = User::whereNotIn('id', $not_include);
+
+                            if (Auth::user()->role_id > 2) {
+                                $query->where('school_id', Auth::user()->school_id)
+                                    ->where('role_id', '>', 2);
+                            }
+
+                            return $query->pluck('name', 'id');
+                        } else if ($operation == 'edit' && Auth::user()->role_id > 2) {
+                            return User::where('school_id', Auth::user()->school_id)
+                                ->where('role_id', '>', 2)
+                                ->pluck('name', 'id');
                         }
+                        
+                        return User::all()
+                            ->pluck('name', 'id');
                     })
                     ->searchable()
                     ->preload()
@@ -85,27 +98,27 @@ class RequirementsRelationManager extends RelationManager
                 Select::make('entity_id')
                     ->live()
                     ->label('Group')
-                    ->relationship('group', 'name', function (Builder $query, $operation) {
+                    ->options(function ($operation) {
+                        if ($operation == 'create') {
+                            $not_include = LearningCertificationRequirement::where('test_id', $this->getOwnerRecord()->id)
+                                ->where('entity_type', 'group')
+                                ->pluck('entity_id')
+                                ->toArray();
 
-                        $query->orderBy('groups.school_id', 'asc');
+                            $query = Group::whereNotIn('id', $not_include);
 
-                        if ($operation === 'create') {
-                            $test_id = $this->getOwnerRecord()->id;
-                            $query->whereNotExists(function ($subQuery) use ($test_id) {
-                                $subQuery->select(DB::raw(1))
-                                    ->from('learning_certification_requirements')
-                                    ->whereColumn('learning_certification_requirements.entity_type', DB::raw("'group'"))
-                                    ->whereColumn('learning_certification_requirements.entity_id', 'groups.id')
-                                    ->where('learning_certification_requirements.test_id', $test_id);
+                            if (Auth::user()->role_id > 2) {
+                                $query->where('school_id', Auth::user()->school_id);
+                            }
+
+                            return $query->get()->mapWithKeys(function ($record) {
+                                return [$record->id => $record->name . ' (' . $record->school->name . ')'];
                             });
-
-                            return $query;
-                        } else {
-                            return $query;
                         }
-                    })
-                    ->getOptionLabelFromRecordUsing(function ($record) {
-                        return $record->name . ' (' . $record->school->name . ')';
+
+                        return Group::get()->mapWithKeys(function ($record) {
+                            return [$record->id => $record->name . ' (' . $record->school->name . ')'];
+                        });
                     })
                     ->searchable()
                     ->preload()
@@ -125,7 +138,6 @@ class RequirementsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('entity_type')
             ->columns([
                 TextColumn::make('entity_type')
                     ->label(__('learning/learningCertificateRequirement.fields.entity_type'))
@@ -152,6 +164,17 @@ class RequirementsRelationManager extends RelationManager
                         }
                     }),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->role_id > 2) {
+                    $query
+                        ->where('school_id', Auth::user()->school_id)
+                        ->where('test_id', $this->getOwnerRecord()->id);
+
+                    return $query;
+                }
+
+                return $query;
+            })
             ->filters([
                 SelectFilter::make('entity_type')
                     ->options([

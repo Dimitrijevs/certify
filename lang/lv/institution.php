@@ -20,4 +20,8 @@ return [
     'no_group' => 'Nav grupas',
     'student' => 'Mācēklis',
     'workers' => 'Darbinieki',
+    'role' => 'Loma',
+    'instructor' => 'Pasniedzējs',
+    'worker' => 'Darbinieks',
+    'worker_invite_resent' => 'Darbinieka uzaicinājums atkārtoti nosūtīts',
 ];

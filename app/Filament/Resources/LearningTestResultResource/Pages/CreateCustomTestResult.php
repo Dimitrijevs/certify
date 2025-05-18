@@ -99,8 +99,8 @@ class CreateCustomTestResult extends Page
 
             if ($this->result->user_id != Auth::id() && Auth::user()->role_id > 3) {
                 Notification::make()
-                    ->title('You do not have access to this test')
-                    ->body('You need to purchase this test to access it.')
+                    ->title(__('learning/learningTestResult.you_do_not_have_access_to_this_test'))
+                    ->body(__('learning/learningTestResult.you_need_to_purchase_this_test'))
                     ->danger()
                     ->send();
 
@@ -112,8 +112,8 @@ class CreateCustomTestResult extends Page
 
             if (!$this->checkPurchase($this->record->id)) {
                 Notification::make()
-                    ->title('You do not have access to this test')
-                    ->body('You need to purchase this test to access it.')
+                    ->title(__('learning/learningTestResult.you_do_not_have_access_to_this_test'))
+                    ->body(__('learning/learningTestResult.you_need_to_purchase_this_test'))
                     ->danger()
                     ->send();
     
@@ -155,6 +155,12 @@ class CreateCustomTestResult extends Page
 
     public function checkPurchase($id)
     {
+        $test = LearningTest::find($id);
+
+        if ($test->created_by == Auth::id()) {
+            return true;
+        }
+
         $purchase = UserPurchase::where('user_id', Auth::id())
             ->where('test_id', $id)
             ->exists();

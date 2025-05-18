@@ -118,7 +118,10 @@ class SellerController extends Controller
 
     public function purchase($id, Request $request)
     {
-        $seller = User::findOrFail($id);
+        $seller = User::find($id);
+        if (is_null($seller)) {
+            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
+        }
 
         if ($request->test_id) {
             $product = LearningTest::find($request->test_id);
@@ -130,8 +133,8 @@ class SellerController extends Controller
             $description = __('seller.payment_for_test') . ' ' . $product->name . ' ' . __('seller.by') . ' ' . Auth::user()->name;
         }
 
-        if (is_null($seller)) {
-            $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
+        if ($product->created_by != $seller->id) {
+            return $this->redirectAndNotify(__('seller.seller_not_found'), __('seller.seller_was_not_found'));
         }
 
         $price = $this->calculatePrice($product->price, $product->discount);
@@ -148,12 +151,14 @@ class SellerController extends Controller
                 return $this->redirectAndNotify(__('seller.creator_does_not_have_stripe_account_yet'), __('seller.we_are_notifying_the_creator_to_complete_their_stripe_onboarding_process'));
             }
 
+            $finalPrice = (int) ($price * 100);
+
             $currency_id = $product->currency_id ?? 38;
             $currency = Currency::find($currency_id);
 
             try {
                 $this->stripeClient->paymentIntents->create([
-                    'amount' => $product->price * 100,
+                    'amount' => $finalPrice,
                     'currency' => strtolower($currency->code),
                     'payment_method_data' => [
                         'type' => 'card',
@@ -167,7 +172,7 @@ class SellerController extends Controller
                     ],
                     'transfer_data' => [
                         'destination' => $seller->stripe_connect_id,
-                        'amount' => (int) $price * 100
+                        'amount' => $finalPrice,
                     ],
                     'confirm' => true,
                     'description' => $description,
@@ -181,17 +186,23 @@ class SellerController extends Controller
         $userPurchase->user_id = Auth::id();
 
         if ($request->test_id) {
+
             $userPurchase->test_id = $request->test_id;
+            $body = __('seller.now_you_can_access_the_test');
         } else {
+
             $userPurchase->course_id = $request->course_id;
+            $body = __('seller.now_you_can_access_the_course');
         }
+
+        $title = __('seller.your_purchase_was_successful');
 
         $userPurchase->seller_id = $seller->id;
         $userPurchase->price = $price;
         $userPurchase->currency_id = $currency_id ?? null;
         $userPurchase->save();
 
-        return $this->redirectAndNotify(__('seller.your_purchase_was_successful'), __('seller.now_you_can_access_the_course'), 'success');
+        return $this->redirectAndNotify($title, $body, 'success');
     }
 
     public static function calculatePrice($price, $discount = null)

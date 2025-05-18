@@ -14,4 +14,5 @@ return [
     'continue_learning' => 'Продолжить обучение',
     'course_description' => 'Описание курса',
     'language' => 'Язык',
+    'something_went_wrong' => 'Что-то пошло не так',
 ];

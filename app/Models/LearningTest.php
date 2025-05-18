@@ -93,21 +93,22 @@ class LearningTest extends Model
                 $test->price = 0;
             }
 
-            if ($test->price = 0 && $test->discount > 0) {
+            if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-            
+
             $test->saveQuietly();
 
             $recipients = User::where('role_id', '<', 3)
                 ->get();
 
             Notification::make()
-                ->title('New Learning Material Created')
+                ->title(__('learning/learningTest.new_learning_material_created'))
                 ->info()
-                ->body('A new learning material has been created: ' . $test->name)
+                ->body(__('learning/learningTest.a_new_learning_material_has_been_created') . ': ' . $test->name)
                 ->actions([
                     Action::make('view')
+                        ->label(__('learning/learningTest.view'))
                         ->icon('tabler-eye')
                         ->url(function () use ($test) {
                             return '/app/learning-tests/' . $test->id . '/edit';
@@ -122,10 +123,10 @@ class LearningTest extends Model
                 $test->price = 0;
             }
 
-            if ($test->price = 0 && $test->discount > 0) {
+            if ($test->price == 0 && $test->discount > 0) {
                 $test->discount = 0;
             }
-            
+
             $test->saveQuietly();
         });
     }

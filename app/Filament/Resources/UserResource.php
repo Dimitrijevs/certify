@@ -11,10 +11,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Rules\MatchOldPassword;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Tabs;
+use App\Livewire\ShowMyLearningList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Livewire;
+use Filament\Forms\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 use Filament\Forms\Components\TextInput;
@@ -45,12 +49,12 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->role_id < 4;
+        return Auth::user()->role_id < 3;
     }
 
     public static function canCreate(): bool
     {
-        return Auth::user()->role_id < 4;
+        return Auth::user()->role_id < 3;
     }
 
     public static function canEdit(Model $record): bool
@@ -185,12 +189,27 @@ class UserResource extends Resource
                             'lg' => 12,
                         ]),
 
-                    Section::make(__('participants.certification_requirements'))
-                        ->schema([
-                            CertificateRequirementForm::make('info')
-                                ->nullable()
-                                ->dehydrated(false)
-                                ->columnSpanFull()
+                    Tabs::make('Tabs')
+                        ->tabs([
+                            Tab::make(__('user.requirements'))
+                                ->icon('tabler-file-check')
+                                ->visible(function ($operation) {
+                                    return Auth::user()->group_id && $operation == 'edit';
+                                })
+                                ->schema([
+                                    CertificateRequirementForm::make('info')
+                                        ->nullable()
+                                        ->dehydrated(false)
+                                        ->columnSpanFull()
+                                ]),
+                            Tab::make(__('user.my_learning'))
+                                ->icon('tabler-book')
+                                ->schema([
+                                    Livewire::make(ShowMyLearningList::class)
+                                        ->label(label: '')
+                                        ->dehydrated(false)
+                                        ->columnSpanFull(),
+                                ]),
                         ])
                         ->columns([
                             'default' => 12,
@@ -204,9 +223,7 @@ class UserResource extends Resource
                             'md' => 12,
                             'lg' => 12,
                         ])
-                        ->visible(function ($operation) {
-                            return $operation !== 'create';
-                        }),
+                        ->persistTabInQueryString(),
                 ])
                     ->columns([
                         'default' => 12,

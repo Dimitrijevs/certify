@@ -2,7 +2,7 @@
     <div class="container mx-auto max-w-5xl px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="col-span-1 flex items-center justify-center">
-                <img src="{{ asset('other/duffy-duck.jpeg') }}" alt="" class="max-w-full rounded-lg shadow">
+                <img src="{{ asset('other/piggy-bank.jpg') }}" alt="" class="max-w-full rounded-lg shadow">
             </div>
 
             <div class="col-span-1 flex items-center">
@@ -31,7 +31,6 @@
                         <input type="hidden" name="test_id" value="{{ $test->id }}">
                     @endif
 
-
                     <x-cyan-button>
                         {{ $price ? __('other.pay_now') : __('other.enroll_now_for_free') }}
                     </x-cyan-button>
@@ -45,9 +44,9 @@
 <script>
     // Initialize Stripe with your publishable key
     const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-    
+
     const elements = stripe.elements({
-        locale: 'en',
+        locale: '{{ app()->getLocale() }}',
     });
 
     // Create the card Element

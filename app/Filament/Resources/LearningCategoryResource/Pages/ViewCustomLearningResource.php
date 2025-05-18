@@ -43,11 +43,17 @@ class ViewCustomLearningResource extends Page
 
     public function checkPurchase()
     {
-        $purchase = UserPurchase::where('user_id', Auth::id())
+        $allow_access = UserPurchase::where('user_id', Auth::id())
             ->where('course_id', $this->record->category_id)
             ->exists();
 
-        return $purchase;
+        if (!$allow_access) {
+            $allow_access = LearningCategory::where('id', $this->record->category_id)
+                ->where('created_by', Auth::id())
+                ->exists();
+        }
+
+        return $allow_access;
     }
 
     public function getTitle(): string

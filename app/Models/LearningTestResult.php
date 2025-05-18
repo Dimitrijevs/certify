@@ -22,6 +22,10 @@ class LearningTestResult extends Model
         'is_passed',
     ];
 
+    protected $casts = [
+        'finished_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -47,26 +51,31 @@ class LearningTestResult extends Model
         parent::boot();
 
         static::updated(function ($testResult) {
-            
+
             $originalIsPassed = $testResult->getOriginal('is_passed');
             $newIsPassed = $testResult->is_passed;
 
-            if ($originalIsPassed === false && $newIsPassed === true) {
-                $newCertificate = new LearningCertificate();
-                $newCertificate->user_id = $testResult->user_id;
-                $newCertificate->completed_test_id = $testResult->id;   
-                $newCertificate->test_id = $testResult->test_id;
-                $newCertificate->name = now()->format('Y') . ' ' . $testResult->test->name . ' Test';   
-                $newCertificate->description = "This certificate recognizes that " . Auth::user()->name . " has successfully completed the \"" . $testResult->test->name . "\" assessment. This achievement demonstrates proficiency in the subject matter and commitment to professional development. The skills and knowledge validated by this certificate are valuable assets in today's competitive environment.";
-                $newCertificate->valid_to = Carbon::now()->addYears(2)->toDateString();
-                $newCertificate->save();
-
-                Notification::make()
-                    ->title('🎓 Certificate Created!')
-                    ->body("Congratulations! You've earned a certificate for successfully completing the \"" . $testResult->test->name . "\" Test")
-                    ->success()
-                    ->send();
+            if (($originalIsPassed === false || is_null($originalIsPassed)) && $newIsPassed === true) {
+                self::createCertificate($testResult);
             }
         });
+    }
+
+    protected static function createCertificate($testResult)
+    {
+        $newCertificate = new LearningCertificate();
+        $newCertificate->user_id = $testResult->user_id;
+        $newCertificate->completed_test_id = $testResult->id;
+        $newCertificate->test_id = $testResult->test_id;
+        $newCertificate->name = now()->format('Y') . ' ' . $testResult->test->name . ' Test';
+        $newCertificate->description = __('learning/learningCertificate.this_certificate_recognizes_that') . " " . Auth::user()->name . " " . __('learning/learningCertificate.has_successfully_completed_the') . " \"" . $testResult->test->name . "\" " . __('learning/learningCertificate.description_end');
+        $newCertificate->valid_to = Carbon::now()->addYears(2)->toDateString();
+        $newCertificate->save();
+
+        Notification::make()
+            ->title('🎓 ' . __('learning/learningCertificate.certificate_created') . '!')
+            ->body(__('learning/learningCertificate.congratulations_you_ve_earned_a_certificate_for_successfully_completing_the') . " \"" . $testResult->test->name . "\" " . __('learning/learningCertificate.test') . ".")
+            ->success()
+            ->send();
     }
 }

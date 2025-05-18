@@ -35,5 +35,11 @@ return [
         'valid_until' => 'Derīgs līdz',
         'certificate_expired_at' => 'Sertifikāts beidzās',
         'no_requirements_found' => 'Prasības nav atrastas',
-    ]
+    ],
+    'certificate_created' => 'Sertifikāts izveidots',
+    'congratulations_you_ve_earned_a_certificate_for_successfully_completing_the' => 'Apsveicam! Jūs esat nopelnījis sertifikātu par veiksmīgu',
+    'test' => 'testa',
+    'this_certificate_recognizes_that' => 'Šis sertifikāts apliecina, ka',
+    'has_successfully_completed_the' => 'ir veiksmīgi pabeidzis',
+    'description_end' => "novērtējumu. Šis sasniegums apliecina kompetenci šajā jomā un apņemšanos profesionāli attīstīties. Prasmes un zināšanas, ko apliecina šis sertifikāts, ir vērtīgs ieguvums mūsdienu konkurētspējīgajā vidē.",
 ];
