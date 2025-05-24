@@ -15,4 +15,6 @@ return [
         'employee_team' => 'Команда сотрудников',
         'department' => 'Отдел',
     ],
+    'group' => 'Группа',
+    'student' => 'Участник',
 ];

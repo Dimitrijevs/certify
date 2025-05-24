@@ -15,4 +15,6 @@ return [
         'employee_team' => 'Employee team',
         'department' => 'Department',
     ],
+    'group' => 'Group',
+    'student' => 'worker',
 ];

@@ -41,8 +41,7 @@ class ViewCustomTest extends Page
                 ->color('gray')
                 ->icon('tabler-eye-edit')
                 ->visible(function () {
-                    return Auth::user()->role_id < 3 || $this->record->created_by == Auth::id() 
-                        || Auth::user()->school_id == $this->record->createdBy->school_id && Auth::user()->role_id < 4;
+                    return LearningTest::canUserEdit($this->record->id);
                 })
                 ->url(LearningTestResource::getUrl('edit', ['record' => $this->record->id])),
         ];

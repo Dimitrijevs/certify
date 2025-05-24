@@ -7,7 +7,6 @@ use Filament\Tables;
 use App\Models\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\EditAction;
@@ -37,8 +36,8 @@ class RequirementsRelationManager extends RelationManager
                     ->label(__('learning/learningTestRequirements.fields.entity_type'))
                     ->live()
                     ->options([
-                        'group' => 'Group',
-                        'student' => 'Student',
+                        'group' => __('learning/learningTestRequirements.group'),
+                        'student' => __('learning/learningTestRequirements.student'),
                     ])
                     ->afterStateUpdated(function ($set) {
                         $set('entity_id', null);
@@ -64,22 +63,31 @@ class RequirementsRelationManager extends RelationManager
                                 ->pluck('entity_id')
                                 ->toArray();
 
-                            $query = User::whereNotIn('id', $not_include);
+                            $query = User::whereNotIn('id', $not_include)
+                                ->where('role_id', '>', 2);
 
-                            if (Auth::user()->role_id > 2) {
-                                $query->where('school_id', Auth::user()->school_id)
-                                    ->where('role_id', '>', 2);
+                            if (Auth::user()->role_id > 2 && Auth::id() != $this->getOwnerRecord()->created_by) {
+                                if (!Auth::user()->school_id) {
+                                    $query->where('id', 0); // This ensures no results
+                                } else {
+                                    $query->where('school_id', Auth::user()->school_id);
+                                }
                             }
 
                             return $query->pluck('name', 'id');
-                        } else if ($operation == 'edit' && Auth::user()->role_id > 2) {
-                            return User::where('school_id', Auth::user()->school_id)
-                                ->where('role_id', '>', 2)
-                                ->pluck('name', 'id');
                         }
-                        
-                        return User::all()
-                            ->pluck('name', 'id');
+
+                        $query = User::where('role_id', '>', 2);
+
+                        if (Auth::user()->role_id > 2 && Auth::id() != $this->getOwnerRecord()->created_by) {
+                            if (!Auth::user()->school_id) {
+                                $query->where('id', 0); // This ensures no results
+                            } else {
+                                $query->where('school_id', Auth::user()->school_id);
+                            }
+                        }
+
+                        return $query->pluck('name', 'id');
                     })
                     ->searchable()
                     ->preload()
@@ -107,8 +115,12 @@ class RequirementsRelationManager extends RelationManager
 
                             $query = Group::whereNotIn('id', $not_include);
 
-                            if (Auth::user()->role_id > 2) {
-                                $query->where('school_id', Auth::user()->school_id);
+                            if (Auth::user()->role_id > 2 && Auth::id() != $this->getOwnerRecord()->created_by) {
+                                if (!Auth::user()->school_id) {
+                                    $query->where('id', 0); // This ensures no results
+                                } else {
+                                    $query->where('school_id', Auth::user()->school_id);
+                                }
                             }
 
                             return $query->get()->mapWithKeys(function ($record) {
@@ -116,7 +128,17 @@ class RequirementsRelationManager extends RelationManager
                             });
                         }
 
-                        return Group::get()->mapWithKeys(function ($record) {
+                        $query = Group::query();
+
+                        if (Auth::user()->role_id > 2 && Auth::id() != $this->getOwnerRecord()->created_by) {
+                            if (!Auth::user()->school_id) {
+                                $query->where('id', 0); // This ensures no results
+                            } else {
+                                $query->where('school_id', Auth::user()->school_id);
+                            }
+                        }
+
+                        return $query->get()->mapWithKeys(function ($record) {
                             return [$record->id => $record->name . ' (' . $record->school->name . ')'];
                         });
                     })
@@ -146,10 +168,10 @@ class RequirementsRelationManager extends RelationManager
                     ->formatStateUsing(function ($record) {
                         $entity_type = $record->entity_type;
 
-                        if ($entity_type === 'group') {
-                            return 'Group';
-                        } else if ($entity_type === 'student') {
-                            return 'Student';
+                        if ($entity_type == 'group') {
+                            return __('learning/learningTestRequirements.group');
+                        } else if ($entity_type == 'student') {
+                            return __('learning/learningTestRequirements.student');
                         }
                     }),
                 TextColumn::make('entity_id')
@@ -167,7 +189,6 @@ class RequirementsRelationManager extends RelationManager
             ->modifyQueryUsing(function (Builder $query) {
                 if (Auth::user()->role_id > 2) {
                     $query
-                        ->where('school_id', Auth::user()->school_id)
                         ->where('test_id', $this->getOwnerRecord()->id);
 
                     return $query;
@@ -178,8 +199,8 @@ class RequirementsRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('entity_type')
                     ->options([
-                        'group' => 'Group',
-                        'student' => 'Student',
+                        'group' => __('learning/learningTestRequirements.group'),
+                        'student' => __('learning/learningTestRequirements.student'),
                     ])
                     ->searchable()
                     ->multiple()

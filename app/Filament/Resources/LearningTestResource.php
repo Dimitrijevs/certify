@@ -385,12 +385,12 @@ class LearningTestResource extends Resource
                         ]),
                     Tab::make(__('learning/learningTestRequirements.label_plural'))
                         ->icon('tabler-exclamation-circle')
-                        ->visible(function () {
-                            if (Auth::user()->role_id < 3) {
-                                return true;
+                        ->visible(function ($record) {
+                            if (!$record) {
+                                return false;
                             }
 
-                            return Auth::user()->school_id;
+                            return LearningTest::canUserEdit($record->id);
                         })
                         ->schema([
                             RelationManager::make()

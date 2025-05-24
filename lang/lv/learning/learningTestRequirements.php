@@ -15,4 +15,6 @@ return [
         'employee_team' => 'Darbinieku komanda',
         'department' => 'Nodaļa',
     ],
+    'group' => 'Grupa',
+    'student' => 'Dalībnieks',
 ];
