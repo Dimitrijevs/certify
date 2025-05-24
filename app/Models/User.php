@@ -25,8 +25,9 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         'email',
         'avatar',
         'role_id',
-        'group_id',
         'school_id',
+        'group_id',
+        'country',
         'password',
         'stripe_connect_id',
         'completed_stripe_onboarding',
@@ -77,9 +78,14 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return $this->belongsTo(Group::class);
     }
 
+    public function schools()
+    {
+        return $this->hasMany(School::class, 'created_by');;
+    }
+
     public function school()
     {
-        return $this->belongsTo(School::class);
+        return $this->belongsTo(School::class, 'school_id');
     }
 
     public function certification_requirement()

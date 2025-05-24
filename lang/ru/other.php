@@ -35,4 +35,7 @@ return [
     'accept' => 'Принять',
     'decline' => 'Отклонить',
     'logged_out_successfully' => 'Вы вышли из системы успешно',
+    'country' => 'Страна',
+    'name' => 'Имя',
+    'email' => 'Электронная почта',
 ];

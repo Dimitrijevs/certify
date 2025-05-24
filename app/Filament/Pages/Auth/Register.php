@@ -35,7 +35,7 @@ class Register extends BaseRegister
     protected function getCountryFormComponent(): Component
     {
         return Country::make('country')
-            ->label('Country')
+            ->label(__('other.country'))
             ->preload()
             ->searchable()
             ->required();
@@ -44,7 +44,7 @@ class Register extends BaseRegister
     protected function getNameFormComponent(): Component
     {
         return TextInput::make('name')
-            ->label('Name')
+            ->label(__('other.name'))
             ->required()
             ->maxLength(255)
             ->unique(User::class, 'name');

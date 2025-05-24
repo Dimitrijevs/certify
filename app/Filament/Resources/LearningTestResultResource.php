@@ -54,8 +54,8 @@ class LearningTestResultResource extends Resource
     public static function canEdit(Model $record): bool
     {
         return Auth::user()->role_id < 3 || 
-            $record->user->group->instructors?->contains(Auth::id()) ||
-            $record->user->school?->creted_by == Auth::id();
+            $record->user->group?->instructors?->contains(Auth::id()) ||
+            $record->user->school?->created_by == Auth::id();
     }
 
     public static function canDelete(Model $record): bool

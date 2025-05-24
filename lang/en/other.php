@@ -35,4 +35,7 @@ return [
     'accept' => 'Accept',
     'decline' => 'Decline',
     'logged_out_successfully' => 'Logged out successfully',
+    'country' => 'Country',
+    'name' => 'Name',
+    'email' => 'Email',
 ];

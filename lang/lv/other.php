@@ -35,4 +35,7 @@ return [
     'accept' => 'Pieņemt',
     'decline' => 'Noraidīt',
     'logged_out_successfully' => 'Veiksmīgi izrakstījies',
+    'country' => 'Valsts',
+    'name' => 'Vārds',
+    'email' => 'E-pasts',
 ];
