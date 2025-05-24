@@ -35,18 +35,17 @@ class ViewCustomTest extends Page
 
     protected function getHeaderActions(): array
     {
-        if (Auth::user()->role_id != 3) {
-            return [
-                Action::make('edit')
-                    ->label(__('learning/learningTest.form.edit'))
-                    ->color('gray')
-                    ->icon('tabler-eye-edit')
-                    ->visible(fn() => Auth::user()->role_id < 4)
-                    ->url(LearningTestResource::getUrl('edit', ['record' => $this->record->id])),
-            ];
-        }
-
-        return [];
+        return [
+            Action::make('edit')
+                ->label(__('learning/learningTest.form.edit'))
+                ->color('gray')
+                ->icon('tabler-eye-edit')
+                ->visible(function () {
+                    return Auth::user()->role_id < 3 || $this->record->created_by == Auth::id() 
+                        || Auth::user()->school_id == $this->record->createdBy->school_id && Auth::user()->role_id < 4;
+                })
+                ->url(LearningTestResource::getUrl('edit', ['record' => $this->record->id])),
+        ];
     }
 
     public function getCategoryName($id): string
@@ -55,7 +54,8 @@ class ViewCustomTest extends Page
         return $name;
     }
 
-    public function getCategoriesNames() {
+    public function getCategoriesNames()
+    {
         $categories = $this->record->categories;
         $categoryNames = [];
 
