@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\PdfTemplate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
@@ -82,6 +83,20 @@ class LearningTest extends Model
     public function purchases()
     {
         return $this->hasMany(UserPurchase::class, 'test_id');
+    }
+
+    public static function canUserEdit(int $testId): bool
+    {
+        $test = self::find($testId);
+        
+        if (!$test) {
+            return false;
+        }
+
+        return Auth::user()->role_id < 3 || 
+               $test->created_by == Auth::id() ||
+               (Auth::user()->school_id == $test->createdBy?->school_id && 
+                Auth::user()->role_id < 4);
     }
 
     protected static function boot()

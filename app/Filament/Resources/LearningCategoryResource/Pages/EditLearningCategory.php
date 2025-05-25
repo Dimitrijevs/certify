@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LearningCategoryResource\Pages;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -12,26 +13,7 @@ use App\Filament\Resources\LearningCategoryResource;
 
 class EditLearningCategory extends EditRecord
 {
-    public $widgets = [
-        [
-            'label' => 'Visits',
-            'icon' => 'tabler-eye',
-            'value_type' => 'integer',
-            'value' => 0,
-        ],
-        [
-            'label' => 'Users',
-            'icon' => 'tabler-users-group',
-            'value_type' => 'integer',
-            'value' => 0,
-        ],
-        [
-            'label' => 'Average Time Spent (Minutes)',
-            'icon' => 'tabler-clock',
-            'value_type' => 'time',
-            'value' => 0, // in seconds
-        ]
-    ];
+    protected array $widgets = [];
 
     protected static string $resource = LearningCategoryResource::class;
 
@@ -54,6 +36,27 @@ class EditLearningCategory extends EditRecord
 
         $this->previousUrl = url()->previous();
 
+        $this->widgets = [
+            [
+                'label' => __('learning/learningResource.visits'),
+                'icon' => 'tabler-eye',
+                'value_type' => 'integer',
+                'value' => 0,
+            ],
+            [
+                'label' => __('learning/learningResource.users'),
+                'icon' => 'tabler-users-group',
+                'value_type' => 'integer',
+                'value' => 0,
+            ],
+            [
+                'label' => __('learning/learningResource.average_time_spent'),
+                'icon' => 'tabler-clock',
+                'value_type' => 'time',
+                'value' => 0,
+            ]
+        ];
+
         $this->calculateViews();
         $this->calculateUsers();
         $this->calculateAverageTimeSpent();
@@ -61,24 +64,30 @@ class EditLearningCategory extends EditRecord
 
     protected function calculateViews()
     {
-        $this->widgets[0]['value'] = $this->record->activities()->count();
+        $this->widgets[0]['value'] = Cache::remember('learning_category_' . $this->record->id . '_views', 60 * 10, function () {
+            return $this->record->activities()->count();
+        });
     }
 
     protected function calculateUsers()
     {
-        $this->widgets[1]['value'] = $this->record->activities()->distinct('user_id')->count();
+        $this->widgets[1]['value'] = Cache::remember('learning_category_' . $this->record->id . '_users', 60 * 10, function () {
+            return $this->record->activities()->distinct('user_id')->count();
+        });
     }
 
     protected function calculateAverageTimeSpent()
     {
-        $totalTime = $this->record->activities()->sum('time_spent');
-        $userCount = $this->record->activities()->distinct('user_id')->count();
+        $this->widgets[2]['value'] = Cache::remember('learning_category_' . $this->record->id . '_average_time_spent', 60 * 10, function () {
+            $totalTime = $this->record->activities()->sum('time_spent');
+            $userCount = $this->record->activities()->distinct('user_id')->count();
 
-        if ($userCount > 0) {
-            $this->widgets[2]['value'] = round($totalTime / $userCount, 2);
-        } else {
-            $this->widgets[2]['value'] = 0;
-        }
+            if ($userCount > 0) {
+                return round($totalTime / $userCount, 2);
+            }
+
+            return 0;
+        });
     }
 
     public function getTitle(): string|Htmlable

@@ -59,6 +59,9 @@ class EditUser extends EditRecord
                     return '/stripe/' . Auth::id();
                 }),
             Actions\DeleteAction::make()
+                ->hidden(function ($record) {
+                    return Auth::id() == $record->id && Auth::user()->role_id == 1;
+                })
                 ->icon('tabler-trash'),
         ];
     }

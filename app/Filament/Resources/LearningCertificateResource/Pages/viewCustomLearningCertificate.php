@@ -23,29 +23,28 @@ class viewCustomLearningCertificate extends Page
 
     protected function getHeaderActions(): array
     {
-        $actions = [];
-
-        if (!$this->record->thumbnail) {
-            $actions[] = Action::make('view_pdf')
+        return [
+            Action::make('view_pdf')
                 ->label(__('learning/learningCertificate.custom.download') . ' PDF')
                 ->color('primary')
                 ->icon('tabler-file-type-pdf')
-                ->url(fn(Model $record) => route('learning-resources.pdf', ['learningResource' => $record->id, 'isDownload' => 1]));
-        }
+                ->url(fn(Model $record) => route('learning-resources.pdf', ['learningResource' => $record->id, 'isDownload' => 1])),
 
-        if (Auth::user()->role_id < 4) {
-            $actions[] = Action::make('edit')
+            Action::make('edit')
                 ->label(__('learning/learningCertificate.form.edit'))
                 ->color('gray')
+                ->visible(function ($record) {
+                    return Auth::user()->role_id < 3 ||
+                        $record->user->role_id == 4 && $record->user->group?->instructors?->contains(Auth::id()) ||
+                        $record->user->school?->created_by == Auth::id();
+                })
                 ->icon('tabler-eye-edit')
-                ->url(fn(Model $record) => LearningCertificateResource::getUrl('edit', ['record' => $record->id]));
-        }
-
-        return $actions;
+                ->url(fn(Model $record) => LearningCertificateResource::getUrl('edit', ['record' => $record->id])),
+        ];
     }
 
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = LearningCertificate::findOrFail($record);
     }

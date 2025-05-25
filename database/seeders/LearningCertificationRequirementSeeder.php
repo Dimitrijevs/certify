@@ -24,6 +24,8 @@ class LearningCertificationRequirementSeeder extends Seeder
                 'entity_type' => 'group',
                 'entity_id' => $group->id,
                 'test_id' => $faker->randomElement($tests)->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         }
 

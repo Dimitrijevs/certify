@@ -23,6 +23,11 @@ class DetailsRelationManager extends RelationManager
 
     protected static ?string $model = LearningTestAnswer::class;
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('learning/learningTestResult.details');
+    }
+
     protected function canCreate(): bool
     {
         return false;
@@ -117,25 +122,12 @@ class DetailsRelationManager extends RelationManager
                 // 
             ])
             ->actions([
-                ActionGroup::make([
-                    //
-                ])->label('')
-                    ->icon('heroicon-m-ellipsis-vertical')
-                    ->size(ActionSize::Small)
-                    ->color('gray')
-                    ->button()
-                    ->extraAttributes(['style' => 'padding-right: 0.15rem !important; padding-left: 0.425rem !important;']),
                 EditAction::make()
-                    ->modalHeading(__('learning/learningTestResult.edit_user_answer'))
-                    ->label('')
-                    ->tooltip(__('learning/learningTestDetails.table.edit_test'))
-                    ->color('gray')
-                    ->icon('tabler-arrow-right')
-                    ->button()
+                    ->modalHeading(__('learning/learningTestResult.edit_record'))
+                    ->closeModalByClickingAway(false)
                     ->after(function (Component $livewire, Model $record) {
                         $livewire->dispatch('refreshTestResult', points: $record->points);
-                    })
-                    ->extraAttributes(['style' => 'padding-right: 0.2rem !important; padding-left: 0.35rem !important;']),
+                    }),
             ])
             ->bulkActions([
                 // 

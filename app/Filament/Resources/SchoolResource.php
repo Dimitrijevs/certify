@@ -45,6 +45,17 @@ class SchoolResource extends Resource
         return true;
     }
 
+    public static function canCreate(): bool
+    {
+        if (Auth::user()->role_id < 3) {
+            return true;
+        }
+
+        $authUserSchoolCount = Auth::user()->school()->count();
+
+        return $authUserSchoolCount == 0 ? true : false;
+    }
+
     public static function canEdit(Model $record): bool
     {
         return Auth::id() == $record->created_by || Auth::user()->role_id < 3;
@@ -81,7 +92,7 @@ class SchoolResource extends Resource
                     ->schema([
                         Hidden::make('created_by')
                             ->default(Auth::id()),
-                            
+
                         TextInput::make('name')
                             ->maxLength(200)
                             ->label(__('institution.name'))
@@ -348,7 +359,7 @@ class SchoolResource extends Resource
             'index' => Pages\ListSchools::route('/'),
             'create' => Pages\CreateSchool::route('/create'),
             'edit' => Pages\EditSchool::route('/{record}/edit'),
-            
+
             'view-insitution' => Pages\InstitutionCustomView::route('/{record}/view'),
         ];
     }

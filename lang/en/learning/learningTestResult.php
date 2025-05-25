@@ -53,4 +53,6 @@ return [
     'in_progress' => 'In progress',
     'you_do_not_have_access_to_this_test' => 'You do not have access to this test',
     'you_need_to_purchase_this_test' => 'You need to purchase this test to access it',
+    'details' => 'Details',
+    'edit_record' => 'Edit record',
 ];

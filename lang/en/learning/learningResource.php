@@ -22,5 +22,11 @@ return [
     'custom' => [
         'no_previous_resources' => 'No previous resource',
         'no_next_resources' => 'No next resource',
+        'edit_resource' => 'Edit resource',
+        'new_resource' => 'New resource',
     ],
+    'visits' => 'Visits',
+    'users' => 'Users',
+    'average_time_spent' => 'Average time spent (Minutes)',
+    'n_a' => 'Unset',
 ];

@@ -5,7 +5,7 @@
             </span>
     @else
         <span class="text-sm">
-            N/A
+            {{ __('learning/learningResource.n_a') }}
         </span>
     @endif
 </div>
