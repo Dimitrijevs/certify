@@ -64,7 +64,7 @@ class UserResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::id() == $record->id || Auth::user()->role_id == 3 && Auth::user()->school_id == $record->school_id && $record->role_id == 4 || Auth::user()->role_id < 3;
+        return Auth::id() == $record->id || Auth::user()->role_id < 3;
     }
 
     public static function form(Form $form): Form
@@ -487,7 +487,10 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->hidden(function ($record) {
+                        return Auth::id() == $record->id;
+                    }),
             ])
             ->bulkActions([
                 // ...

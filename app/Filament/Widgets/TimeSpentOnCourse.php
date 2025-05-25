@@ -7,25 +7,29 @@ use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Models\LearningUserStudyRecord;
+use Illuminate\Contracts\Support\Htmlable;
 
 class TimeSpentOnCourse extends ChartWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Study Time';
-
     protected static ?string $maxHeight = '260px';
+
+    public function getHeading(): string | Htmlable | null
+    {
+        return __('other.study_time');
+    }
 
     protected function getFilters(): ?array
     {
         return [
-            '7' => 'Last 7 days',
-            '14' => 'Last 14 days',
-            '30' => 'Last 30 days',
-            '60' => 'Last 2 months',
-            '90' => 'Last 3 months',
-            '180' => 'Last 6 months',
-            '365' => 'Last 12 months',
+            '7' => __('other.last_7_days'),
+            '14' => __('other.last_14_days'),
+            '30' => __('other.last_30_days'),
+            '60' => __('other.last_2_months'),
+            '90' => __('other.last_3_months'),
+            '180' => __('other.last_6_months'),
+            '365' => __('other.last_12_months'),
         ];
     }
 
@@ -95,7 +99,7 @@ class TimeSpentOnCourse extends ChartWidget
             return [
                 'datasets' => [
                     [
-                        'label' => 'Time Spent (minutes)',
+                        'label' => __('other.time_spent_minutes'),
                         'data' => array_values($timeSpent),
                         'fill' => false,
                         'borderColor' => '#2563eb',
@@ -124,7 +128,7 @@ class TimeSpentOnCourse extends ChartWidget
                     ],
                     'title' => [
                         'display' => true,
-                        'text' => 'Minutes'
+                        'text' => __('other.minutes'),
                     ]
                 ],
             ],
