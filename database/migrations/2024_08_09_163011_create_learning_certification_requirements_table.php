@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('entity_type'); // department, employee_team, employee
             $table->integer('entity_id'); // id of the entity
-            $table->smallInteger('test_id');
+            $table->integer('test_id');
+            $table->integer('school_id');
             $table->timestamps();
         });
     }

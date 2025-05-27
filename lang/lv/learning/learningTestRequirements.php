@@ -17,4 +17,6 @@ return [
     ],
     'group' => 'Grupa',
     'student' => 'Dalībnieks',
+    'institution' => 'Iestāde',
+    'test' => 'Tests',
 ];

@@ -23,6 +23,7 @@ use App\Filament\Resources\SchoolResource\Pages;
 use Njxqlus\Filament\Components\Forms\RelationManager;
 use App\Filament\Resources\SchoolResource\RelationManagers\GroupsRelationManager;
 use App\Filament\Resources\SchoolResource\RelationManagers\StudentsRelationManager;
+use App\Filament\Resources\SchoolResource\RelationManagers\RequirementsRelationManager;
 
 class SchoolResource extends Resource
 {
@@ -255,6 +256,14 @@ class SchoolResource extends Resource
                         ->schema([
                             RelationManager::make()
                                 ->manager(StudentsRelationManager::class)
+                                ->lazy()
+                                ->columnSpanFull()
+                        ]),
+                    Tab::make(__('learning/learningTestRequirements.label_plural'))
+                        ->icon('tabler-exclamation-circle')
+                        ->schema([
+                            RelationManager::make()
+                                ->manager(RequirementsRelationManager::class)
                                 ->lazy()
                                 ->columnSpanFull()
                         ]),

@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\LearningTestResource\RelationManagers;
+namespace App\Filament\Resources\SchoolResource\RelationManagers;
 
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Group;
-use App\Models\School;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\LearningTest;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use App\Tables\Columns\AvatarWithDetails;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\LearningCertificationRequirement;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -34,6 +31,35 @@ class RequirementsRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Select::make('test_id')
+                    ->live()
+                    ->label(__('learning/learningTestRequirements.test'))
+                    ->options(function () {
+                        return LearningTest::where('is_active', true)
+                            ->where('is_public', true)
+                            ->where(function ($subQuery) {
+                                $subQuery->where('created_by', $this->getOwnerRecord()->created_by)
+                                    ->orWhere('available_for_everyone', true);
+                            })
+                            ->get()
+                            ->mapWithKeys(function ($record) {
+                                $discount = $record->price / 100 * $record->discount;
+
+                                $price = $record->price - $discount;
+                                $price = $price > 0 ? $price : 0;
+
+                                return [$record->id => $record->name . ' (' . $price . ' ' . $record->currency?->symbol . ')'];
+                            });
+                    })
+                    ->columnSpan([
+                        'default' => 12,
+                        'sm' => 12,
+                        'md' => 12,
+                        'lg' => 12,
+                    ])
+                    ->required()
+                    ->searchable()
+                    ->preload(),
                 Select::make('entity_type')
                     ->label(__('learning/learningTestRequirements.fields.entity_type'))
                     ->live()
@@ -59,8 +85,8 @@ class RequirementsRelationManager extends RelationManager
                 Select::make('entity_id')
                     ->live()
                     ->label(__('learning/learningTestRequirements.student'))
-                    ->options(function ($operation) {
-                        $not_include = LearningCertificationRequirement::where('test_id', $this->getOwnerRecord()->id)
+                    ->options(function ($operation, $get) {
+                        $not_include = LearningCertificationRequirement::where('test_id', $get('test_id'))
                             ->where('entity_type', 'student')
                             ->pluck('entity_id')
                             ->toArray();
@@ -72,22 +98,19 @@ class RequirementsRelationManager extends RelationManager
                             if (!Auth::user()->school_id) {
                                 return [];
                             } else {
-                                $query->where('school_id', Auth::user()->school_id);
+                                $query->where('school_id', $this->getOwnerRecord()->id);
                             }
                         } else {
-                            $query->whereNotNull('school_id');
+                            $query->where('school_id', $this->getOwnerRecord()->id);
                         }
 
-                        $students = $query->with('school')->get();
+                        $students = $query->get();
 
                         // Then sort by school name, then student name
-                        $students = $students->sortBy([
-                            ['school.name', 'asc'],
-                            ['name', 'asc']
-                        ]);
+                        $students = $students->sortBy('name');
 
                         return $students->mapWithKeys(function ($record) {
-                            return [$record->id => $record->name . ' (' . $record->school?->name . ')'];
+                            return [$record->id => $record->name];
                         });
                     })
                     ->searchable()
@@ -95,9 +118,6 @@ class RequirementsRelationManager extends RelationManager
                     ->required()
                     ->hidden(function ($get) {
                         return $get('entity_type') !== 'student';
-                    })
-                    ->afterStateUpdated(function ($set, $state) {
-                        $set('school_id', $state);
                     })
                     ->columnSpan([
                         'default' => 12,
@@ -110,9 +130,10 @@ class RequirementsRelationManager extends RelationManager
                 Select::make('entity_id')
                     ->live()
                     ->label(__('learning/learningTestRequirements.group'))
-                    ->options(function ($operation) {
-                        $not_include = LearningCertificationRequirement::where('test_id', $this->getOwnerRecord()->id)
+                    ->options(function ($operation, $get) {
+                        $not_include = LearningCertificationRequirement::where('test_id', $get('test_id'))
                             ->where('entity_type', 'group')
+                            ->where('school_id', $this->getOwnerRecord()->id)
                             ->pluck('entity_id')
                             ->toArray();
 
@@ -122,25 +143,21 @@ class RequirementsRelationManager extends RelationManager
                             if (!Auth::user()->school_id) {
                                 return [];
                             } else {
-                                $query->where('school_id', Auth::user()->school_id);
+                                $query->where('school_id', $this->getOwnerRecord()->id);
                             }
+                        } else {
+                            $query->where('school_id', $this->getOwnerRecord()->id);
                         }
 
                         // First get results
-                        $groups = $query->with('school')->get();
+                        $groups = $query->get();
 
                         // Then sort by school name, then group name
-                        $groups = $groups->sortBy([
-                            ['school.name', 'asc'],
-                            ['name', 'asc']
-                        ]);
+                        $groups = $groups->sortBy('name');
 
                         return $groups->mapWithKeys(function ($record) {
-                            return [$record->id => $record->name . ' (' . $record->school->name . ')'];
+                            return [$record->id => $record->name];
                         });
-                    })
-                    ->afterStateUpdated(function ($set, $state) {
-                        $set('school_id', $state);
                     })
                     ->searchable()
                     ->preload()
@@ -154,15 +171,41 @@ class RequirementsRelationManager extends RelationManager
                         'md' => 12,
                         'lg' => 12,
                     ]),
-
-                Hidden::make('school_id'),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('group.name')
             ->columns([
+                AvatarWithDetails::make('test.name')
+                    ->label(__('learning/learningTestRequirements.test'))
+                    ->searchable()
+                    ->sortable()
+                    ->title(function ($record) {
+                        $discount = $record->test->price / 100 * $record->test->discount;
+
+                        $price = $record->test->price - $discount;
+                        $price = $price > 0 ? $price : 0;
+
+                        return $record->test->name . ' (' . $price . ' ' . $record->test->currency?->symbol . ')';
+                    })
+                    ->description(function ($record) {
+                        return $record->test->description;
+                    })
+                    ->tooltip(function ($record) {
+                        $discount = $record->test->price / 100 * $record->test->discount;
+
+                        $price = $record->test->price - $discount;
+                        $price = $price > 0 ? $price : 0;
+
+                        return $record->test->name . ' (' . $price . ' ' . $record->test->currency?->symbol . ')';
+                    })
+                    ->avatarType('image')
+                    ->avatar(function ($record) {
+                        return $record->test->thumbnail;
+                    }),
                 TextColumn::make('entity_type')
                     ->label(__('learning/learningCertificateRequirement.fields.entity_type'))
                     ->searchable()
@@ -180,6 +223,14 @@ class RequirementsRelationManager extends RelationManager
                     ->label(__('learning/learningCertificateRequirement.table.name'))
                     ->searchable()
                     ->sortable()
+                    ->limit(32)
+                    ->tooltip(function ($record) {
+                        if ($record->entity_type === 'group') {
+                            return $record->group->name . ' (' . $record->group->school->name . ')';
+                        } else if ($record->entity_type === 'student') {
+                            return $record->student->name . ' (' . $record->student->school?->name . ')';
+                        }
+                    })
                     ->formatStateUsing(function ($record) {
                         if ($record->entity_type === 'group') {
                             return $record->group->name . ' (' . $record->group->school->name . ')';
@@ -188,16 +239,6 @@ class RequirementsRelationManager extends RelationManager
                         }
                     }),
             ])
-            ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role_id > 2) {
-                    $query
-                        ->where('test_id', $this->getOwnerRecord()->id);
-
-                    return $query;
-                }
-
-                return $query;
-            })
             ->filters([
                 SelectFilter::make('entity_type')
                     ->label(__('learning/learningTestRequirements.fields.entity_type'))
@@ -207,13 +248,25 @@ class RequirementsRelationManager extends RelationManager
                     ])
                     ->native(false)
                     ->preload(),
-                SelectFilter::make('school_id')
-                    ->label(__('learning/learningTestRequirements.institution'))
+                SelectFilter::make('test_id')
+                    ->label(__('learning/learningTestRequirements.test'))
                     ->options(function () {
-                        return School::all()
-                            ->pluck('name', 'id');
+                        return LearningTest::where('is_active', true)
+                            ->where('is_public', true)
+                            ->where(function ($subQuery) {
+                                $subQuery->where('created_by', $this->getOwnerRecord()->created_by)
+                                    ->orWhere('available_for_everyone', true);
+                            })
+                            ->get()
+                            ->mapWithKeys(function ($record) {
+                                $discount = $record->price / 100 * $record->discount;
+
+                                $price = $record->price - $discount;
+                                $price = $price > 0 ? $price : 0;
+
+                                return [$record->id => $record->name . ' (' . $price . ' ' . $record->currency?->symbol . ')'];
+                            });
                     })
-                    ->visible(fn() => Auth::user()->role_id < 3)
                     ->searchable()
                     ->preload(),
             ])
@@ -224,7 +277,7 @@ class RequirementsRelationManager extends RelationManager
                     ->label(__('learning/learningTestRequirements.form.create')),
             ])
             ->actions([
-                DeleteAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
