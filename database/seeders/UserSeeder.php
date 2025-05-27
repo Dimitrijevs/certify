@@ -117,8 +117,8 @@ class UserSeeder extends Seeder
                     'password' => $password,
                     'school_id' => $school?->id,
                     'group_id' => $group?->id,
-                    'created_at' => $faker->dateTimeThisYear,
-                    'updated_at' => $faker->dateTimeThisYear,
+                    'created_at' => now()->subMonth(),
+                    'updated_at' => now()->subMonth(),
                 ];
 
                 $this->command->getOutput()->write("\r" . '    Users created: ' . ++$usersCreated . ' / ' . $iterations * $sub_iterations);
