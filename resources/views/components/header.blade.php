@@ -100,7 +100,7 @@
             <li class="paragraph duration-300 hover:scale-105"><a href="#getting-started" @click="editSidebar()">Why
                     choose Us!</a></li>
             <li class="paragraph duration-300 hover:scale-105"><a href="#faq" @click="editSidebar()">Frequently Asked
-                    Questiona</a></li>
+                    Questions</a></li>
         </ul>
     </div>
 </nav>
