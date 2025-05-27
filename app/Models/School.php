@@ -38,6 +38,11 @@ class School extends Model
         return $this->hasMany(Group::class);
     }
 
+    public function requirements()
+    {
+        return $this->hasMany(LearningCertificationRequirement::class, 'school_id');
+    }
+
     public function students()
     {
         return $this->hasMany(User::class)->whereIn('role_id', [3, 4]);

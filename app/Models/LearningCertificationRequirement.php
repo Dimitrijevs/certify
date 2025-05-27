@@ -14,6 +14,7 @@ class LearningCertificationRequirement extends Model
         'entity_type',
         'entity_id',
         'test_id',
+        'school_id',
     ];
 
     public function student()
@@ -29,5 +30,10 @@ class LearningCertificationRequirement extends Model
     public function test()
     {
         return $this->belongsTo(LearningTest::class);
+    }
+
+    public function school()
+    {
+        return $this->belongsTo(School::class);
     }
 }

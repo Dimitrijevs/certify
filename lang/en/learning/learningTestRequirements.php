@@ -17,4 +17,6 @@ return [
     ],
     'group' => 'Group',
     'student' => 'worker',
+    'institution' => 'Institution',
+    'test' => 'Test',
 ];

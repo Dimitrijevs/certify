@@ -64,7 +64,6 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Implement your logic to determine if the user can access the panel
         return true;
     }
 

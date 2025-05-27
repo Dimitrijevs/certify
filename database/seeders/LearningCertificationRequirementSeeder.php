@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\LearningTest;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class LearningCertificationRequirementSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class LearningCertificationRequirementSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+        $faker = Faker::create();
         
         $groups = Group::all();
         $tests = LearningTest::all();
@@ -24,6 +25,7 @@ class LearningCertificationRequirementSeeder extends Seeder
                 'entity_type' => 'group',
                 'entity_id' => $group->id,
                 'test_id' => $faker->randomElement($tests)->id,
+                'school_id' => $group->school_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
