@@ -48,4 +48,6 @@ return [
     'study_time' => 'Study time',
     'minutes' => 'Minutes',
     'time_spent_minutes' => 'Time spent (minutes)',
+    'password' => 'Password',
+    'password_error_message' => 'The password must contain at least one uppercase letter and one symbol',
 ];

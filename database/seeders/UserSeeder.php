@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
         $school = $faker->randomElement($schools);
         $group = $school->groups->random();
 
-        $password = bcrypt('demopass');
+        $password = bcrypt('Demopass!');
 
         $users = [
             [

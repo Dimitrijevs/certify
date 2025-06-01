@@ -50,6 +50,23 @@ class Register extends BaseRegister
             ->unique(User::class, 'name');
     }
 
+    protected function getPasswordFormComponent(): Component
+    {
+        return TextInput::make('password')
+            ->label(__('other.password'))
+            ->password()
+            ->required()
+            ->rules([
+                'regex:/[A-Z]/', // At least one uppercase letter
+                'regex:/[^A-Za-z0-9]/', // At least one symbol (non-alphanumeric)
+            ])
+            ->validationMessages([
+                'regex' => __('password_error_message'), // message
+            ])
+            ->minLength(8)
+            ->maxLength(255);
+    }
+
     protected function rateLimit($maxAttempts, $decaySeconds = 60, $method = null, $component = null): void
     {
         $this->baseRateLimit(120, $decaySeconds, $method, $component);

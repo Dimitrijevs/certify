@@ -48,4 +48,6 @@ return [
     'study_time' => 'Mācību laiks',
     'minutes' => 'Minūtes',
     'time_spent_minutes' => 'Pavadītais laiks (minūtes)',
+    'password' => 'Parole',
+    'password_error_message' => 'Parolei jāsatur vismaz viens lielais burts un viens simbols',
 ];
