@@ -14,10 +14,6 @@ Route::get('/', function () {
 
 Route::post('/app/logout', [LogoutController::class, 'logout'])->name('filament.app.auth.logout');
 
-// certificate pdfs
-Route::get('/learning-resources/{learningResource}/pdf', [LearningCertificateController::class, 'index'])
-    ->name('learning-resources.pdf');
-
 Route::middleware(LanguageCheck::class)->group(function () {
     // stripe, id = seller id
     Route::get('stripe/{id}', [SellerController::class, 'redirectToStripe'])
@@ -36,4 +32,8 @@ Route::middleware(LanguageCheck::class)->group(function () {
     // reject invite
     Route::get('reject-invite/{institution}/{group}', [InvitationController::class, 'rejectInvite'])
         ->name('reject-invite');
+
+    // certificate pdfs
+    Route::get('/learning-resources/{learningResource}/pdf', [LearningCertificateController::class, 'index'])
+        ->name('learning-resources.pdf');
 });

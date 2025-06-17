@@ -43,7 +43,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     // Initialize Stripe with your publishable key
-    const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+    const stripe = Stripe('{{ config('stripe.publishable') }}');
 
     const elements = stripe.elements({
         locale: '{{ app()->getLocale() }}',

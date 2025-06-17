@@ -43,3 +43,4 @@ public/js/filament/forms/components/select.js
 public/js/filament/widgets/components/stats-overview/stat/chart.js
 public/js/filament/forms/components/tags-input.js
 package-lock.json
+storage/fonts/*

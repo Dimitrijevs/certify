@@ -30,7 +30,7 @@ class CertificateSeeder extends Seeder
                     'user_id' => $testResult->user_id,
                     'completed_test_id' => $testResult->id,
                     'test_id' => $testResult->test_id,
-                    'name' => now()->format('Y') . ' ' . $testResult->test->name . ' Test',
+                    'name' => now()->format('Y') . ' ' . $testResult->test->name,
                     'description' => "This certificate recognizes that " . User::find($testResult->user_id)->name . " has successfully completed the \"" . $testResult->test->name . "\" assessment. This achievement demonstrates proficiency in the subject matter and commitment to professional development. The skills and knowledge validated by this certificate are valuable assets in today's competitive environment.",
                     'valid_to' => now()->addYears(2)->toDateString(),
                     'created_at' => now(),

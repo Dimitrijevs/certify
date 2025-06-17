@@ -31,8 +31,6 @@ class LearningCertificateController extends Controller
         $testName = $learningResource->name;
         $validTo = $learningResource->valid_to;
 
-        App::setLocale(session('locale', config('app.locale')));
-
         // Render the template with Twig resources/views/templates/pages/pdf-template.html.twig
         $templateHtml = $this->twig->render('templates/pages/pdf-template.html.twig', [
             'userName' => $userName,

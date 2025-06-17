@@ -10,6 +10,7 @@ return [
         'create' => 'Create',
     ],
     'fields' => [
+        'test' => 'Test',
         'user' => 'User',
         'valid_untill' => 'Valid untill',
         'title' => 'Title',

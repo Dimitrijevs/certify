@@ -10,6 +10,7 @@ return [
         'create' => 'Izveidot',
     ],
     'fields' => [
+        'test' => 'Tests',
         'user' => 'Lietotājs',
         'valid_untill' => 'Derīgs līdz',
         'title' => 'Nosaukums',

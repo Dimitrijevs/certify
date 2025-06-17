@@ -67,7 +67,7 @@ class LearningTestResult extends Model
         $newCertificate->user_id = $testResult->user_id;
         $newCertificate->completed_test_id = $testResult->id;
         $newCertificate->test_id = $testResult->test_id;
-        $newCertificate->name = now()->format('Y') . ' ' . $testResult->test->name . ' Test';
+        $newCertificate->name = now()->format('Y') . ' ' . $testResult->test->name;
         $newCertificate->description = __('learning/learningCertificate.this_certificate_recognizes_that') . " " . Auth::user()->name . " " . __('learning/learningCertificate.has_successfully_completed_the') . " \"" . $testResult->test->name . "\" " . __('learning/learningCertificate.description_end');
         $newCertificate->valid_to = Carbon::now()->addYears(2)->toDateString();
         $newCertificate->save();

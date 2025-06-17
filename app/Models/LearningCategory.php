@@ -101,5 +101,9 @@ class LearningCategory extends Model
                 $category->saveQuietly();
             }
         });
+
+        static::deleted(function ($category) {
+            $category->learningResources()->delete();
+        });
     }
 }
