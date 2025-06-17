@@ -17,7 +17,6 @@ return [
         'certificate_type' => 'Sertifikāta veids',
         'certificate' => 'Sertifikāts',
         'description' => 'Apraksts',
-        'test' => 'Tests',
         'completed_test' => 'Izietais tests',
         'certificate_created_automatically' => 'Sertifikāts izveidots automātiski',
     ],
@@ -43,4 +42,6 @@ return [
     'this_certificate_recognizes_that' => 'Šis sertifikāts apliecina, ka',
     'has_successfully_completed_the' => 'ir veiksmīgi pabeidzis',
     'description_end' => "novērtējumu. Šis sasniegums apliecina kompetenci šajā jomā un apņemšanos profesionāli attīstīties. Prasmes un zināšanas, ko apliecina šis sertifikāts, ir vērtīgs ieguvums mūsdienu konkurētspējīgajā vidē.",
+    'something_went_wrong' => 'Kaut kas nogāja greizi',
+    'you_dont_have_permissions' => 'Jums nav tiesību'
 ];

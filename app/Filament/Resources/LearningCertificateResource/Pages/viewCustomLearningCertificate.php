@@ -7,6 +7,7 @@ use Filament\Resources\Pages\Page;
 use App\Models\LearningCertificate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use App\Filament\Resources\LearningCertificateResource;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
@@ -47,6 +48,31 @@ class viewCustomLearningCertificate extends Page
     public function mount(int|string $record): void
     {
         $this->record = LearningCertificate::findOrFail($record);
+
+        if ($this->record) {
+
+            $isAdmin = Auth::user()->role_id < 3;
+            $isTeacher = Auth::user()->role_id == 3 && $this->record->user->school_id == Auth::user()->school_id;
+            $isOwner = $this->record->user_id == Auth::id();
+
+            if (!$isAdmin && !$isTeacher && !$isOwner) {
+
+                Notification::make()
+                    ->title(__('learning/learningCertificate.you_dont_have_permissions'))
+                    ->warning()
+                    ->send();
+
+                $this->redirectRoute('filament.app.pages.dashboard');
+            }
+        } else {
+
+            Notification::make()
+                ->title(__('learning/learningCertificate.something_went_wrong'))
+                ->warning()
+                ->send();
+
+            $this->redirectRoute('filament.app.pages.dashboard');
+        }
     }
 
     public function isValid()

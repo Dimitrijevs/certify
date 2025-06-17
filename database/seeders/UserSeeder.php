@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'User',
+                'name' => 'User Regular',
                 'email' => 'user@certify.com',
                 'role_id' => 4,
                 'group_id' => $group->id,

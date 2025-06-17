@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -43,5 +45,18 @@ class LearningCertificate extends Model
     public function test()
     {
         return $this->belongsTo(LearningTest::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function () {
+
+            Cache::forget('stats_widget_' . Auth::id() . '_lv');
+            Cache::forget('stats_widget_' . Auth::id() . '_en');
+            Cache::forget('stats_widget_' . Auth::id() . '_ru');
+
+        });
     }
 }

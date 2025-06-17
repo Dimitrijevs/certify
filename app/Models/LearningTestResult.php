@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,6 +72,10 @@ class LearningTestResult extends Model
         $newCertificate->description = __('learning/learningCertificate.this_certificate_recognizes_that') . " " . Auth::user()->name . " " . __('learning/learningCertificate.has_successfully_completed_the') . " \"" . $testResult->test->name . "\" " . __('learning/learningCertificate.description_end');
         $newCertificate->valid_to = Carbon::now()->addYears(2)->toDateString();
         $newCertificate->save();
+
+        Cache::forget('stats_widget_' . Auth::id() . '_lv');
+        Cache::forget('stats_widget_' . Auth::id() . '_en');
+        Cache::forget('stats_widget_' . Auth::id() . '_ru');
 
         Notification::make()
             ->title('🎓 ' . __('learning/learningCertificate.certificate_created') . '!')

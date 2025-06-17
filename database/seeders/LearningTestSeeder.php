@@ -185,8 +185,8 @@ class LearningTestSeeder extends Seeder
                 'price' => 3.00,
                 'discount' => 10, // 10%
                 'currency_id' => 38,
-                'available_for_everyone' => rand(0, 1),
-                'created_by' => $faker->randomElement($users)->id,
+                'available_for_everyone' => 1,
+                'created_by' => 1,
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ],
@@ -198,7 +198,7 @@ class LearningTestSeeder extends Seeder
                 'language_id' => 1,
                 'thumbnail' => $images[4]['image_path'],
                 'description' => 'Šis tests ir izstrādāts, lai pārbaudītu jūsu zināšanas par aritmētikas pamatprincipiem. Testā iekļauti jautājumi par skaitļu darbībām, proporcijām, procentiem un citiem matemātikas jautājumiem. Tā mērķis ir palīdzēt lietotājiem uzlabot savas matemātikas prasmes un sagatavoties citiem testiem, kuros nepieciešama matemātikas izpratne.',
-                'min_score' => 6,
+                'min_score' => 1,
                 'time_limit' => rand(20, 60),
                 'layout_id' => null,
                 'is_public' => 1,
@@ -208,7 +208,7 @@ class LearningTestSeeder extends Seeder
                 'discount' => null,
                 'currency_id' => 38,
                 'available_for_everyone' => 1,
-                'created_by' => $faker->randomElement($users)->id,
+                'created_by' => 1,
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
                 'created_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]

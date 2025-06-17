@@ -17,12 +17,11 @@ return [
         'certificate_type' => 'Certificate type',
         'certificate' => 'Certificate',
         'description' => 'Description',
-        'test' => 'Test',
         'completed_test' => 'Completed test',
         'certificate_created_automatically' => 'Certificate created automatically',
     ],
     'custom' => [
-        'edit_certificate'=> 'Edit certificate',
+        'edit_certificate' => 'Edit certificate',
         'requirement' => 'Requirement',
         'details_section' => 'Certificate details',
         'points' => 'Points',
@@ -43,4 +42,6 @@ return [
     'this_certificate_recognizes_that' => 'This certificate recognizes that',
     'has_successfully_completed_the' => 'has successfully completed the',
     'description_end' => "assessment. This achievement demonstrates proficiency in the subject matter and commitment to professional development. The skills and knowledge validated by this certificate are valuable assets in today's competitive environment.",
+    'something_went_wrong' => 'Something went wrong',
+    'you_dont_have_permissions' => 'You don’t have permissions'
 ];

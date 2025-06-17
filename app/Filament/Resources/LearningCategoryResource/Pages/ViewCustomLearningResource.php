@@ -25,11 +25,10 @@ class ViewCustomLearningResource extends Page
     public function mount(int|string $record)
     {
         $this->record = LearningResource::findOrFail($record);
-        
+
         if (!$this->checkPurchase()) {
             Notification::make()
-                ->title('Access Denied')
-                ->body('You do not have access to this resource.')
+                ->title(__('learning/learningCertificate.you_dont_have_permissions'))
                 ->danger()
                 ->send();
 

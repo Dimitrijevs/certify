@@ -13,13 +13,6 @@
 </style>
 
 <x-filament-panels::page>
-    <x-filament::breadcrumbs :breadcrumbs="[
-        '/' => __('learning/learningCategory.custom.home'),
-        '/learning-categories' => __('learning/learningCategory.label_plural'),
-        '/learning-categories/' . $this->record->category_id . '/edit' => $this->record->category->name,
-        '/learning-categories/resource/' . $this->record->id => $this->record->name,
-    ]" />
-
     <div class="border-b border-t border-gray-200">
         <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Progress">
             <ol role="list"

@@ -428,7 +428,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs saskaitot 45 + 23?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -439,7 +439,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Kāds ir kvadrātsakne no 625?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -450,7 +450,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs 3^4 (3 ceturtajā pakāpē)?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -461,7 +461,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs 15% no 200?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -472,7 +472,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs 2^5 + 3^3?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -483,7 +483,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs 5! (5 faktoriāls)?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
@@ -494,7 +494,7 @@ class LearningTestQuestionSeeder extends Seeder
             ],
             [
                 'test_id' => 6,
-                'is_active' => 1,
+                'is_active' => 0,
                 'question_title' => 'Cik būs 7^2 - 4^3?',
                 'question_description' => 'Izvēlies pareizo atbildi.',
                 'answer_type' => 'select_option',
