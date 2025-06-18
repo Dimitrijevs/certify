@@ -141,7 +141,7 @@ class SellerController extends Controller
 
         if ($price > 0) {
 
-            if (!$seller->completed_stripe_onboarding) {
+            if (!$seller?->completed_stripe_onboarding) {
                 Notification::make()
                     ->title(Auth::user()->name . ' ' . __('seller.is_trying_to_purchase_your_product'))
                     ->body(__('seller.please_complete_stripe_onboarding_process_to_recieve_payements'))

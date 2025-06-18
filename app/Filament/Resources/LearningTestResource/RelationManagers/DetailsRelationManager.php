@@ -162,6 +162,8 @@ class DetailsRelationManager extends RelationManager
                         Toggle::make('is_correct')
                             ->label(__('learning/learningTestDetails.fields.correct'))
                             ->live()
+                            ->onIcon('tabler-check')
+                            ->offIcon('tabler-x')
                             ->columnSpan(2)
                             ->inline(false)
                             ->afterStateUpdated(function ($set, $get) {
@@ -192,10 +194,6 @@ class DetailsRelationManager extends RelationManager
 
                         Hidden::make('is_correct')
                             ->live()
-                            ->hidden(false)
-                            ->visible(function ($get) {
-                                return $get('../../answer_type') == 'text';
-                            })
                             ->afterStateUpdated(function ($set, $get) {
                                 $answers = $get('../../answers');
 
